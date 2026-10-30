@@ -1,0 +1,60 @@
+/* Shared navigation shell. Full-canvas production editors retain their own
+   toolbar and viewport geometry. */
+:root{--workspace-topbar-height:56px;--workspace-page-gutter:clamp(24px,3vw,56px)}
+.workspace-shell-mode .topbar{
+  position:sticky;top:0;left:auto;right:auto;z-index:40;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;
+  width:100%;height:var(--workspace-topbar-height);min-height:var(--workspace-topbar-height);max-height:var(--workspace-topbar-height);
+  padding:0 var(--workspace-page-gutter);border:0;border-bottom:1px solid #e8eaf1;background:#f6f7fb;
+}
+.workspace-shell-mode .topbar-main{display:flex;align-items:center;flex:1;min-width:0;width:auto;height:100%}
+.workspace-shell-mode.sidebar-collapsed .topbar{left:auto;right:auto}
+.workspace-shell-mode.overview-mode .topbar-main{display:none}
+.workspace-shell-mode .topbar-account{position:relative;top:auto;right:auto;display:flex;align-items:center;flex:none;height:100%;margin-left:auto}
+.workspace-shell-mode .topbar-user-button{display:flex;align-items:center;gap:8px;height:40px;min-height:40px;padding:0 4px}
+.workspace-shell-mode .topbar-user-button .avatar{width:32px;height:32px;flex:0 0 32px}
+.workspace-shell-mode .topbar-user-button b{font-size:13px;font-weight:400}
+.workspace-shell-mode .topbar-user-button>span:last-child{font-size:14px}
+.workspace-shell-mode .topbar-user-menu{top:calc(100% - 4px);right:0;z-index:45}
+.sidebar .sidebar-user{display:none}
+
+/* Keep the existing page headings in place after giving the header real space. */
+.workspace-shell-mode.home-mode .home-command{padding-top:94px}
+.workspace-shell-mode.overview-mode .workspace-hero,
+.workspace-shell-mode .workspace-projects .workspace-hero{padding-top:94px}
+.workspace-shell-mode .workspace-hub{padding-top:69px}
+.workspace-shell-mode.business-hub-mode .content{width:100%;max-width:none;padding-inline:var(--workspace-page-gutter)}
+.workspace-shell-mode.business-hub-mode .workspace-page{width:100%;max-width:none}
+
+/* Smaller artwork, with the full button area retained for clicking. */
+.workspace-shell-mode #sidebar-toggle{width:28px;height:28px;flex-basis:28px}
+.workspace-shell-mode #sidebar-toggle:before{inset:auto;left:6px;top:5px;width:16px;height:18px;border-width:1.5px;border-radius:4px}
+.workspace-shell-mode #sidebar-toggle:after{left:12px;top:7px;bottom:7px;border-left-width:1.5px}
+.home-mode .dash-view-switch{gap:14px}
+.home-mode .dash-view-switch button{display:grid;place-items:center;width:28px;height:28px}
+.home-mode .dash-view-switch svg{width:19px;height:19px;stroke-width:2}
+
+/* The same source image is fully visible in both grid and list layouts. */
+.dashboard .dash-cards .home-card-cover,
+.dashboard .dash-cards .home-card-cover img,
+.dashboard .dash-table .dash-task-name img{background:#eef0f4}
+.home-mode .dashboard .dash-cards .home-card-cover,
+.home-mode .dashboard .dash-cards .home-card-cover .home-cover-fallback{background:#eef0f4}
+.dashboard .dash-cards .home-card-cover img,
+.dashboard .dash-table .dash-task-name img{object-fit:contain;object-position:center}
+.home-mode .dashboard .dash-cards .home-task-card-meta strong{font-size:13px;line-height:19px}
+
+@media(max-width:1500px){
+  .workspace-shell-mode.home-mode .home-command{padding-top:64px}
+}
+@media(max-width:900px){
+  :root{--workspace-page-gutter:24px}
+  .workspace-shell-mode .topbar-main{gap:12px}
+  .workspace-shell-mode .topbar-title h1{font-size:18px}
+  .workspace-shell-mode .topbar .topbar-search{width:min(340px,38vw);min-height:34px;height:34px}
+}
+@media(max-width:600px){
+  :root{--workspace-page-gutter:16px}
+  .workspace-shell-mode .topbar-title{display:none}
+  .workspace-shell-mode .topbar .topbar-search{width:min(250px,48vw)}
+}

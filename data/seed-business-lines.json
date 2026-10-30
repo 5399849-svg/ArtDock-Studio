@@ -1,0 +1,37 @@
+[
+  {
+    "id": "platform-community",
+    "name": "平台社区",
+    "order": 10,
+    "enabled": true,
+    "segments": [
+      { "id": "platform", "name": "平台资源位", "order": 10, "enabled": true },
+      { "id": "community", "name": "论坛社区", "order": 20, "enabled": true },
+      { "id": "official-media", "name": "公众号与外媒", "order": 30, "enabled": true }
+    ]
+  },
+  {
+    "id": "channel-distribution",
+    "name": "渠道发行",
+    "order": 20,
+    "enabled": true,
+    "segments": [
+      { "id": "huawei", "name": "华为", "order": 10, "enabled": true },
+      { "id": "oppo", "name": "OPPO", "order": 20, "enabled": true },
+      { "id": "vivo", "name": "VIVO", "order": 30, "enabled": true },
+      { "id": "xiaomi", "name": "小米", "order": 40, "enabled": true },
+      { "id": "honor", "name": "荣耀", "order": 50, "enabled": true }
+    ]
+  },
+  {
+    "id": "performance-marketing",
+    "name": "投放",
+    "order": 30,
+    "enabled": true,
+    "segments": [
+      { "id": "mumu", "name": "MuMu模拟器", "order": 10, "enabled": true },
+      { "id": "leidian", "name": "雷电模拟器", "order": 20, "enabled": true },
+      { "id": "information-feed", "name": "信息流", "order": 30, "enabled": true }
+    ]
+  }
+]

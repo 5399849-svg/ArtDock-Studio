@@ -1,0 +1,2 @@
+{"manifestVersion":1,"name":"平台与社区素材工作台","type":"node","endpoint":"/","healthEndpoint":"/healthz","port":3000,"sdkProtocol":1,"capabilities":["identity:read","database"],
+ "deployment":{"buildPack":"railpack","installCommand":"npm ci","startCommand":"node platform/bootstrap.mjs"}}

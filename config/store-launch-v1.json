@@ -1,0 +1,177 @@
+{
+  "id": "store-launch-v1",
+  "name": "商店图测试和首发期尺寸",
+  "format": "JPG",
+  "pagesPerSet": 6,
+  "expectedCount": 24,
+  "specs": [
+    {
+      "channel": "华为",
+      "width": 1080,
+      "height": 1920,
+      "maxKB": 1024,
+      "composition": "crop-center"
+    },
+    {
+      "channel": "华为",
+      "width": 1920,
+      "height": 1080,
+      "maxKB": 1024,
+      "composition": "crop-center"
+    },
+    {
+      "channel": "华为快应用",
+      "width": 800,
+      "height": 450,
+      "maxKB": 2048,
+      "composition": "crop-center"
+    },
+    {
+      "channel": "华为快应用",
+      "width": 450,
+      "height": 800,
+      "maxKB": 2048,
+      "composition": "crop-center"
+    },
+    {
+      "channel": "vivo",
+      "width": 1080,
+      "height": 1920,
+      "maxKB": 2048,
+      "composition": "crop-center"
+    },
+    {
+      "channel": "vivo",
+      "width": 480,
+      "height": 800,
+      "maxKB": 2048,
+      "composition": "crop-center"
+    },
+    {
+      "channel": "vivo",
+      "width": 1080,
+      "height": 720,
+      "maxKB": 200,
+      "composition": "crop-center"
+    },
+    {
+      "channel": "vivo小游戏",
+      "width": 1080,
+      "height": 1920,
+      "maxKB": 1024,
+      "composition": "crop-center"
+    },
+    {
+      "channel": "OPPO",
+      "width": 1080,
+      "height": 1920,
+      "maxKB": 1024,
+      "composition": "crop-center"
+    },
+    {
+      "channel": "OPPO",
+      "width": 1915,
+      "height": 1080,
+      "maxKB": 1024,
+      "composition": "crop-center"
+    },
+    {
+      "channel": "OPPO小游戏",
+      "width": 1080,
+      "height": 1920,
+      "maxKB": 1024,
+      "composition": "crop-center"
+    },
+    {
+      "channel": "九游UC",
+      "width": 720,
+      "height": 1080,
+      "maxKB": 1024,
+      "composition": "extend"
+    },
+    {
+      "channel": "九游UC",
+      "width": 1080,
+      "height": 720,
+      "maxKB": 1024,
+      "composition": "extend"
+    },
+    {
+      "channel": "小米",
+      "width": 1920,
+      "height": 1080,
+      "maxKB": 1024,
+      "composition": "crop-center"
+    },
+    {
+      "channel": "小米",
+      "width": 2048,
+      "height": 1536,
+      "maxKB": 1024,
+      "composition": "extend"
+    },
+    {
+      "channel": "小米",
+      "width": 1080,
+      "height": 1920,
+      "maxKB": 1024,
+      "composition": "crop-center"
+    },
+    {
+      "channel": "小米",
+      "width": 320,
+      "height": 448,
+      "maxKB": 200,
+      "composition": "extend"
+    },
+    {
+      "channel": "B站",
+      "width": 720,
+      "height": 1280,
+      "maxKB": 200,
+      "composition": "crop-center"
+    },
+    {
+      "channel": "B站",
+      "width": 1280,
+      "height": 720,
+      "maxKB": 200,
+      "composition": "crop-center"
+    },
+    {
+      "channel": "4399",
+      "width": 1600,
+      "height": 960,
+      "maxKB": 1024,
+      "composition": "extend"
+    },
+    {
+      "channel": "好游快爆",
+      "width": 1280,
+      "height": 720,
+      "maxKB": 2048,
+      "composition": "crop-center"
+    },
+    {
+      "channel": "荣耀",
+      "width": 1920,
+      "height": 1080,
+      "maxKB": 5120,
+      "composition": "crop-center"
+    },
+    {
+      "channel": "应用宝",
+      "width": 1080,
+      "height": 1920,
+      "maxKB": 1024,
+      "composition": "crop-center"
+    },
+    {
+      "channel": "美团",
+      "width": 353,
+      "height": 195,
+      "maxKB": 1024,
+      "composition": "extend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+[
+  {
+    "id": "platform-sizing-reference-01",
+    "categoryId": "platform",
+    "name": "平台资源位跨比例改尺寸优秀案例",
+    "description": "用户确认的第一套视觉验收参照：核心人物完整、标题可读、按比例重新构图、横竖版分别组织。",
+    "tags": ["多人", "横版", "竖版", "标题重排", "背景延展", "跨比例重构"],
+    "layoutReusable": true,
+    "source": "user-reference",
+    "assets": [],
+    "createdAt": "2026-08-12T00:00:00.000Z"
+  }
+]

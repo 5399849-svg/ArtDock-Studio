@@ -1,0 +1,53 @@
+{
+  "id": "zhui-xu-dinner-kv-v1",
+  "name": "赘婿的晚餐 KV",
+  "version": "1.0",
+  "sourceDirectory": "KV PSD",
+  "status": "inspected",
+  "masters": [
+    {
+      "orientation": "landscape",
+      "canvas": { "width": 1920, "height": 1080 },
+      "psd": "赘婿的晚餐KV-横版.psd",
+      "preview": "data/kv-previews/赘婿的晚餐KV-横版.jpg",
+      "cleanArtwork": "data/kv-previews/赘婿的晚餐KV-横版-无文案.jpg",
+      "roles": {
+        "background": "背景",
+        "mergedArtwork": "图",
+        "logo": "logo",
+        "title": "文案两行排列",
+        "coreRegion": "主体框",
+        "secondaryRegions": ["主体框_次", "主体框_次 拷贝", "主体框_次2", "主体框_次2 拷贝"]
+      }
+    },
+    {
+      "orientation": "portrait",
+      "canvas": { "width": 1080, "height": 1920 },
+      "psd": "赘婿的晚餐KV-竖版.psd",
+      "preview": "data/kv-previews/赘婿的晚餐KV-竖版.jpg",
+      "cleanArtwork": "data/kv-previews/赘婿的晚餐KV-竖版-无文案.jpg",
+      "roles": {
+        "background": "背景",
+        "mergedArtwork": "图",
+        "logo": "logo",
+        "title": "文案",
+        "coreRegion": "主体框",
+        "secondaryRegions": ["主体框_次", "主体框_次 拷贝"]
+      }
+    }
+  ],
+  "detachedAssets": [
+    { "file": "data/kv-previews/项目Logo.png", "role": "logo", "variant": "default" },
+    { "file": "文案一行排列.png", "role": "title", "variant": "one-line" },
+    { "file": "文案两行排列.png", "role": "title", "variant": "two-line" },
+    { "file": "立即前往.png", "role": "button", "variant": "cta" }
+  ],
+  "automationAssessment": {
+    "readyForMasterPreview": true,
+    "readyForRuleDrivenCrop": true,
+    "readyForIndependentTitleLogoPlacement": true,
+    "readyForIndependentCharacterRecomposition": false,
+    "reason": "人物与场景仍合并在“图”层；主体框仅是构图约束，不是人物蒙版或人物图层。",
+    "requiredNextStep": "基于主体框生成对象蒙版并人工确认后，才允许人物级移动、删减和背景补画。"
+  }
+}

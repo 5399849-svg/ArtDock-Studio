@@ -1,0 +1,1 @@
+export const communityMaterialDownloadIcon='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3v11m-5-5 5 5 5-5"/><path d="M4 15.5V18a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2.5"/></svg>';

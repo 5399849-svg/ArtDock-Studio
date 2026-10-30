@@ -1,0 +1,685 @@
+{
+  "id": "icon-launch-v1",
+  "name": "ICON测试和首发期尺寸",
+  "format": "PNG",
+  "expectedCount": 36,
+  "psdFile": "渠道测试和首发ICON-模版规范PSD版本：V1.0/测试和首发ICON模版.psd",
+  "specVersion": "V1.0",
+  "specs": [
+    {
+      "id": "launch-01",
+      "channel": "华为",
+      "width": 216,
+      "height": 216,
+      "cornerRadiusPx": 0,
+      "badge": null,
+      "psdGroup": "华为216直角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 2048
+    },
+    {
+      "id": "launch-02",
+      "channel": "华为小游戏",
+      "width": 216,
+      "height": 216,
+      "cornerRadiusPx": 35,
+      "badge": null,
+      "psdGroup": "华为小游戏216圆角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 2048
+    },
+    {
+      "id": "launch-03",
+      "channel": "华为小游戏",
+      "width": 216,
+      "height": 216,
+      "cornerRadiusPx": 0,
+      "badge": null,
+      "psdGroup": "华为小游戏216直角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 2048
+    },
+    {
+      "id": "launch-04",
+      "channel": "vivo",
+      "width": 256,
+      "height": 256,
+      "cornerRadiusPx": 0,
+      "badge": null,
+      "psdGroup": "vivo256直角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 50
+    },
+    {
+      "id": "launch-05",
+      "channel": "vivo",
+      "width": 512,
+      "height": 512,
+      "cornerRadiusPx": 0,
+      "badge": null,
+      "psdGroup": "vivo512直角",
+      "formats": [
+        "PNG",
+        "JPG"
+      ],
+      "maxKB": 50,
+      "outputFormat": "JPG"
+    },
+    {
+      "id": "launch-06",
+      "channel": "vivo小游戏",
+      "width": 256,
+      "height": 256,
+      "cornerRadiusPx": 0,
+      "badge": null,
+      "psdGroup": "vivo小游戏256直角",
+      "formats": [
+        "PNG",
+        "JPG"
+      ],
+      "maxKB": 50
+    },
+    {
+      "id": "launch-07",
+      "channel": "应用宝",
+      "width": 16,
+      "height": 16,
+      "cornerRadiusPx": 0,
+      "badge": null,
+      "psdGroup": "应用宝16直角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 20
+    },
+    {
+      "id": "launch-08",
+      "channel": "应用宝",
+      "width": 28,
+      "height": 28,
+      "cornerRadiusPx": 4,
+      "badge": null,
+      "psdGroup": "应用宝28圆角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 200
+    },
+    {
+      "id": "launch-09",
+      "channel": "应用宝",
+      "width": 48,
+      "height": 48,
+      "cornerRadiusPx": 10,
+      "badge": "应用宝",
+      "psdGroup": "应用宝48圆角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 200,
+      "badgeAsset": "badge-09.png",
+      "badgeWidth": 17,
+      "badgeHeight": 16
+    },
+    {
+      "id": "launch-10",
+      "channel": "应用宝",
+      "width": 108,
+      "height": 108,
+      "cornerRadiusPx": 15,
+      "badge": null,
+      "psdGroup": "应用宝108圆角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 200
+    },
+    {
+      "id": "launch-11",
+      "channel": "应用宝",
+      "width": 128,
+      "height": 128,
+      "cornerRadiusPx": 18,
+      "badge": "应用宝",
+      "psdGroup": "应用宝128圆角角标",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 200,
+      "badgeAsset": "badge-11.png",
+      "badgeWidth": 37,
+      "badgeHeight": 37
+    },
+    {
+      "id": "launch-12",
+      "channel": "应用宝",
+      "width": 512,
+      "height": 512,
+      "cornerRadiusPx": 0,
+      "badge": null,
+      "psdGroup": "应用宝512直角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 200
+    },
+    {
+      "id": "launch-13",
+      "channel": "应用宝",
+      "width": 512,
+      "height": 512,
+      "cornerRadiusPx": 72,
+      "badge": "应用宝",
+      "psdGroup": "应用宝512圆角角标",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 200,
+      "badgeAsset": "badge-13.png",
+      "badgeWidth": 146,
+      "badgeHeight": 147
+    },
+    {
+      "id": "launch-14",
+      "channel": "OPPO",
+      "width": 512,
+      "height": 512,
+      "cornerRadiusPx": 0,
+      "badge": null,
+      "psdGroup": "OPPO512直角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 500
+    },
+    {
+      "id": "launch-15",
+      "channel": "OPPO",
+      "width": 256,
+      "height": 256,
+      "cornerRadiusPx": 0,
+      "badge": null,
+      "psdGroup": "OPPO256直角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 50
+    },
+    {
+      "id": "launch-16",
+      "channel": "OPPO小游戏",
+      "width": 222,
+      "height": 222,
+      "cornerRadiusPx": 111,
+      "badge": null,
+      "psdGroup": "OPPO小游戏222圆形",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 30
+    },
+    {
+      "id": "launch-17",
+      "channel": "OPPO小游戏",
+      "width": 256,
+      "height": 256,
+      "cornerRadiusPx": 0,
+      "badge": null,
+      "psdGroup": "OPPO小游戏256直角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 30
+    },
+    {
+      "id": "launch-18",
+      "channel": "九游UC",
+      "width": 512,
+      "height": 512,
+      "cornerRadiusPx": 100,
+      "badge": null,
+      "psdGroup": "九游UC512圆角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 1024
+    },
+    {
+      "id": "launch-19",
+      "channel": "小米",
+      "width": 512,
+      "height": 512,
+      "cornerRadiusPx": 100,
+      "badge": null,
+      "psdGroup": "小米512圆角",
+      "formats": [
+        "PNG"
+      ],
+      "minKB": 300
+    },
+    {
+      "id": "launch-20",
+      "channel": "Taptap",
+      "width": 512,
+      "height": 512,
+      "cornerRadiusPx": 0,
+      "badge": null,
+      "psdGroup": "Taptap512直角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 1024
+    },
+    {
+      "id": "launch-21",
+      "channel": "B站",
+      "width": 512,
+      "height": 512,
+      "cornerRadiusPx": 0,
+      "badge": "B站",
+      "psdGroup": "B站512直角角标",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 300,
+      "badgeAsset": "badge-21.png",
+      "badgeWidth": 157,
+      "badgeHeight": 157
+    },
+    {
+      "id": "launch-22",
+      "channel": "4399",
+      "width": 512,
+      "height": 512,
+      "cornerRadiusPx": 100,
+      "badge": "4399",
+      "psdGroup": "4399 512圆角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 600,
+      "badgeAsset": "badge-22.png",
+      "badgeWidth": 223,
+      "badgeHeight": 138
+    },
+    {
+      "id": "launch-23",
+      "channel": "好游快爆",
+      "width": 256,
+      "height": 256,
+      "cornerRadiusPx": 0,
+      "badge": null,
+      "psdGroup": "好游快爆256直角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 80
+    },
+    {
+      "id": "launch-24",
+      "channel": "荣耀",
+      "width": 512,
+      "height": 512,
+      "cornerRadiusPx": 0,
+      "badge": null,
+      "psdGroup": "荣耀512直角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 200
+    },
+    {
+      "id": "launch-25",
+      "channel": "雷电模拟器",
+      "width": 200,
+      "height": 200,
+      "cornerRadiusPx": 40,
+      "badge": "雷电模拟器",
+      "psdGroup": "雷电模拟器200圆角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 200,
+      "badgeAsset": "badge-25.png",
+      "badgeWidth": 77,
+      "badgeHeight": 84
+    },
+    {
+      "id": "launch-26",
+      "channel": "美团小游戏",
+      "width": 120,
+      "height": 120,
+      "cornerRadiusPx": 22,
+      "badge": null,
+      "psdGroup": "美团小游戏120圆角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 30
+    },
+    {
+      "id": "launch-27",
+      "channel": "美团小游戏",
+      "width": 128,
+      "height": 128,
+      "cornerRadiusPx": 22,
+      "badge": null,
+      "psdGroup": "美团小游戏128圆角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 30
+    },
+    {
+      "id": "launch-28",
+      "channel": "美团小游戏",
+      "width": 256,
+      "height": 256,
+      "cornerRadiusPx": 50,
+      "badge": null,
+      "psdGroup": "美团小游戏256圆角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 30
+    },
+    {
+      "id": "launch-29",
+      "channel": "美团小游戏",
+      "width": 248,
+      "height": 248,
+      "cornerRadiusPx": 124,
+      "badge": null,
+      "psdGroup": "美团小游戏248圆形",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 30
+    },
+    {
+      "id": "launch-30",
+      "channel": "美团小游戏",
+      "width": 176,
+      "height": 176,
+      "cornerRadiusPx": 0,
+      "badge": null,
+      "psdGroup": "美团小游戏176直角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 15,
+      "contentSize": 148,
+      "contentRadiusPx": 48,
+      "contentInsetPx": 14,
+      "transparentCanvas": true
+    },
+    {
+      "id": "launch-31",
+      "channel": "荣耀小游戏",
+      "width": 320,
+      "height": 320,
+      "cornerRadiusPx": 0,
+      "badge": null,
+      "psdGroup": "荣耀小游戏320直角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 200
+    },
+    {
+      "id": "launch-32",
+      "channel": "支付宝小游戏",
+      "width": 180,
+      "height": 180,
+      "cornerRadiusPx": 0,
+      "badge": null,
+      "psdGroup": "支付宝小游戏180直角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 2048
+    },
+    {
+      "id": "launch-33",
+      "channel": "360",
+      "width": 512,
+      "height": 512,
+      "cornerRadiusPx": 100,
+      "badge": null,
+      "psdGroup": "360 512圆角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 2048
+    },
+    {
+      "id": "launch-34",
+      "channel": "买量",
+      "width": 512,
+      "height": 512,
+      "cornerRadiusPx": 100,
+      "badge": null,
+      "psdGroup": "买量512圆角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 300
+    },
+    {
+      "id": "launch-35",
+      "channel": "买量",
+      "width": 300,
+      "height": 300,
+      "cornerRadiusPx": 58,
+      "badge": null,
+      "psdGroup": "买量300圆角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 300
+    },
+    {
+      "id": "launch-36",
+      "channel": "买量",
+      "width": 180,
+      "height": 180,
+      "cornerRadiusPx": 32,
+      "badge": null,
+      "psdGroup": "买量180圆角",
+      "formats": [
+        "PNG"
+      ],
+      "maxKB": 60
+    }
+  ],
+  "templateAudit": [
+    {
+      "group": "华为216直角",
+      "size": 216,
+      "radius": 0
+    },
+    {
+      "group": "华为小游戏216圆角",
+      "size": 216,
+      "radius": 35
+    },
+    {
+      "group": "华为小游戏216直角",
+      "size": 216,
+      "radius": 0
+    },
+    {
+      "group": "vivo256直角",
+      "size": 256,
+      "radius": 0
+    },
+    {
+      "group": "vivo512直角",
+      "size": 512,
+      "radius": 0
+    },
+    {
+      "group": "vivo小游戏256直角",
+      "size": 256,
+      "radius": 0
+    },
+    {
+      "group": "应用宝16直角",
+      "size": 16,
+      "radius": 0
+    },
+    {
+      "group": "应用宝28圆角",
+      "size": 28,
+      "radius": 4
+    },
+    {
+      "group": "应用宝48圆角",
+      "size": 48,
+      "radius": 10
+    },
+    {
+      "group": "应用宝108圆角",
+      "size": 108,
+      "radius": 15
+    },
+    {
+      "group": "应用宝128圆角角标",
+      "size": 128,
+      "radius": 18
+    },
+    {
+      "group": "应用宝512直角",
+      "size": 512,
+      "radius": 0
+    },
+    {
+      "group": "应用宝512圆角角标",
+      "size": 512,
+      "radius": 72
+    },
+    {
+      "group": "OPPO512直角",
+      "size": 512,
+      "radius": 0
+    },
+    {
+      "group": "OPPO256直角",
+      "size": 256,
+      "radius": 0
+    },
+    {
+      "group": "OPPO小游戏222圆形",
+      "size": 222,
+      "radius": 111
+    },
+    {
+      "group": "OPPO小游戏256直角",
+      "size": 256,
+      "radius": 0
+    },
+    {
+      "group": "九游UC512圆角",
+      "size": 512,
+      "radius": 100
+    },
+    {
+      "group": "小米512圆角",
+      "size": 512,
+      "radius": 100
+    },
+    {
+      "group": "Taptap512直角",
+      "size": 512,
+      "radius": 0
+    },
+    {
+      "group": "B站512直角角标",
+      "size": 512,
+      "radius": 0
+    },
+    {
+      "group": "4399 512圆角",
+      "size": 512,
+      "radius": 100
+    },
+    {
+      "group": "好游快爆256直角",
+      "size": 256,
+      "radius": 0
+    },
+    {
+      "group": "荣耀512直角",
+      "size": 512,
+      "radius": 0
+    },
+    {
+      "group": "雷电模拟器200圆角",
+      "size": 200,
+      "radius": 40
+    },
+    {
+      "group": "美团小游戏120圆角",
+      "size": 120,
+      "radius": 22
+    },
+    {
+      "group": "美团小游戏128圆角",
+      "size": 128,
+      "radius": 22
+    },
+    {
+      "group": "美团小游戏256圆角",
+      "size": 256,
+      "radius": 50
+    },
+    {
+      "group": "美团小游戏248圆形",
+      "size": 248,
+      "radius": 124
+    },
+    {
+      "group": "美团小游戏176直角",
+      "size": 176,
+      "radius": 0
+    },
+    {
+      "group": "荣耀小游戏320直角",
+      "size": 320,
+      "radius": 0
+    },
+    {
+      "group": "支付宝小游戏180直角",
+      "size": 180,
+      "radius": 0
+    },
+    {
+      "group": "360 512圆角",
+      "size": 512,
+      "radius": 100
+    },
+    {
+      "group": "买量512圆角",
+      "size": 512,
+      "radius": 100
+    },
+    {
+      "group": "买量300圆角",
+      "size": 300,
+      "radius": 58
+    },
+    {
+      "group": "买量180圆角",
+      "size": 180,
+      "radius": 32
+    }
+  ]
+}

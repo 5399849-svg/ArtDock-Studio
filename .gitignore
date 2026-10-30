@@ -1,0 +1,33 @@
+# Dependencies and build output
+node_modules/
+dist/
+build/
+coverage/
+*.log
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+config/ai-huabu.json
+config/remove-bg.json
+worker/config.json
+
+# Runtime data, downloaded browser libraries, and model weights
+# Prepare browser dependencies with npm run prepare:browser-runtime.
+data/runtime/
+public/platform/vendor/
+public/platform/models/
+local-ai/models/
+local-ai/psd-deps/
+local-ai/generative/
+
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Operating system files
+.DS_Store
+Thumbs.db

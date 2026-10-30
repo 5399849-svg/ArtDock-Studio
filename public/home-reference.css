@@ -1,0 +1,84 @@
+/* Homepage layout based on the supplied 1920 × 1080 visual reference. */
+.home-create-nav,.home-create-links{display:none}
+body.home-mode{background:#f6f7fb;color:#1c2540}
+.home-mode .sidebar{background:#191e33;padding:24px 16px 20px}
+.home-mode .brand-mark{height:72px;gap:11px;padding:0 4px 28px;font-size:0}
+.home-mode .brand-mark>span{width:44px;height:44px;border-radius:11px;background:#7064db;box-shadow:none;font-size:0}
+.home-mode .brand-copy{font-size:0;line-height:1}
+.home-mode .brand-copy:after{content:'工作台';color:#fff;font-size:22px;font-weight:800;letter-spacing:.02em;white-space:nowrap}
+.home-mode #sidebar-toggle{position:relative;width:28px;height:32px;flex-basis:28px;border:0;background:transparent;color:transparent;font-size:0}
+.home-mode #sidebar-toggle:before{content:'';position:absolute;inset:3px 2px;border:2px solid #7d849e;border-radius:6px}
+.home-mode #sidebar-toggle:after{content:'';position:absolute;left:10px;top:5px;bottom:5px;border-left:2px solid #7d849e}
+.home-mode .sidebar nav{gap:4px;overflow-y:auto}
+.home-mode .sidebar .nav-item{min-height:47px;padding:10px 12px;border-radius:9px;color:#a7aec5;font-size:14px;font-weight:500}
+.home-mode .sidebar .nav-item span{width:24px;height:24px;color:#7f88a7}
+.home-mode .sidebar .nav-item span svg{width:21px;height:21px}
+.nav-home-icon{display:none}
+.home-mode .sidebar .nav-home-icon{display:block}
+.home-mode .sidebar .nav-default-icon{display:none}
+.home-mode .sidebar .nav-item.active{background:transparent;box-shadow:none;color:#a7aec5}
+.home-mode .sidebar .nav-item.active span{color:#7f88a7}
+.home-mode .sidebar .nav-item:hover{background:#272d45;color:#eff0ff}
+.home-mode .sidebar .nav-section-label,.home-mode .sidebar .nav-divider,.home-mode .sidebar .nav-subgroup,.home-mode .sidebar .nav-item[data-view^='business-']{display:none}
+.home-mode .sidebar .home-create-nav{display:flex;background:#252b43;color:#b8bdd2}
+.home-mode .sidebar .home-create-nav:hover{background:#303753}
+.home-mode .sidebar .home-create-links{display:grid;gap:0;margin:1px 0 10px;padding-left:48px}
+.home-mode .sidebar .home-create-links button{height:36px;padding:0;border:0;background:transparent;color:#747d9a;text-align:left;font-size:13px}
+.home-mode .sidebar .home-create-links button:hover{color:#e4e3ff}
+.home-mode .sidebar .sidebar-user{padding:0 16px;border:0;gap:9px}
+.home-mode .sidebar .sidebar-user .avatar,.home-mode .topbar-user-button .avatar{width:37px;height:37px;background:#7064db;color:transparent;font-size:0}
+.home-mode .sidebar .sidebar-user b{font-size:13px;font-weight:400;color:#f4f3ff}
+.home-mode .sidebar .sidebar-user small{display:none}
+.home-mode .topbar{position:absolute;top:0;right:0;left:236px;z-index:15;height:0;min-height:0;padding:0;border:0;background:transparent}
+.home-mode .topbar-main{display:none}
+.home-mode .topbar-account{position:absolute;top:21px;right:42px}
+.home-mode .topbar-user-button{gap:9px;padding:0;min-height:40px}
+.home-mode .topbar-user-button b{font-size:13px;font-weight:400}
+.home-mode .topbar-user-button>span:last-child{font-size:16px}
+.home-mode .content{max-width:1490px;padding:0 16px 48px;line-height:1.45}
+.home-mode .dashboard.home-reference{width:min(1320px,calc(100% - 56px));max-width:none;margin:0 auto}
+.home-mode .home-command{position:relative;padding-top:150px;text-align:center}
+.home-mode .home-command h2{margin:0;color:#1a2540;font-size:36px;font-weight:800;line-height:46px;letter-spacing:1px}
+.home-mode .home-hero-search-slot{position:relative;display:flex;justify-content:center;margin-top:18px}
+.home-mode .home-hero-search-slot .topbar-search{width:min(755px,100%);height:54px;min-height:54px;margin:0;padding:0 20px 0 59px;border:1px solid #b5b9d9;border-radius:30px;background:transparent;box-shadow:none;font-size:0}
+.home-mode .home-hero-search-slot .topbar-search:before{content:'';position:absolute;left:21px;top:14px;width:18px;height:18px;border:3px solid #7780a0;border-radius:50%}
+.home-mode .home-hero-search-slot .topbar-search:after{content:'';position:absolute;left:40px;top:34px;width:10px;border-top:3px solid #7780a0;transform:rotate(45deg);transform-origin:left center}
+.home-mode .home-hero-search-slot .topbar-search input{height:100%;padding:0;font-size:16px;color:#27334f}
+.home-mode .home-hero-search-slot .topbar-search input::placeholder{color:#a5a8b8}
+.home-mode .wb-global-results{font-size:14px;text-align:left;max-width:100%;width:100%}
+.home-mode .home-shortcuts{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:0;max-width:1310px;margin:32px auto 0}
+.home-mode .home-shortcut{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0;padding:0 3px;border:0;background:transparent;color:#18223b;font-size:15px;white-space:nowrap}
+.home-mode .home-shortcut-icon{display:grid;place-items:center;width:59px;height:59px;border-radius:50%;background:#7064dc;color:#fff;transition:transform .16s ease,box-shadow .16s ease}
+.home-mode .home-shortcut:hover .home-shortcut-icon,.home-mode .home-shortcut:focus-visible .home-shortcut-icon{transform:translateY(-3px);box-shadow:0 7px 14px #6f62d443}
+.home-mode .home-shortcut svg{width:42px;height:42px;fill:none;stroke:currentColor;stroke-width:3.3;stroke-linecap:round;stroke-linejoin:round}
+.home-mode .home-more-panel{position:absolute;z-index:20;right:0;top:calc(100% + 10px);display:grid;min-width:150px;padding:8px;border:1px solid #e2e4f0;border-radius:10px;background:#fff;box-shadow:0 14px 28px #26304b20}
+.home-mode .home-more-panel button{padding:10px 12px;border:0;border-radius:6px;background:#fff;text-align:left;color:#283249;font-size:13px}
+.home-mode .home-more-panel button:hover{background:#f0edff}
+.home-mode .home-more-panel[hidden],.home-mode .dash-tabs button[hidden]{display:none}
+.home-mode .dash-recent{margin-top:109px}
+.home-mode .dash-recent-head{gap:25px;flex-wrap:nowrap;margin-bottom:22px}
+.home-mode .dash-recent-head h3{font-size:18px;font-weight:800;white-space:nowrap}
+.home-mode .dash-tabs{gap:24px;flex-wrap:nowrap}
+.home-mode .dash-tabs button{padding:6px 0 4px;border-bottom-width:2px;color:#78819b;font-size:13px;white-space:nowrap}
+.home-mode .dash-tabs button.active{color:#685be0;border-bottom-color:#685be0}
+.home-mode .dash-recent-head>.button{display:none}
+.home-mode .dash-view-switch{gap:23px;margin-left:auto}
+.home-mode .dash-view-switch button{width:26px;height:26px;padding:0;border:0;border-radius:0;background:transparent;color:#5e6984}
+.home-mode .dash-view-switch button.active{border:0;background:transparent;color:#5e6984}
+.home-mode .dash-view-switch svg{display:block;width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.home-mode .dash-load-note:empty{display:none}
+.home-mode .dashboard .dash-cards{grid-template-columns:repeat(5,minmax(0,1fr));gap:16px 14px;align-items:stretch}
+.home-mode .dashboard .dash-cards .home-recent-task-card{height:236px;border:0;border-radius:10px;box-shadow:0 2px 8px #3439500c}
+.home-mode .dashboard .dash-cards .home-task-open{height:236px;min-height:0;padding:0 0 10px;border-radius:10px}
+.home-mode .dashboard .dash-cards .home-card-cover{height:143px;border-radius:10px 10px 0 0;background:#7064dc}
+.home-mode .dashboard .dash-cards .home-cover-fallback{background:#7064dc;color:transparent;font-size:0}
+.home-mode .dashboard .dash-cards .home-task-card-meta{width:calc(100% - 22px);margin:10px 11px 0;gap:7px}
+.home-mode .dashboard .dash-cards .home-task-card-meta strong{overflow:hidden;display:block;white-space:nowrap;text-overflow:ellipsis;font-size:15px;font-weight:700;line-height:21px}
+.home-mode .dashboard .dash-cards .home-task-card-meta small{font-size:10px;line-height:18px;margin:1px 0 0}
+.home-mode .dashboard .dash-cards .dash-card-context{width:calc(100% - 22px);margin:4px 11px 0;color:#969eb1;font-size:10px}
+.home-mode .dashboard .dash-cards .home-card-status,.home-mode .dashboard .dash-cards .dash-status{align-self:flex-start;margin:8px 11px 0;padding:3px 7px;border-radius:4px;font-size:10px;line-height:14px}
+@media(max-width:1600px){.home-mode .home-shortcuts{max-width:1200px}.home-mode .dashboard .dash-cards{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:1250px){.home-mode .home-shortcuts{grid-template-columns:repeat(5,1fr);gap:20px 5px}.home-mode .dash-recent{margin-top:70px}.home-mode .dashboard .dash-cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:880px){.home-mode .dashboard.home-reference{width:100%}.home-mode .home-command{padding-top:120px}.home-mode .home-shortcuts{grid-template-columns:repeat(3,1fr)}.home-mode .dashboard .dash-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.home-mode .dash-recent-head{flex-wrap:wrap}.home-mode .dash-view-switch{margin-left:0}}
+@media(max-width:600px){.home-mode .content{padding:0 14px 32px}.home-mode .home-command h2{font-size:27px;line-height:37px}.home-mode .home-hero-search-slot .topbar-search{height:50px;min-height:50px}.home-mode .home-shortcut{font-size:12px}.home-mode .home-shortcut-icon{width:52px;height:52px}.home-mode .home-shortcut svg{width:37px;height:37px}.home-mode .dashboard .dash-cards{grid-template-columns:1fr 1fr}.home-mode .dash-tabs{overflow:auto;max-width:100%}}
+.sidebar-collapsed.home-mode .topbar{left:78px}

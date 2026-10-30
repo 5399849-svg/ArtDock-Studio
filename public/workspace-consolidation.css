@@ -1,0 +1,71 @@
+/* Compact navigation pages. Full-canvas editors keep their own geometry. */
+.workspace-shell-mode .topbar-main,
+.workspace-shell-mode.overview-mode .topbar-main{display:flex;position:relative;justify-content:flex-end;flex:1;min-width:0;gap:12px}
+.workspace-shell-mode .topbar-title{display:none}
+.workspace-shell-mode .topbar-account{margin-left:16px}
+.workspace-shell-mode .workspace-search-toggle{display:grid;place-items:center;width:34px;height:34px;min-height:34px;padding:7px;border:0;border-radius:8px;background:transparent;color:#7d869e;cursor:pointer}
+.workspace-shell-mode .workspace-search-toggle:hover,
+.workspace-shell-mode .workspace-search-toggle[aria-expanded="true"]{background:#eeebfb;color:#6b57de}
+.workspace-shell-mode .workspace-search-toggle svg{display:block;width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.workspace-shell-mode .workspace-search-panel{position:relative;order:-1;flex:0 1 520px;min-width:0;z-index:60;width:min(520px,calc(100vw - 48px));padding:0;border:0;border-radius:8px;background:transparent;box-shadow:none}
+.workspace-shell-mode .topbar .workspace-search-panel .topbar-search{position:relative;display:flex;align-items:center;gap:10px;width:100%;height:40px;min-height:40px;max-width:none;margin:0;padding:0 12px;border:1px solid #dfe2ee;border-radius:8px;background:#f9faff;box-shadow:none}
+.workspace-shell-mode .workspace-search-panel .topbar-search input{min-width:0;width:100%;padding:0;border:0;background:transparent;font-size:13px;color:#26344e}
+.workspace-shell-mode .workspace-search-panel .wb-global-results{position:absolute;top:calc(100% + 10px);left:0;max-width:100%;width:100%;max-height:min(65vh,560px);margin:0;padding:8px;background:#fff;border:1px solid #e0e3ed;border-radius:12px;box-shadow:0 10px 32px #1827491c}
+.workspace-shell-mode .workspace-search-panel .topbar-search:focus-within{border-color:#8b73f4;background:#fff;box-shadow:0 0 0 3px #7057ef0d}
+.workspace-shell-mode .workspace-search-panel .topbar-search input:focus{outline:none}
+.workspace-shell-mode .workspace-search-panel .wb-global-results>b{display:block;padding:8px 10px;font-size:12px;color:#858da2}
+.workspace-shell-mode .workspace-search-panel .wb-global-results button{padding:10px;font-size:13px}
+.workspace-shell-mode.home-mode .workspace-search-toggle{display:none}
+.workspace-shell-mode.home-mode .home-command{padding-top:54px}
+.home-mode .home-shortcuts{margin-top:24px}
+.home-mode .home-shortcut{gap:7px;font-size:13px}
+.home-mode .home-shortcut-icon{width:48px;height:48px}
+.home-mode .home-shortcut svg{width:32px;height:32px;stroke-width:3}
+.home-mode .dash-recent{margin-top:56px}
+.home-mode .dash-recent-head{margin-bottom:20px}
+
+/* One body title per management or resource page. */
+.workspace-shell-mode .wb-heading,
+.workspace-shell-mode .cr-heading,
+.workspace-shell-mode .ad-heading{align-items:center;margin:0 0 26px;gap:20px}
+.workspace-shell-mode .wb-heading h2,
+.workspace-shell-mode .cr-heading h2,
+.workspace-shell-mode .ad-heading h2{margin:0 0 8px;font-size:28px;line-height:1.3}
+.workspace-shell-mode .wb-heading p,
+.workspace-shell-mode .cr-heading p,
+.workspace-shell-mode .ad-heading p{margin:0;font-size:13px;line-height:1.7;color:#8791a9}
+.workspace-shell-mode .cr-kicker,
+.workspace-shell-mode .ad-kicker{display:none}
+.workspace-shell-mode .wb-toolbar{gap:12px;margin-bottom:20px;align-items:center}
+.workspace-shell-mode .wb-toolbar input,
+.workspace-shell-mode .wb-toolbar select{height:38px;min-height:38px;padding-top:7px;padding-bottom:7px;font-size:13px}
+.workspace-shell-mode .wb-tabs{gap:22px;align-items:center;margin:0 0 20px;padding:0;border:0}
+.workspace-shell-mode .wb-tabs button{padding:5px 0;min-height:34px;border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:#8791a9;font-size:13px;white-space:nowrap}
+.workspace-shell-mode .wb-tabs button.active{border-color:#7360e5;background:transparent;color:#7360e5}
+.workspace-shell-mode .wb-tabs button span{margin-left:5px;font-size:12px}
+.workspace-shell-mode #wb-asset-count{margin:0 0 16px;color:#8791a9;font-size:12px}
+.workspace-shell-mode .home-card-status[data-status="草稿"],.workspace-shell-mode .dash-status.draft,.workspace-shell-mode .wb-status[data-state="草稿"]{color:#8a849c;background:#f0eff7}
+.workspace-shell-mode .home-card-status[data-status="制作中"],.workspace-shell-mode .dash-status.running,.workspace-shell-mode .wb-status[data-state="制作中"]{color:#3471f0;background:#eaf1ff}
+.workspace-shell-mode .home-card-status[data-status="待检查"],.workspace-shell-mode .dash-status.review,.workspace-shell-mode .wb-status[data-state="待检查"]{color:#d48032;background:#fff1e4}
+.workspace-shell-mode .home-card-status[data-status="已完成"],.workspace-shell-mode .dash-status.done,.workspace-shell-mode .wb-status[data-state="已完成"]{color:#2c9d78;background:#e7f6ef}
+.workspace-shell-mode .home-card-status[data-status="需要处理"],.workspace-shell-mode .dash-status.issue,.workspace-shell-mode .wb-status[data-state="需要处理"]{color:#cf6158;background:#fff0ef}
+
+@media(max-width:1500px){.workspace-shell-mode.home-mode .home-command{padding-top:36px}}
+@media(max-width:1250px){.home-mode .dash-recent{margin-top:48px}}
+@media(max-width:900px){
+  .workspace-shell-mode .wb-heading,
+  .workspace-shell-mode .cr-heading,
+  .workspace-shell-mode .ad-heading{align-items:flex-start;flex-wrap:wrap;gap:16px}
+  .workspace-shell-mode .wb-heading h2,
+  .workspace-shell-mode .cr-heading h2,
+  .workspace-shell-mode .ad-heading h2{font-size:26px}
+  .workspace-shell-mode .wb-tabs{gap:18px}
+}
+@media(max-width:600px){
+  .workspace-shell-mode .workspace-search-panel{width:100%;flex-basis:100%}
+  .workspace-shell-mode.home-mode .home-command{padding-top:30px}
+  .home-mode .home-shortcut{font-size:12px}
+  .home-mode .home-shortcut-icon{width:44px;height:44px}
+  .home-mode .home-shortcut svg{width:29px;height:29px}
+  .home-mode .dash-recent{margin-top:36px}
+}

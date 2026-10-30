@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      if (window.location.protocol === "file:") {
+        window.location.replace("http://127.0.0.1:4173/");
+      }
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <link rel="icon" href="data:," />
+    <title>素材生产工作台</title>
+    <link rel="stylesheet" href="/styles.css?v=20261010-huawei-specs" />
+    <link rel="stylesheet" href="/subtitle-editing.css?v=20261015" />
+    <link rel="stylesheet" href="/home-dashboard.css?v=20261028-resize-cleanup-final" />
+<link rel="stylesheet" href="/home-task-delete.css?v=20260928" />
+<link rel="stylesheet" href="/home-recent-cards.css?v=20261028-task-menu" />
+<link rel="stylesheet" href="/workbench-refinement.css?v=20261028-task-thumbnails" />
+        <link rel="stylesheet" href="/community-editor.css?v=20261009-delivery-guard" />
+    <link rel="stylesheet" href="/channel-resources.css?v=20260929-single-artwork" />
+    <link rel="stylesheet" href="/channel-editor.css?v=20260924-brief-sync" />
+    <link rel="stylesheet" href="/ad-resources.css?v=20261023-reference-slot" />
+    <link rel="stylesheet" href="/home-reference.css?v=20261010-home-spacing" />
+    <link rel="stylesheet" href="/workspace-overview.css?v=20261023-project-cover-inset" />
+    <link rel="stylesheet" href="/quick-task-feedback.css?v=20261027-project-dropdown" />
+    <link rel="stylesheet" href="/workspace-ui-feedback.css?v=20261015-interface-final" />
+    <link rel="stylesheet" href="/task-type-workbench.css?v=20261028-size-font" />
+    <link rel="stylesheet" href="/target-size-dialog.css?v=20261028-size-font" />
+    <link rel="stylesheet" href="/phase-workbench.css?v=20261015-consolidation" />
+    <link rel="stylesheet" href="/spec-center-navigation.css?v=20261015-consolidation" />
+    <link rel="stylesheet" href="/workspace-consolidation.css?v=20261028-resize-cleanup-final" />
+    <link rel="stylesheet" href="/project-logos.css?v=20261023-project-create">
+    <link rel="stylesheet" href="/project-design-center.css?v=20261028-resize-cleanup-final">
+    <link rel="stylesheet" href="/custom-canvas.css?v=20261028-resize-cleanup-final">
+    <link rel="stylesheet" href="/workbench-assets.css?v=20261028-resize-cleanup-final">
+    <link rel="stylesheet" href="/workbench-recycle-bin.css?v=20261028-recycle">
+    <link rel="stylesheet" href="/community-popup.css?v=20261030-button-text-layer" />
+<link rel="stylesheet" href="/source-adaptation.css?v=20261029-multi-reference" /><link rel="stylesheet" href="/popup-button-composer.css?v=20261029-multi-reference" />
+    <link rel="stylesheet" href="/platform/platform.css" />
+    <script src="/platform/wg-shim.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-mark"><span>▱</span><div class="brand-copy">素材自动化<br />生产工作台</div><button id="sidebar-toggle" type="button" aria-label="收起侧栏" title="收起侧栏">‹</button></div>
+        <nav>
+          <button class="nav-item active" data-view="home"><span>⌂</span>首页</button>
+          <button class="nav-item" data-view="projects"><span>▣</span>项目</button>
+          <button class="nav-item home-create-nav" type="button"><span>✎</span>创作</button>
+          <div class="home-create-links" aria-label="创作业务入口">
+            <button type="button" data-home-business="business-platform">平台业务</button>
+            <button type="button" data-home-business="business-channel">渠道业务</button>
+            <button type="button" data-home-business="business-ads">投放业务</button>
+          </div>
+          <div class="nav-section-label">素材生产</div>
+          <button class="nav-item" data-view="business-platform"><span>▱</span>平台业务</button>
+          <button class="nav-item" data-view="business-channel"><span>♧</span>渠道发行业务</button>
+          <div class="nav-subgroup" aria-label="渠道发行业务子菜单">
+            <button class="nav-sub-item" data-view="store-preorder" type="button">预约期商店图</button>
+            <button class="nav-sub-item" data-view="store-launch" type="button">测试和首发商店图</button>
+            <button class="nav-sub-item" data-view="icon-preorder" type="button">预约期 ICON</button>
+            <button class="nav-sub-item" data-view="icon-launch" type="button">测试和首发 ICON</button>
+            <div class="nav-subrow"><button class="nav-sub-item" data-view="channel-resources" type="button">渠道资源位</button><button class="nav-sub-toggle" id="channel-nav-toggle" type="button" aria-controls="channel-nav-list" aria-expanded="true" aria-label="收起渠道列表">⌄</button></div>
+            <div class="nav-channel-list" id="channel-nav-list" aria-label="渠道资源位渠道">
+              <button class="nav-channel-item" type="button" data-channel="huawei">华为</button>
+              <button class="nav-channel-item" type="button" data-channel="oppo">OPPO</button>
+              <button class="nav-channel-item" type="button" data-channel="vivo">vivo</button>
+              <button class="nav-channel-item" type="button" data-channel="xiaomi">小米</button>
+              <button class="nav-channel-item" type="button" data-channel="honor">荣耀</button>
+            </div>
+          </div>
+          <button class="nav-item" data-view="business-ads"><span>⚑</span>投放业务</button>
+          <div class="nav-subgroup" aria-label="投放业务子菜单">
+            <button class="nav-sub-item" data-view="ad-resources" type="button">投放资源位</button>
+            <button class="nav-sub-item" data-view="ads-mumu" type="button">MuMu模拟器</button>
+            <button class="nav-sub-item" data-view="ads-leidian" type="button">雷电模拟器</button>
+          </div>
+          <div class="nav-divider"></div>
+          <button class="nav-item" data-view="tasks"><span>☷</span>全部任务</button>
+          <button class="nav-item" data-view="assets"><span>▧</span>资产库</button>
+          <button class="nav-item" data-view="recycle-bin"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14M10 11v6m4-6v6"/></svg></span>回收站</button>
+          <button class="nav-item" data-view="specs"><span>◇</span>规范中心</button>
+          <button class="nav-item" data-view="review" hidden><span>✓</span>审核与交付</button>
+        </nav>
+      </aside>
+
+      <main>
+        <header class="topbar">
+          <div class="topbar-main">
+            <div class="topbar-title"><p class="eyebrow">DESIGN PRODUCTION WORKBENCH</p><h1 id="page-title">首页</h1></div>
+            <button id="workspace-search-toggle" class="workspace-search-toggle" type="button" aria-label="全站搜索" title="全站搜索" aria-expanded="false" aria-controls="workspace-search-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button>
+            <div id="workspace-search-panel" class="workspace-search-panel" hidden><label class="topbar-search">⌕<input id="topbar-search-input" aria-label="全站搜索" placeholder="搜索项目、任务或资源位" /></label></div>
+          </div>
+          <div class="topbar-account">
+            <button class="topbar-notification" hidden id="topbar-notification" type="button" aria-label="消息通知"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" /></svg><i></i></button>
+            <button class="topbar-user-button" id="topbar-user-button" type="button" aria-expanded="false"><span class="avatar" data-wb-avatar>设</span><b data-wb-user>设计师</b><span>⌄</span></button>
+            <div class="topbar-user-menu" id="topbar-user-menu" hidden><b data-wb-user>设计师</b><small data-wb-env>本机运行</small><small data-wb-storage>项目与素材保存在本机 data/runtime</small></div>
+          </div>
+        </header>
+        <section id="app-content" class="content"></section>
+      </main>
+    </div>
+
+    <dialog id="task-dialog" class="dialog wide quick-task-dialog">
+      <form id="task-form">
+        <input type="hidden" name="requester" value="设计师" />
+        <div class="dialog-head"><div><div class="quick-task-title"><h2 id="quick-task-title">新建制作任务</h2><span id="quick-task-business"></span></div><p class="dialog-note">填写素材与制作范围，即可开始</p></div><button type="button" class="icon-button close-dialog" aria-label="关闭">×</button></div>
+        <div class="quick-task-body">
+          <div class="form-grid"><div class="quick-project-field"><span id="quick-project-label">所属项目</span><div class="quick-project-picker"><select name="projectId" id="project-select" hidden></select><button type="button" id="quick-project-toggle" aria-haspopup="listbox" aria-expanded="false" aria-controls="quick-project-menu" aria-labelledby="quick-project-label quick-project-value"><span id="quick-project-value">选择项目（可选）</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></button><div id="quick-project-menu" hidden><div id="quick-project-options" role="listbox" aria-labelledby="quick-project-label"></div><button type="button" id="quick-new-project" class="quick-project-link" aria-expanded="false" aria-controls="quick-project-create">＋ 新建项目</button><div id="quick-project-create" hidden><label for="quick-project-name">项目名称</label><input id="quick-project-name" placeholder="输入新项目名称" maxlength="100" autocomplete="off"/><div class="quick-project-actions"><button type="button" class="button primary" id="quick-project-save">创建并选中</button><button type="button" class="button ghost" id="quick-project-cancel">取消</button></div><small id="quick-project-error" role="alert"></small></div></div></div></div><label>任务名称<input name="project" required placeholder="例如：甄嬛许愿－平台素材"/><small>自动建议名称，也可自行修改</small></label></div>
+          <section class="quick-task-section"><h3>制作方式</h3><select name="mode" id="task-mode" hidden><option value="adapt">尺寸适配</option><option value="copy-replace">替换文案</option><option value="master">制作主图</option></select><div class="quick-mode-options"><button type="button" data-quick-mode="adapt">▧　尺寸适配</button><button type="button" data-quick-mode="copy-replace">T　替换文案</button><button type="button" data-quick-mode="master">▱　制作主图</button></div></section>
+          <section class="quick-task-section"><h3>源素材 <small>上传、粘贴或拖入源文件，创建时自动导入</small></h3><div class="quick-source-box" tabindex="0" aria-label="源素材粘贴区，按 Ctrl+V 粘贴源文件"><span>▣</span><div><b>点击此处，Ctrl+V 粘贴源文件</b><small>支持 PSD、PSB、JPG、PNG、WebP；也可拖入文件</small></div><button class="button secondary" id="quick-source-upload" type="button">上传文件</button><button class="button secondary" id="quick-source-paste" type="button" data-local-only>粘贴文件</button><button class="button secondary" id="quick-check-folder" type="button">检查素材</button></div><input id="quick-source-files" type="file" accept=".psd,.psb,.png,.jpg,.jpeg,.webp" multiple hidden><div id="quick-pasted-assets" aria-live="polite"></div><span class="wb-folder-pick"><input type="hidden" id="quick-folder" name="folderPath"><button type="button" class="button" data-folder-pick>选择素材文件夹</button><input type="file" webkitdirectory multiple hidden data-folder-input><small data-folder-status>也可创建后再添加素材</small></span><div id="quick-source-result" role="status"></div></section>
+          <section class="quick-task-section"><h3>制作范围</h3><details id="quick-scope"><summary><span><b id="quick-scope-name">平台资源位</b><small id="quick-scope-count">正在读取规格</small></span><em>调整范围</em></summary><div class="form-grid"><label>业务方向<select name="businessLineId" id="task-business-line"></select></label><label>细分渠道 / 类型<div class="multi-select" id="task-segment"><button type="button" id="task-segment-toggle" aria-expanded="false">选择分类</button><div class="multi-select-menu" id="task-segment-menu" hidden></div></div></label><fieldset class="full"><legend>目标资源位</legend><div id="target-templates" class="template-checks"></div></fieldset></div></details></section>
+          <details class="quick-more"><summary>更多设置 <small>备注</small></summary><div class="form-grid"><input type="hidden" name="brandId" id="brand-select"/><label class="full">备注<textarea name="notes" rows="2" placeholder="特殊排版、版权或投放说明"></textarea></label></div></details>
+        </div>
+        <div class="dialog-actions quick-task-footer"><div class="quick-task-footer-message"><small>创建后可继续调整素材和制作范围</small><p id="quick-task-error" role="alert"></p></div><button type="submit" name="draft" class="button secondary">保存草稿</button><button type="submit" name="submit" class="button primary">创建并进入编辑</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="project-dialog" class="dialog">
+      <form id="project-form">
+        <input type="hidden" name="projectId" />
+        <div class="dialog-head"><div><p class="eyebrow">PROJECT WORKSPACE</p><h2 id="project-dialog-title">创建独立项目</h2></div><button type="button" class="icon-button close-project">×</button></div>
+        <div class="form-stack">
+          <label>项目名称<input name="name" required placeholder="例如：赘婿手游" /></label>
+          <label>项目代号<input name="code" placeholder="例如：ZHUIXU" /></label>
+          <label>关联品牌包<select name="brandId" id="project-brand-select"></select></label>
+          <label>归属游戏<select name="gameTagId" id="project-game-select"><option value="">正在读取画布的游戏清单…</option></select><small class="dialog-note">这个项目的画布生成都归到这个游戏下，按游戏统计积分；不要选「其他游戏」「测试产品」这类条目。</small></label>
+          <fieldset><legend>可使用的业务线</legend><div id="project-business-lines" class="checkbox-row"></div></fieldset>
+          <label class="inline-check"><input name="isIpProject" type="checkbox" />这是 IP 项目，需要版权标识</label>
+          <label>版权标识默认文字<textarea name="copyrightNotice" rows="2" placeholder="例如：© 阅文集团"></textarea></label>
+        </div>
+        <div class="dialog-actions"><button type="button" class="button ghost close-project">取消</button><button class="button primary" id="project-submit">创建项目</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="rule-dialog" class="dialog">
+      <form id="rule-form">
+        <input type="hidden" name="templateId" />
+        <div class="dialog-head"><div><p class="eyebrow">RESOURCE RULE</p><h2>编辑资源位规则</h2><p id="rule-resource-name" class="dialog-note"></p></div><button type="button" class="icon-button close-rule">×</button></div>
+        <div class="form-grid">
+          <label>标题<select name="title"></select></label>
+          <label>Logo<select name="logo"></select></label>
+          <label>IP 版权标识<select name="ipCopyright"></select></label>
+          <label>辅助文案<select name="secondaryCopy"></select></label>
+          <label>按钮<select name="button"></select></label>
+          <label>规则状态<select name="status"><option value="draft">待补充</option><option value="ready">可生产</option></select></label>
+          <label class="full">规则说明<textarea name="notes" rows="4" placeholder="页面 UI 遮挡区、主体区域、可裁剪范围、扩图方向等"></textarea></label>
+          <label class="full"><span class="dialog-note" id="rule-delivery-info"></span></label>
+          <div class="full rule-verification-help"><b>怎样完成核实？</b><span>对照官方规范图检查画面区域和元素要求。确认无误后勾选下方选项，并填写至少一条已核实规则及来源、日期和负责人。</span></div>
+          <label class="full inline-check"><input name="ruleVerified" type="checkbox" />该资源位视觉规则已完成人工核实（允许进入交付）</label>
+          <label class="full">已核实的视觉规则（允许交付必备，每条一行）<textarea name="ruleVerifiedRules" rows="2" placeholder="例如：底部64px白色渐变属于成品；页面UI不导出"></textarea></label>
+          <label class="full">核实说明<textarea name="ruleNote" rows="2" placeholder="核实来源（官方规范截图／平台样式核对）、日期与负责人"></textarea></label>
+        </div>
+        <div class="dialog-actions"><button type="button" class="button ghost close-rule">取消</button><button class="button primary">保存规则</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="brand-dialog" class="dialog">
+      <form id="brand-form">
+        <div class="dialog-head"><div><p class="eyebrow">BRAND KIT</p><h2>新建项目品牌包</h2></div><button type="button" class="icon-button close-brand">×</button></div>
+        <div class="form-stack">
+          <label>品牌包名称<input name="name" required /></label>
+          <label>品牌颜色（逗号分隔）<input name="colors" placeholder="#6C5CE7, #00D2D3" /></label>
+          <label>允许字体（逗号分隔）<input name="fonts" placeholder="Microsoft YaHei, Arial" /></label>
+          <label>品牌规则<textarea name="rules" rows="5" placeholder="Logo安全距离、角色使用限制、禁用规则等"></textarea></label>
+        </div>
+        <div class="dialog-actions"><button type="button" class="button ghost close-brand">取消</button><button class="button primary">保存品牌包</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="spec-dialog" class="dialog">
+      <form id="spec-form">
+        <input type="hidden" name="templateId" />
+        <div class="dialog-head"><div><p class="eyebrow">RESOURCE SPECIFICATION</p><h2>上传资源位规范图</h2><p id="spec-resource-name" class="dialog-note"></p></div><button type="button" class="icon-button close-spec">×</button></div>
+        <div class="form-stack">
+          <label>规范名称<input name="name" required placeholder="例如：37网游平台首页头图规范" /></label>
+          <label class="upload-image-field">规范图片<input name="files" type="file" accept="image/png,image/jpeg,image/webp" multiple required /><span>点击选择或拖入规范图</span><small>支持PNG、JPG、WEBP，可上传多张</small></label>
+          <div class="upload-preview" id="spec-upload-preview"></div>
+          <label>规则补充<textarea name="notes" rows="4" placeholder="例如：标题与Logo独立布局；底部64px白色渐变属于最终Banner"></textarea></label>
+        </div>
+        <div class="dialog-actions"><button type="button" class="button ghost close-spec">取消</button><button class="button primary">上传并保存</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="reference-dialog" class="dialog">
+      <form id="reference-form">
+        <input type="hidden" name="categoryId" />
+        <div class="dialog-head"><div><p class="eyebrow">EXCELLENT REFERENCE</p><h2>上传优秀案例</h2><p id="reference-category-name" class="dialog-note"></p></div><button type="button" class="icon-button close-reference">×</button></div>
+        <div class="form-stack">
+          <label>案例名称<input name="name" required placeholder="例如：多人横版跨尺寸优秀案例" /></label>
+          <label class="upload-image-field">案例图片<input name="files" type="file" accept="image/png,image/jpeg,image/webp" multiple required /><span>点击选择或拖入整套案例图片</span><small>支持多选，图片仅保存在本机</small></label>
+          <div class="upload-preview" id="reference-upload-preview"></div>
+          <label>案例标签<input name="tags" placeholder="多人, 横版, 标题重排, 背景延展" /></label>
+          <label>案例说明<textarea name="description" rows="3" placeholder="说明值得参考的构图、层级或适配特点"></textarea></label>
+          <label class="inline-check"><input name="layoutReusable" type="checkbox" checked />允许直接作为当前任务的布局参考</label>
+        </div>
+        <div class="dialog-actions"><button type="button" class="button ghost close-reference">取消</button><button class="button primary">上传并保存</button></div>
+      </form>
+    </dialog>
+
+    <div id="toast" class="toast"></div>
+ <link rel="stylesheet" href="/psd-source-assets.css?v=20261014-cutout-preflight" />
+ <link rel="stylesheet" href="/community-composer.css?v=20261015-conversation" />
+    <link rel="stylesheet" href="/community-master-page.css?v=20261027-prompt-character" />
+    <link rel="stylesheet" href="/community-properties.css?v=20261027-properties-final" />
+    <link rel="stylesheet" href="/community-objects.css?v=20261026-cutout-quality" />
+    <link rel="stylesheet" href="/community-material-fonts.css?v=20261021-direct-font" />
+  <link rel="stylesheet" href="/community-text-cleanup.css?v=20261021-text-cleanup" />
+  <link rel="stylesheet" href="/target-size-actions.css?v=20261029-direct-sizes" />
+  <script type="module" src="/app.js?v=20261030-button-text-layer"></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

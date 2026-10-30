@@ -1,0 +1,18 @@
+from pathlib import Path
+def change(file,old,new):
+ p=Path(file);s=p.read_text(encoding='utf-8-sig');assert old in s,(file,old[:80]);p.write_text(s.replace(old,new),encoding='utf-8')
+change('public/source-editor-view.js',"import {popupButtonControls}","import {sourceButtonDefault} from './source-popup-button.js';\nimport {popupButtonControls}")
+change('public/source-editor-view.js','popupButtonControls(composition.popup,task.assets)','popupButtonControls(composition.popup,task.assets,sourceButtonDefault)')
+change('public/source-editor-controller.js','SOURCE_BUTTON_ID,sourceButtonElement,constrainSourceButton','SOURCE_BUTTON_ID,sourceButtonElement,constrainSourceButton,sourceButtonDefault')
+change('public/source-editor-controller.js','mountPopupButtonControls({root,config:()=>draft.popup,work,','mountPopupButtonControls({root,config:()=>draft.popup,work,assets:task.assets,layout:()=>sourceButtonDefault,')
+change('public/source-editor-controller.js',"changed:()=>{draft.popup.buttonFontId=", "changed:()=>{const value=root.querySelector('[name=buttonFontSize]').value;if(value==='')delete draft.popup.buttonFontSize;else draft.popup.buttonFontSize=Number(value);draft.popup.buttonFontId=")
+change('public/community-popup-panel.js',"popupConfig,popupDefaults,COMMUNITY_POPUP_ID", "popupConfig,popupDefaults,popupLayerBox,COMMUNITY_POPUP_ID")
+change('public/community-popup-panel.js','popupButtonControls(c,task.assets)','popupButtonControls(c,task.assets,task.parameters?.layoutByTemplate?.[template.id]?.button||popupLayerBox(\'button\'))')
+change('public/community-popup-panel.js',"buttonFontId:f.get('buttonFontId'),buttonBackingAsset:","buttonFontId:f.get('buttonFontId'),buttonFontSize:f.get('buttonFontSize')?Number(f.get('buttonFontSize')):undefined,buttonBackingAsset:")
+change('public/community-popup-panel.js','mountPopupButtonControls({root:form,config:',"mountPopupButtonControls({root:form,assets:task.assets,layout:()=>task.parameters?.layoutByTemplate?.[COMMUNITY_POPUP_ID]?.button||popupLayerBox('button'),commitFontSize:()=>save('apply'),config:")
+change('public/app.js',"onDraft:draft=>{(state.popupDrafts||={})[task.id]=draft;}","onDraft:draft=>{(state.popupDrafts||={})[task.id]=draft;redrawPreview();}")
+change('public/app.js',"}else rendered=renderCanvas(template, state.showGuides);","}else rendered=renderCanvas(template, state.showGuides,{popupButtonDraft:state.popupDrafts?.[state.task.id]?.config});")
+change('public/app.js','function renderCanvas(template, showGuide) {','function renderCanvas(template, showGuide,{popupButtonDraft}={}) {')
+change('public/app.js','  const popup=popupConfig(state.task,template);',"  const savedPopup=popupConfig(state.task,template),popup=savedPopup&&popupButtonDraft?{...savedPopup,buttonFontSize:popupButtonDraft.buttonFontSize}:savedPopup;")
+change('public/index.html','community-popup.css?v=20261028-inherit-master','community-popup.css?v=20261029-button-text-size')
+change('public/index.html','app.js?v=20261029-multi-reference','app.js?v=20261029-button-text-size')

@@ -1,0 +1,28 @@
+{
+  "version": "2026-10-22-new-task-size-v1",
+  "scope": "new-tasks-only",
+  "rules": [
+    {
+      "platform": "B站",
+      "width": 640,
+      "height": 400,
+      "format": "JPG",
+      "minBytes": 204800,
+      "maxBytes": 307200,
+      "maxBytesInclusive": true,
+      "limitRaw": "200–300KB",
+      "jpegProfile": "detail-first-v1"
+    },
+    {
+      "platform": "广点通",
+      "width": 1080,
+      "height": 1920,
+      "format": "JPG",
+      "minBytes": 307200,
+      "maxBytes": 409600,
+      "maxBytesInclusive": true,
+      "limitRaw": "300–400KB",
+      "jpegProfile": "detail-first-v1"
+    }
+  ]
+}

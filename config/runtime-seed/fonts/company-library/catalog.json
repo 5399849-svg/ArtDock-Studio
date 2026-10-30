@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "fonts": [
+    {
+      "id": "font-3754ea669c530e2473354f8f6d9f79680a44d7e26ec7d00eeabee4a7e0753c5d-0",
+      "name": "思源宋体",
+      "family": "思源宋体 CN",
+      "style": "Regular",
+      "familyNames": [
+        "思源宋体 CN",
+        "Source Han Serif CN"
+      ],
+      "styleNames": [
+        "Regular"
+      ],
+      "fullNames": [
+        "思源宋体 CN",
+        "Source Han Serif CN"
+      ],
+      "postscriptNames": [
+        "SourceHanSerifCN-Regular"
+      ],
+      "version": "Version 2.003;hotconv 1.1.1;makeotfexe 2.6.0",
+      "format": "otf",
+      "faceIndex": 0,
+      "sha256": "3754ea669c530e2473354f8f6d9f79680a44d7e26ec7d00eeabee4a7e0753c5d",
+      "bytes": 11626108,
+      "file": "files/3754ea669c530e2473354f8f6d9f79680a44d7e26ec7d00eeabee4a7e0753c5d.otf",
+      "vendor": "Adobe",
+      "license": "OFL-1.1",
+      "licenseFile": "licenses/source-han-serif-OFL-1.1.txt",
+      "status": "ready",
+      "sourceStatus": "official-open-source-release",
+      "importedAt": "2026-10-28T06:44:34.057Z",
+      "sources": [
+        {
+          "title": "思源宋体",
+          "sourceUrl": "https://raw.githubusercontent.com/adobe-fonts/source-han-serif/7889f11bf31170b5d092a083b357c8c8130f89e0/SubsetOTF/CN/SourceHanSerifCN-Regular.otf",
+          "licenseUrl": "https://raw.githubusercontent.com/adobe-fonts/source-han-serif/7889f11bf31170b5d092a083b357c8c8130f89e0/LICENSE.txt",
+          "commit": "7889f11bf31170b5d092a083b357c8c8130f89e0"
+        }
+      ]
+    },
+    {
+      "id": "font-e2bc8a2e7f37474b774fff8db758681ece40bb6947a90d571bce9dd60671a8e4-0",
+      "name": "思源黑体",
+      "family": "思源黑体 CN",
+      "style": "Regular",
+      "familyNames": [
+        "思源黑体 CN",
+        "Source Han Sans CN"
+      ],
+      "styleNames": [
+        "Regular"
+      ],
+      "fullNames": [
+        "思源黑体 CN",
+        "Source Han Sans CN"
+      ],
+      "postscriptNames": [
+        "SourceHanSansCN-Regular"
+      ],
+      "version": "Version 2.005;addfeatures 5.0.0b21",
+      "format": "otf",
+      "faceIndex": 0,
+      "sha256": "e2bc8a2e7f37474b774fff8db758681ece40bb6947a90d571bce9dd60671a8e4",
+      "bytes": 8429224,
+      "file": "files/e2bc8a2e7f37474b774fff8db758681ece40bb6947a90d571bce9dd60671a8e4.otf",
+      "vendor": "Adobe",
+      "license": "OFL-1.1",
+      "licenseFile": "licenses/source-han-sans-OFL-1.1.txt",
+      "status": "ready",
+      "sourceStatus": "official-open-source-release",
+      "importedAt": "2026-10-28T06:44:34.065Z",
+      "sources": [
+        {
+          "title": "思源黑体",
+          "sourceUrl": "https://raw.githubusercontent.com/adobe-fonts/source-han-sans/a4f7cf94edfb9d7ffbdfc4841de276358bd7e0f2/SubsetOTF/CN/SourceHanSansCN-Regular.otf",
+          "licenseUrl": "https://raw.githubusercontent.com/adobe-fonts/source-han-sans/a4f7cf94edfb9d7ffbdfc4841de276358bd7e0f2/LICENSE.txt",
+          "commit": "a4f7cf94edfb9d7ffbdfc4841de276358bd7e0f2"
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-10-30T05:16:34.072Z",
+  "note": "随工作台提供的开源字体（SIL OFL 1.1）；公司商用字体由有授权的同事在工作台里在线导入"
+}

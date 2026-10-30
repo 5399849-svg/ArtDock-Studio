@@ -1,0 +1,22 @@
+{
+  "name": "platform-community-production-workbench",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node platform/bootstrap.mjs --port 4173",
+    "dev": "node --watch platform/bootstrap.mjs --port 4173",
+    "test": "node --test",
+    "longform": "node longform-server.mjs",
+    "test:longform": "node --test test/longform.test.mjs",
+    "prepare:browser-runtime": "node scripts/platform/prepare-browser-runtime.mjs",
+    "pack:platform": "node scripts/platform/pack.mjs"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "dependencies": {
+    "pg": "^8.23.1",
+    "sharp": "^0.35.4"
+  }
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "id": "demo-brand",
+    "name": "示例项目品牌包",
+    "colors": ["#6C5CE7", "#00D2D3", "#111827"],
+    "fonts": ["Microsoft YaHei", "Arial"],
+    "rules": "关键角色与Logo不得重绘；Logo四周保留安全距离。",
+    "assets": []
+  }
+]

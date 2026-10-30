@@ -1,0 +1,6191 @@
+{
+  "schemaVersion": 1,
+  "baselineVersion": "V1.0",
+  "generatedAt": "2026-09-10T08:52:55.995Z",
+  "templates": [
+    {
+      "templateId": "37-mobile-center-home",
+      "fileName": "10手游中心-首页头图.psd",
+      "canvas": {
+        "width": 1920,
+        "height": 862
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "版式_01_左Logo左文_主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "page-occlusion",
+              "name": "03_轮播圆点区",
+              "visible": true,
+              "bounds": {
+                "x": 864,
+                "y": 460,
+                "width": 189,
+                "height": 29
+              },
+              "rawBounds": {
+                "x": 864,
+                "y": 460,
+                "width": 189,
+                "height": 29
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "02_页面内容区",
+              "visible": true,
+              "bounds": {
+                "x": 339,
+                "y": 506,
+                "width": 1244,
+                "height": 356
+              },
+              "rawBounds": {
+                "x": 339,
+                "y": 506,
+                "width": 1244,
+                "height": 357
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1460,
+                "y": 465,
+                "width": 102,
+                "height": 29
+              },
+              "rawBounds": {
+                "x": 1460,
+                "y": 465,
+                "width": 102,
+                "height": 29
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 1580,
+                "y": 0,
+                "width": 340,
+                "height": 862
+              },
+              "rawBounds": {
+                "x": 1580,
+                "y": -1,
+                "width": 342,
+                "height": 864
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 341,
+                "height": 862
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": -1,
+                "width": 343,
+                "height": 864
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 338,
+                "y": 0,
+                "width": 1245,
+                "height": 509
+              },
+              "rawBounds": {
+                "x": 338,
+                "y": -1,
+                "width": 1245,
+                "height": 510
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 361,
+                "y": 252,
+                "width": 449,
+                "height": 220
+              },
+              "rawBounds": {
+                "x": 361,
+                "y": 252,
+                "width": 449,
+                "height": 220
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 361,
+                "y": 9,
+                "width": 222,
+                "height": 103
+              },
+              "rawBounds": {
+                "x": 361,
+                "y": 9,
+                "width": 222,
+                "height": 103
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-02",
+          "name": "版式_02_右Logo右文_主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "page-occlusion",
+              "name": "03_轮播圆点区",
+              "visible": true,
+              "bounds": {
+                "x": 864,
+                "y": 460,
+                "width": 189,
+                "height": 29
+              },
+              "rawBounds": {
+                "x": 864,
+                "y": 460,
+                "width": 189,
+                "height": 29
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "02_页面内容区",
+              "visible": true,
+              "bounds": {
+                "x": 339,
+                "y": 506,
+                "width": 1244,
+                "height": 356
+              },
+              "rawBounds": {
+                "x": 339,
+                "y": 506,
+                "width": 1244,
+                "height": 357
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 352,
+                "y": 465,
+                "width": 103,
+                "height": 29
+              },
+              "rawBounds": {
+                "x": 352,
+                "y": 465,
+                "width": 103,
+                "height": 29
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 1580,
+                "y": 0,
+                "width": 340,
+                "height": 862
+              },
+              "rawBounds": {
+                "x": 1580,
+                "y": -1,
+                "width": 342,
+                "height": 864
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 341,
+                "height": 862
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": -1,
+                "width": 343,
+                "height": 864
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 338,
+                "y": 0,
+                "width": 1245,
+                "height": 509
+              },
+              "rawBounds": {
+                "x": 338,
+                "y": -1,
+                "width": 1245,
+                "height": 510
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1134,
+                "y": 252,
+                "width": 448,
+                "height": 220
+              },
+              "rawBounds": {
+                "x": 1134,
+                "y": 252,
+                "width": 448,
+                "height": 220
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1347,
+                "y": 9,
+                "width": 222,
+                "height": 103
+              },
+              "rawBounds": {
+                "x": 1347,
+                "y": 9,
+                "width": 222,
+                "height": 103
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-03",
+          "name": "版式_03_居中Logo居中文_主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "page-occlusion",
+              "name": "03_轮播圆点区",
+              "visible": true,
+              "bounds": {
+                "x": 864,
+                "y": 460,
+                "width": 189,
+                "height": 29
+              },
+              "rawBounds": {
+                "x": 864,
+                "y": 460,
+                "width": 189,
+                "height": 29
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "02_页面内容区",
+              "visible": true,
+              "bounds": {
+                "x": 339,
+                "y": 506,
+                "width": 1244,
+                "height": 356
+              },
+              "rawBounds": {
+                "x": 339,
+                "y": 506,
+                "width": 1244,
+                "height": 357
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1465,
+                "y": 465,
+                "width": 103,
+                "height": 29
+              },
+              "rawBounds": {
+                "x": 1465,
+                "y": 465,
+                "width": 103,
+                "height": 29
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 1580,
+                "y": 0,
+                "width": 340,
+                "height": 862
+              },
+              "rawBounds": {
+                "x": 1580,
+                "y": -1,
+                "width": 342,
+                "height": 864
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 341,
+                "height": 862
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": -1,
+                "width": 343,
+                "height": 864
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 338,
+                "y": 0,
+                "width": 1245,
+                "height": 509
+              },
+              "rawBounds": {
+                "x": 338,
+                "y": -1,
+                "width": 1245,
+                "height": 510
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 555,
+                "y": 312,
+                "width": 844,
+                "height": 138
+              },
+              "rawBounds": {
+                "x": 555,
+                "y": 312,
+                "width": 844,
+                "height": 138
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 835,
+                "y": 9,
+                "width": 222,
+                "height": 103
+              },
+              "rawBounds": {
+                "x": 835,
+                "y": 9,
+                "width": 222,
+                "height": 103
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-04",
+          "name": "版式_04_左Logo居中文_主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "page-occlusion",
+              "name": "03_轮播圆点区",
+              "visible": true,
+              "bounds": {
+                "x": 864,
+                "y": 460,
+                "width": 189,
+                "height": 29
+              },
+              "rawBounds": {
+                "x": 864,
+                "y": 460,
+                "width": 189,
+                "height": 29
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "02_页面内容区",
+              "visible": true,
+              "bounds": {
+                "x": 339,
+                "y": 506,
+                "width": 1244,
+                "height": 356
+              },
+              "rawBounds": {
+                "x": 339,
+                "y": 506,
+                "width": 1244,
+                "height": 357
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1465,
+                "y": 465,
+                "width": 103,
+                "height": 29
+              },
+              "rawBounds": {
+                "x": 1465,
+                "y": 465,
+                "width": 103,
+                "height": 29
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 1580,
+                "y": 0,
+                "width": 340,
+                "height": 862
+              },
+              "rawBounds": {
+                "x": 1580,
+                "y": -1,
+                "width": 342,
+                "height": 864
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 341,
+                "height": 862
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": -1,
+                "width": 343,
+                "height": 864
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 338,
+                "y": 0,
+                "width": 1245,
+                "height": 509
+              },
+              "rawBounds": {
+                "x": 338,
+                "y": -1,
+                "width": 1245,
+                "height": 510
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 555,
+                "y": 312,
+                "width": 844,
+                "height": 138
+              },
+              "rawBounds": {
+                "x": 555,
+                "y": 312,
+                "width": 844,
+                "height": 138
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 347,
+                "y": 9,
+                "width": 221,
+                "height": 103
+              },
+              "rawBounds": {
+                "x": 347,
+                "y": 9,
+                "width": 221,
+                "height": 103
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-05",
+          "name": "版式_05_右Logo居中文_主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "page-occlusion",
+              "name": "03_轮播圆点区",
+              "visible": true,
+              "bounds": {
+                "x": 864,
+                "y": 460,
+                "width": 189,
+                "height": 29
+              },
+              "rawBounds": {
+                "x": 864,
+                "y": 460,
+                "width": 189,
+                "height": 29
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "02_页面内容区",
+              "visible": true,
+              "bounds": {
+                "x": 339,
+                "y": 506,
+                "width": 1244,
+                "height": 356
+              },
+              "rawBounds": {
+                "x": 339,
+                "y": 506,
+                "width": 1244,
+                "height": 357
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1465,
+                "y": 465,
+                "width": 103,
+                "height": 29
+              },
+              "rawBounds": {
+                "x": 1465,
+                "y": 465,
+                "width": 103,
+                "height": 29
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 1580,
+                "y": 0,
+                "width": 340,
+                "height": 862
+              },
+              "rawBounds": {
+                "x": 1580,
+                "y": -1,
+                "width": 342,
+                "height": 864
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 341,
+                "height": 862
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": -1,
+                "width": 343,
+                "height": 864
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 338,
+                "y": 0,
+                "width": 1245,
+                "height": 509
+              },
+              "rawBounds": {
+                "x": 338,
+                "y": -1,
+                "width": 1245,
+                "height": 510
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 555,
+                "y": 312,
+                "width": 844,
+                "height": 138
+              },
+              "rawBounds": {
+                "x": 555,
+                "y": 312,
+                "width": 844,
+                "height": 138
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1346,
+                "y": 9,
+                "width": 222,
+                "height": 103
+              },
+              "rawBounds": {
+                "x": 1346,
+                "y": 9,
+                "width": 222,
+                "height": 103
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "auto-from-complete-kv",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "37-mobile-center-small-kv",
+      "fileName": "11手游中心-首页小KV.psd",
+      "canvas": {
+        "width": 800,
+        "height": 360
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "版式_01_上左Logo下居中文-主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "page-occlusion",
+              "name": "10_页面UI遮挡区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 284,
+                "width": 800,
+                "height": 76
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": 284,
+                "width": 802,
+                "height": 77
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 740,
+                "y": 265,
+                "width": 51,
+                "height": 16
+              },
+              "rawBounds": {
+                "x": 740,
+                "y": 265,
+                "width": 51,
+                "height": 16
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 719,
+                "y": 0,
+                "width": 81,
+                "height": 360
+              },
+              "rawBounds": {
+                "x": 719,
+                "y": -1,
+                "width": 83,
+                "height": 363
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 80,
+                "height": 360
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 81,
+                "height": 363
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 77,
+                "y": 0,
+                "width": 646,
+                "height": 360
+              },
+              "rawBounds": {
+                "x": 77,
+                "y": -1,
+                "width": 646,
+                "height": 362
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 133,
+                "y": 205,
+                "width": 535,
+                "height": 77
+              },
+              "rawBounds": {
+                "x": 133,
+                "y": 205,
+                "width": 535,
+                "height": 77
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 12,
+                "y": 12,
+                "width": 105,
+                "height": 55
+              },
+              "rawBounds": {
+                "x": 12,
+                "y": 12,
+                "width": 105,
+                "height": 55
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-02",
+          "name": "版式_02_上右Logo下居中文-主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "page-occlusion",
+              "name": "10_页面UI遮挡区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 284,
+                "width": 800,
+                "height": 76
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": 284,
+                "width": 802,
+                "height": 77
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 740,
+                "y": 265,
+                "width": 51,
+                "height": 16
+              },
+              "rawBounds": {
+                "x": 740,
+                "y": 265,
+                "width": 51,
+                "height": 16
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区 拷贝",
+              "visible": true,
+              "bounds": {
+                "x": 740,
+                "y": 338,
+                "width": 51,
+                "height": 15
+              },
+              "rawBounds": {
+                "x": 740,
+                "y": 338,
+                "width": 51,
+                "height": 15
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 719,
+                "y": 0,
+                "width": 81,
+                "height": 360
+              },
+              "rawBounds": {
+                "x": 719,
+                "y": -1,
+                "width": 83,
+                "height": 363
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 80,
+                "height": 360
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 81,
+                "height": 363
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 77,
+                "y": 0,
+                "width": 646,
+                "height": 360
+              },
+              "rawBounds": {
+                "x": 77,
+                "y": -1,
+                "width": 646,
+                "height": 362
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 133,
+                "y": 205,
+                "width": 535,
+                "height": 77
+              },
+              "rawBounds": {
+                "x": 133,
+                "y": 205,
+                "width": 535,
+                "height": 77
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 683,
+                "y": 12,
+                "width": 106,
+                "height": 55
+              },
+              "rawBounds": {
+                "x": 683,
+                "y": 12,
+                "width": 106,
+                "height": 55
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-03",
+          "name": "版式_03_上左Logo下左文-主体右",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "page-occlusion",
+              "name": "10_页面UI遮挡区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 284,
+                "width": 800,
+                "height": 76
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": 284,
+                "width": 802,
+                "height": 77
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 740,
+                "y": 265,
+                "width": 51,
+                "height": 16
+              },
+              "rawBounds": {
+                "x": 740,
+                "y": 265,
+                "width": 51,
+                "height": 16
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 159,
+                "height": 360
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 160,
+                "height": 363
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 156,
+                "y": 0,
+                "width": 644,
+                "height": 360
+              },
+              "rawBounds": {
+                "x": 156,
+                "y": -1,
+                "width": 645,
+                "height": 362
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 12,
+                "y": 158,
+                "width": 357,
+                "height": 124
+              },
+              "rawBounds": {
+                "x": 12,
+                "y": 158,
+                "width": 357,
+                "height": 124
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 12,
+                "y": 12,
+                "width": 105,
+                "height": 55
+              },
+              "rawBounds": {
+                "x": 12,
+                "y": 12,
+                "width": 105,
+                "height": 55
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-04",
+          "name": "版式_04_上右Logo下右文-主体左",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "page-occlusion",
+              "name": "10_页面UI遮挡区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 284,
+                "width": 800,
+                "height": 76
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": 284,
+                "width": 802,
+                "height": 77
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 740,
+                "y": 265,
+                "width": 51,
+                "height": 16
+              },
+              "rawBounds": {
+                "x": 740,
+                "y": 265,
+                "width": 51,
+                "height": 16
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 640,
+                "y": 0,
+                "width": 160,
+                "height": 360
+              },
+              "rawBounds": {
+                "x": 640,
+                "y": -1,
+                "width": 162,
+                "height": 363
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 644,
+                "height": 360
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 645,
+                "height": 362
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 431,
+                "y": 158,
+                "width": 357,
+                "height": 124
+              },
+              "rawBounds": {
+                "x": 431,
+                "y": 158,
+                "width": 357,
+                "height": 124
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 682,
+                "y": 12,
+                "width": 105,
+                "height": 55
+              },
+              "rawBounds": {
+                "x": 682,
+                "y": 12,
+                "width": 105,
+                "height": 55
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "auto-from-complete-kv",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "37-mobile-center-home-hot-game",
+      "fileName": "12手游中心-首页热门游戏.psd",
+      "canvas": {
+        "width": 290,
+        "height": 207
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "默认版式",
+          "defaultVisible": true,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 243,
+                "y": 190,
+                "width": 45,
+                "height": 15
+              },
+              "rawBounds": {
+                "x": 243,
+                "y": 190,
+                "width": 45,
+                "height": 15
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 290,
+                "height": 207
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 293,
+                "height": 209
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "single-layout",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "37-mobile-center-phone",
+      "fileName": "13手游中心-手机端头图.psd",
+      "canvas": {
+        "width": 600,
+        "height": 300
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "版式_01_上左Logo下文-主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 539,
+                "y": 278,
+                "width": 51,
+                "height": 16
+              },
+              "rawBounds": {
+                "x": 539,
+                "y": 278,
+                "width": 51,
+                "height": 16
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 565,
+                "y": 0,
+                "width": 35,
+                "height": 300
+              },
+              "rawBounds": {
+                "x": 565,
+                "y": -1,
+                "width": 37,
+                "height": 303
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 35,
+                "height": 300
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 36,
+                "height": 303
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 33,
+                "y": 0,
+                "width": 535,
+                "height": 300
+              },
+              "rawBounds": {
+                "x": 33,
+                "y": -1,
+                "width": 535,
+                "height": 302
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 90,
+                "y": 193,
+                "width": 422,
+                "height": 93
+              },
+              "rawBounds": {
+                "x": 90,
+                "y": 193,
+                "width": 422,
+                "height": 93
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 7,
+                "y": 8,
+                "width": 95,
+                "height": 37
+              },
+              "rawBounds": {
+                "x": 7,
+                "y": 8,
+                "width": 95,
+                "height": 37
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-02",
+          "name": "版式_02_上右Logo下文-主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 539,
+                "y": 278,
+                "width": 51,
+                "height": 16
+              },
+              "rawBounds": {
+                "x": 539,
+                "y": 278,
+                "width": 51,
+                "height": 16
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 565,
+                "y": 0,
+                "width": 35,
+                "height": 300
+              },
+              "rawBounds": {
+                "x": 565,
+                "y": -1,
+                "width": 37,
+                "height": 303
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 35,
+                "height": 300
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 36,
+                "height": 303
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 33,
+                "y": 0,
+                "width": 535,
+                "height": 300
+              },
+              "rawBounds": {
+                "x": 33,
+                "y": -1,
+                "width": 535,
+                "height": 302
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 90,
+                "y": 193,
+                "width": 422,
+                "height": 93
+              },
+              "rawBounds": {
+                "x": 90,
+                "y": 193,
+                "width": 422,
+                "height": 93
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 494,
+                "y": 8,
+                "width": 95,
+                "height": 37
+              },
+              "rawBounds": {
+                "x": 494,
+                "y": 8,
+                "width": 95,
+                "height": 37
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-03",
+          "name": "版式_03_上左Logo左文-主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 539,
+                "y": 278,
+                "width": 51,
+                "height": 16
+              },
+              "rawBounds": {
+                "x": 539,
+                "y": 278,
+                "width": 51,
+                "height": 16
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 565,
+                "y": 0,
+                "width": 35,
+                "height": 300
+              },
+              "rawBounds": {
+                "x": 565,
+                "y": -1,
+                "width": 37,
+                "height": 303
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 35,
+                "height": 300
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 36,
+                "height": 303
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 33,
+                "y": 0,
+                "width": 535,
+                "height": 300
+              },
+              "rawBounds": {
+                "x": 33,
+                "y": -1,
+                "width": 535,
+                "height": 302
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 20,
+                "y": 170,
+                "width": 227,
+                "height": 119
+              },
+              "rawBounds": {
+                "x": 20,
+                "y": 170,
+                "width": 227,
+                "height": 119
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 15,
+                "y": 8,
+                "width": 95,
+                "height": 37
+              },
+              "rawBounds": {
+                "x": 15,
+                "y": 8,
+                "width": 95,
+                "height": 37
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-04",
+          "name": "版式_04_上右Logo右文-主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 539,
+                "y": 278,
+                "width": 51,
+                "height": 16
+              },
+              "rawBounds": {
+                "x": 539,
+                "y": 278,
+                "width": 51,
+                "height": 16
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 565,
+                "y": 0,
+                "width": 35,
+                "height": 300
+              },
+              "rawBounds": {
+                "x": 565,
+                "y": -1,
+                "width": 37,
+                "height": 303
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 35,
+                "height": 300
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 36,
+                "height": 303
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 33,
+                "y": 0,
+                "width": 535,
+                "height": 300
+              },
+              "rawBounds": {
+                "x": 33,
+                "y": -1,
+                "width": 535,
+                "height": 302
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 359,
+                "y": 168,
+                "width": 227,
+                "height": 119
+              },
+              "rawBounds": {
+                "x": 359,
+                "y": 168,
+                "width": 227,
+                "height": 119
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 495,
+                "y": 8,
+                "width": 95,
+                "height": 37
+              },
+              "rawBounds": {
+                "x": 495,
+                "y": 8,
+                "width": 95,
+                "height": 37
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "auto-from-complete-kv",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "37-mobile-center-phone-hot-game",
+      "fileName": "14手游中心-手机端热门游戏.psd",
+      "canvas": {
+        "width": 330,
+        "height": 180
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "默认版式",
+          "defaultVisible": true,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 281,
+                "y": 161,
+                "width": 45,
+                "height": 15
+              },
+              "rawBounds": {
+                "x": 281,
+                "y": 161,
+                "width": 45,
+                "height": 15
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 330,
+                "height": 180
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 333,
+                "height": 182
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "single-layout",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "wanxin-splash",
+      "fileName": "15玩心部落-开屏页.psd",
+      "canvas": {
+        "width": 634,
+        "height": 1136
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "版式_01_上左Logo下文",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "button",
+              "name": "12_按钮区域",
+              "visible": true,
+              "bounds": {
+                "x": 124,
+                "y": 982,
+                "width": 386,
+                "height": 82
+              },
+              "rawBounds": {
+                "x": 124,
+                "y": 982,
+                "width": 386,
+                "height": 82
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 529,
+                "y": 1095,
+                "width": 90,
+                "height": 27
+              },
+              "rawBounds": {
+                "x": 529,
+                "y": 1095,
+                "width": 90,
+                "height": 27
+              }
+            },
+            {
+              "type": "extend-bottom",
+              "name": "08_下侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 1067,
+                "width": 634,
+                "height": 69
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": 1067,
+                "width": 638,
+                "height": 71
+              }
+            },
+            {
+              "type": "extend-top",
+              "name": "07_上侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 634,
+                "height": 68
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": -1,
+                "width": 638,
+                "height": 69
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 65,
+                "width": 634,
+                "height": 1006
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": 65,
+                "width": 638,
+                "height": 1006
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 83,
+                "y": 750,
+                "width": 467,
+                "height": 201
+              },
+              "rawBounds": {
+                "x": 83,
+                "y": 750,
+                "width": 467,
+                "height": 201
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 19,
+                "y": 23,
+                "width": 192,
+                "height": 102
+              },
+              "rawBounds": {
+                "x": 19,
+                "y": 23,
+                "width": 192,
+                "height": 102
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-02",
+          "name": "版式_02_上中Logo下文",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "button",
+              "name": "12_按钮区域",
+              "visible": true,
+              "bounds": {
+                "x": 124,
+                "y": 982,
+                "width": 386,
+                "height": 82
+              },
+              "rawBounds": {
+                "x": 124,
+                "y": 982,
+                "width": 386,
+                "height": 82
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 529,
+                "y": 1095,
+                "width": 90,
+                "height": 27
+              },
+              "rawBounds": {
+                "x": 529,
+                "y": 1095,
+                "width": 90,
+                "height": 27
+              }
+            },
+            {
+              "type": "extend-bottom",
+              "name": "08_下侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 1067,
+                "width": 634,
+                "height": 69
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": 1067,
+                "width": 638,
+                "height": 71
+              }
+            },
+            {
+              "type": "extend-top",
+              "name": "07_上侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 634,
+                "height": 68
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": -1,
+                "width": 638,
+                "height": 69
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 65,
+                "width": 634,
+                "height": 1006
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": 65,
+                "width": 638,
+                "height": 1006
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 82,
+                "y": 748,
+                "width": 467,
+                "height": 201
+              },
+              "rawBounds": {
+                "x": 82,
+                "y": 748,
+                "width": 467,
+                "height": 201
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 222,
+                "y": 23,
+                "width": 192,
+                "height": 102
+              },
+              "rawBounds": {
+                "x": 222,
+                "y": 23,
+                "width": 192,
+                "height": 102
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-03",
+          "name": "版式_03_上右Logo下文",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "button",
+              "name": "12_按钮区域",
+              "visible": true,
+              "bounds": {
+                "x": 124,
+                "y": 982,
+                "width": 386,
+                "height": 82
+              },
+              "rawBounds": {
+                "x": 124,
+                "y": 982,
+                "width": 386,
+                "height": 82
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 529,
+                "y": 1095,
+                "width": 90,
+                "height": 27
+              },
+              "rawBounds": {
+                "x": 529,
+                "y": 1095,
+                "width": 90,
+                "height": 27
+              }
+            },
+            {
+              "type": "extend-bottom",
+              "name": "08_下侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 1067,
+                "width": 634,
+                "height": 69
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": 1067,
+                "width": 638,
+                "height": 71
+              }
+            },
+            {
+              "type": "extend-top",
+              "name": "07_上侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 634,
+                "height": 68
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": -1,
+                "width": 638,
+                "height": 69
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 65,
+                "width": 634,
+                "height": 1006
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": 65,
+                "width": 638,
+                "height": 1006
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 83,
+                "y": 748,
+                "width": 467,
+                "height": 201
+              },
+              "rawBounds": {
+                "x": 83,
+                "y": 748,
+                "width": 467,
+                "height": 201
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 422,
+                "y": 23,
+                "width": 192,
+                "height": 102
+              },
+              "rawBounds": {
+                "x": 422,
+                "y": 23,
+                "width": 192,
+                "height": 102
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-04",
+          "name": "版式_04_上中Logo上居中文",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "button",
+              "name": "12_按钮区域",
+              "visible": true,
+              "bounds": {
+                "x": 124,
+                "y": 982,
+                "width": 386,
+                "height": 82
+              },
+              "rawBounds": {
+                "x": 124,
+                "y": 982,
+                "width": 386,
+                "height": 82
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 529,
+                "y": 1095,
+                "width": 90,
+                "height": 27
+              },
+              "rawBounds": {
+                "x": 529,
+                "y": 1095,
+                "width": 90,
+                "height": 27
+              }
+            },
+            {
+              "type": "extend-bottom",
+              "name": "08_下侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 1067,
+                "width": 634,
+                "height": 69
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": 1067,
+                "width": 638,
+                "height": 71
+              }
+            },
+            {
+              "type": "extend-top",
+              "name": "07_上侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 634,
+                "height": 68
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": -1,
+                "width": 638,
+                "height": 69
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 65,
+                "width": 634,
+                "height": 1006
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": 65,
+                "width": 638,
+                "height": 1006
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 84,
+                "y": 126,
+                "width": 467,
+                "height": 200
+              },
+              "rawBounds": {
+                "x": 84,
+                "y": 126,
+                "width": 467,
+                "height": 200
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 219,
+                "y": 23,
+                "width": 192,
+                "height": 102
+              },
+              "rawBounds": {
+                "x": 219,
+                "y": 23,
+                "width": 192,
+                "height": 102
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "auto-from-complete-kv",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "wanxin-editor-pick",
+      "fileName": "16玩心部落-小编推荐.psd",
+      "canvas": {
+        "width": 1280,
+        "height": 720
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "版式_01_左Logo左文_主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1151,
+                "y": 670,
+                "width": 107,
+                "height": 31
+              },
+              "rawBounds": {
+                "x": 1151,
+                "y": 670,
+                "width": 107,
+                "height": 31
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1280,
+                "height": 720
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -2,
+                "width": 1283,
+                "height": 725
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 29,
+                "y": 469,
+                "width": 526,
+                "height": 225
+              },
+              "rawBounds": {
+                "x": 29,
+                "y": 469,
+                "width": 526,
+                "height": 225
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 16,
+                "y": 19,
+                "width": 200,
+                "height": 107
+              },
+              "rawBounds": {
+                "x": 16,
+                "y": 19,
+                "width": 200,
+                "height": 107
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-02",
+          "name": "版式_02_右Logo右文_主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 15,
+                "y": 670,
+                "width": 107,
+                "height": 31
+              },
+              "rawBounds": {
+                "x": 15,
+                "y": 670,
+                "width": 107,
+                "height": 31
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1280,
+                "height": 720
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -2,
+                "width": 1283,
+                "height": 725
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 734,
+                "y": 469,
+                "width": 525,
+                "height": 225
+              },
+              "rawBounds": {
+                "x": 734,
+                "y": 469,
+                "width": 525,
+                "height": 225
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1059,
+                "y": 19,
+                "width": 200,
+                "height": 107
+              },
+              "rawBounds": {
+                "x": 1059,
+                "y": 19,
+                "width": 200,
+                "height": 107
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-03",
+          "name": "版式_03_居中Logo居中文_主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1151,
+                "y": 670,
+                "width": 107,
+                "height": 31
+              },
+              "rawBounds": {
+                "x": 1151,
+                "y": 670,
+                "width": 107,
+                "height": 31
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1280,
+                "height": 720
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -2,
+                "width": 1283,
+                "height": 725
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 165,
+                "y": 527,
+                "width": 950,
+                "height": 157
+              },
+              "rawBounds": {
+                "x": 165,
+                "y": 527,
+                "width": 950,
+                "height": 157
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 540,
+                "y": 19,
+                "width": 200,
+                "height": 107
+              },
+              "rawBounds": {
+                "x": 540,
+                "y": 19,
+                "width": 200,
+                "height": 107
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-04",
+          "name": "版式_04_左Logo居中文_主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1151,
+                "y": 670,
+                "width": 107,
+                "height": 31
+              },
+              "rawBounds": {
+                "x": 1151,
+                "y": 670,
+                "width": 107,
+                "height": 31
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1280,
+                "height": 720
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -2,
+                "width": 1283,
+                "height": 725
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 165,
+                "y": 527,
+                "width": 950,
+                "height": 157
+              },
+              "rawBounds": {
+                "x": 165,
+                "y": 527,
+                "width": 950,
+                "height": 157
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 21,
+                "y": 19,
+                "width": 201,
+                "height": 107
+              },
+              "rawBounds": {
+                "x": 21,
+                "y": 19,
+                "width": 201,
+                "height": 107
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-05",
+          "name": "版式_05_右Logo居中文_主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1151,
+                "y": 670,
+                "width": 107,
+                "height": 31
+              },
+              "rawBounds": {
+                "x": 1151,
+                "y": 670,
+                "width": 107,
+                "height": 31
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1280,
+                "height": 720
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -2,
+                "width": 1283,
+                "height": 725
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 165,
+                "y": 527,
+                "width": 950,
+                "height": 157
+              },
+              "rawBounds": {
+                "x": 165,
+                "y": 527,
+                "width": 950,
+                "height": 157
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1060,
+                "y": 19,
+                "width": 201,
+                "height": 107
+              },
+              "rawBounds": {
+                "x": 1060,
+                "y": 19,
+                "width": 201,
+                "height": 107
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "auto-from-complete-kv",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "wanxin-game-page",
+      "fileName": "17玩心部落-游戏页.psd",
+      "canvas": {
+        "width": 1280,
+        "height": 720
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "默认版式",
+          "defaultVisible": true,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1176,
+                "y": 681,
+                "width": 91,
+                "height": 27
+              },
+              "rawBounds": {
+                "x": 1176,
+                "y": 681,
+                "width": 91,
+                "height": 27
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1280,
+                "height": 720
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -2,
+                "width": 1282,
+                "height": 723
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "single-layout",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "platform-pc-official-hero",
+      "fileName": "18PC官网头图.psd",
+      "canvas": {
+        "width": 1920,
+        "height": 1080
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "版式_01_中下文",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "page-occlusion",
+              "name": "02_顶部导航区域",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1920,
+                "height": 80
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 1922,
+                "height": 81
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "01_登录信息框",
+              "visible": true,
+              "bounds": {
+                "x": 710,
+                "y": 787,
+                "width": 565,
+                "height": 218
+              },
+              "rawBounds": {
+                "x": 710,
+                "y": 787,
+                "width": 565,
+                "height": 218
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1803,
+                "y": 1037,
+                "width": 91,
+                "height": 27
+              },
+              "rawBounds": {
+                "x": 1803,
+                "y": 1037,
+                "width": 91,
+                "height": 27
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1920,
+                "height": 1080
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 1922,
+                "height": 1082
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 396,
+                "y": 593,
+                "width": 1128,
+                "height": 197
+              },
+              "rawBounds": {
+                "x": 396,
+                "y": 593,
+                "width": 1128,
+                "height": 197
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-02",
+          "name": "版式_02_左文",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "page-occlusion",
+              "name": "02_顶部导航区域",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1920,
+                "height": 80
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 1922,
+                "height": 81
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "01_登录信息框",
+              "visible": true,
+              "bounds": {
+                "x": 710,
+                "y": 787,
+                "width": 565,
+                "height": 218
+              },
+              "rawBounds": {
+                "x": 710,
+                "y": 787,
+                "width": 565,
+                "height": 218
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1803,
+                "y": 1037,
+                "width": 91,
+                "height": 27
+              },
+              "rawBounds": {
+                "x": 1803,
+                "y": 1037,
+                "width": 91,
+                "height": 27
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1920,
+                "height": 1080
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 1922,
+                "height": 1082
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 366,
+                "y": 517,
+                "width": 520,
+                "height": 251
+              },
+              "rawBounds": {
+                "x": 366,
+                "y": 517,
+                "width": 520,
+                "height": 251
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-03",
+          "name": "版式_03_右文",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "page-occlusion",
+              "name": "02_顶部导航区域",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1920,
+                "height": 80
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 1922,
+                "height": 81
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "01_登录信息框",
+              "visible": true,
+              "bounds": {
+                "x": 710,
+                "y": 787,
+                "width": 565,
+                "height": 218
+              },
+              "rawBounds": {
+                "x": 710,
+                "y": 787,
+                "width": 565,
+                "height": 218
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1803,
+                "y": 1037,
+                "width": 91,
+                "height": 27
+              },
+              "rawBounds": {
+                "x": 1803,
+                "y": 1037,
+                "width": 91,
+                "height": 27
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1920,
+                "height": 1080
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 1922,
+                "height": 1082
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1032,
+                "y": 517,
+                "width": 521,
+                "height": 251
+              },
+              "rawBounds": {
+                "x": 1032,
+                "y": 517,
+                "width": 521,
+                "height": 251
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-04",
+          "name": "版式_04_左文竖排",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "page-occlusion",
+              "name": "02_顶部导航区域",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1920,
+                "height": 80
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 1922,
+                "height": 81
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "01_登录信息框",
+              "visible": true,
+              "bounds": {
+                "x": 710,
+                "y": 787,
+                "width": 565,
+                "height": 218
+              },
+              "rawBounds": {
+                "x": 710,
+                "y": 787,
+                "width": 565,
+                "height": 218
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1803,
+                "y": 1037,
+                "width": 91,
+                "height": 27
+              },
+              "rawBounds": {
+                "x": 1803,
+                "y": 1037,
+                "width": 91,
+                "height": 27
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1920,
+                "height": 1080
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 1922,
+                "height": 1082
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 390,
+                "y": 218,
+                "width": 297,
+                "height": 513
+              },
+              "rawBounds": {
+                "x": 390,
+                "y": 218,
+                "width": 297,
+                "height": 513
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-05",
+          "name": "版式_05_右文竖排",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "page-occlusion",
+              "name": "02_顶部导航区域",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1920,
+                "height": 80
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 1922,
+                "height": 81
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "01_登录信息框",
+              "visible": true,
+              "bounds": {
+                "x": 710,
+                "y": 787,
+                "width": 565,
+                "height": 218
+              },
+              "rawBounds": {
+                "x": 710,
+                "y": 787,
+                "width": 565,
+                "height": 218
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1803,
+                "y": 1037,
+                "width": 91,
+                "height": 27
+              },
+              "rawBounds": {
+                "x": 1803,
+                "y": 1037,
+                "width": 91,
+                "height": 27
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1920,
+                "height": 1080
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 1922,
+                "height": 1082
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1239,
+                "y": 218,
+                "width": 297,
+                "height": 513
+              },
+              "rawBounds": {
+                "x": 1239,
+                "y": 218,
+                "width": 297,
+                "height": 513
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "auto-from-complete-kv",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "platform-mobile-official-hero",
+      "fileName": "19移动端官网头图.psd",
+      "canvas": {
+        "width": 750,
+        "height": 1059
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "默认版式",
+          "defaultVisible": true,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 13,
+                "y": 15,
+                "width": 72,
+                "height": 22
+              },
+              "rawBounds": {
+                "x": 13,
+                "y": 15,
+                "width": 72,
+                "height": 22
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 750,
+                "height": 1059
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 754,
+                "height": 1061
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 84,
+                "y": 615,
+                "width": 582,
+                "height": 255
+              },
+              "rawBounds": {
+                "x": 84,
+                "y": 615,
+                "width": 582,
+                "height": 255
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 568,
+                "y": 28,
+                "width": 164,
+                "height": 76
+              },
+              "rawBounds": {
+                "x": 568,
+                "y": 28,
+                "width": 164,
+                "height": 76
+              }
+            },
+            {
+              "type": "transparent-fade",
+              "name": "15_底部透明渐变区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 867,
+                "width": 750,
+                "height": 192
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": 867,
+                "width": 752,
+                "height": 193
+              },
+              "effect": {
+                "kind": "alpha-fade",
+                "side": "bottom",
+                "layerOrder": "final",
+                "export": true
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "10_页面UI遮挡区",
+              "visible": true,
+              "bounds": {
+                "x": 92,
+                "y": 886,
+                "width": 566,
+                "height": 119
+              },
+              "rawBounds": {
+                "x": 92,
+                "y": 886,
+                "width": 566,
+                "height": 119
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "single-layout",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "37-home-hero",
+      "fileName": "1平台首页-头图.psd",
+      "canvas": {
+        "width": 1920,
+        "height": 550
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "版式_01_左文右图",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "page-occlusion",
+              "name": "03_轮播圆点区",
+              "visible": true,
+              "bounds": {
+                "x": 871,
+                "y": 307,
+                "width": 160,
+                "height": 31
+              },
+              "rawBounds": {
+                "x": 871,
+                "y": 307,
+                "width": 160,
+                "height": 31
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "02_页面内容区",
+              "visible": true,
+              "bounds": {
+                "x": 329,
+                "y": 352,
+                "width": 1243,
+                "height": 198
+              },
+              "rawBounds": {
+                "x": 329,
+                "y": 352,
+                "width": 1243,
+                "height": 201
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "01_登录信息框",
+              "visible": true,
+              "bounds": {
+                "x": 329,
+                "y": 0,
+                "width": 283,
+                "height": 296
+              },
+              "rawBounds": {
+                "x": 329,
+                "y": -1,
+                "width": 283,
+                "height": 297
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1473,
+                "y": 323,
+                "width": 87,
+                "height": 25
+              },
+              "rawBounds": {
+                "x": 1473,
+                "y": 323,
+                "width": 87,
+                "height": 25
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 1567,
+                "y": 0,
+                "width": 353,
+                "height": 550
+              },
+              "rawBounds": {
+                "x": 1567,
+                "y": -1,
+                "width": 354,
+                "height": 552
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 964,
+                "height": 550
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": -1,
+                "width": 966,
+                "height": 552
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 961,
+                "y": 0,
+                "width": 609,
+                "height": 355
+              },
+              "rawBounds": {
+                "x": 961,
+                "y": -1,
+                "width": 609,
+                "height": 356
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 618,
+                "y": 108,
+                "width": 346,
+                "height": 198
+              },
+              "rawBounds": {
+                "x": 618,
+                "y": 108,
+                "width": 346,
+                "height": 198
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 618,
+                "y": 9,
+                "width": 164,
+                "height": 76
+              },
+              "rawBounds": {
+                "x": 618,
+                "y": 9,
+                "width": 164,
+                "height": 76
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-02",
+          "name": "版式_02_左图右文",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "page-occlusion",
+              "name": "03_轮播圆点区",
+              "visible": true,
+              "bounds": {
+                "x": 871,
+                "y": 307,
+                "width": 160,
+                "height": 31
+              },
+              "rawBounds": {
+                "x": 871,
+                "y": 307,
+                "width": 160,
+                "height": 31
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "02_页面内容区",
+              "visible": true,
+              "bounds": {
+                "x": 329,
+                "y": 352,
+                "width": 1243,
+                "height": 198
+              },
+              "rawBounds": {
+                "x": 329,
+                "y": 352,
+                "width": 1243,
+                "height": 201
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "01_登录信息框",
+              "visible": true,
+              "bounds": {
+                "x": 329,
+                "y": 0,
+                "width": 283,
+                "height": 296
+              },
+              "rawBounds": {
+                "x": 329,
+                "y": -1,
+                "width": 283,
+                "height": 297
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1473,
+                "y": 323,
+                "width": 87,
+                "height": 25
+              },
+              "rawBounds": {
+                "x": 1473,
+                "y": 323,
+                "width": 87,
+                "height": 25
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 1223,
+                "y": 0,
+                "width": 697,
+                "height": 550
+              },
+              "rawBounds": {
+                "x": 1223,
+                "y": -1,
+                "width": 698,
+                "height": 552
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 612,
+                "height": 550
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": -1,
+                "width": 614,
+                "height": 552
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 609,
+                "y": 0,
+                "width": 617,
+                "height": 355
+              },
+              "rawBounds": {
+                "x": 609,
+                "y": -1,
+                "width": 617,
+                "height": 356
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1223,
+                "y": 108,
+                "width": 347,
+                "height": 198
+              },
+              "rawBounds": {
+                "x": 1223,
+                "y": 108,
+                "width": 347,
+                "height": 198
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1396,
+                "y": 9,
+                "width": 164,
+                "height": 76
+              },
+              "rawBounds": {
+                "x": 1396,
+                "y": 9,
+                "width": 164,
+                "height": 76
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-03",
+          "name": "版式_03_图文居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "page-occlusion",
+              "name": "03_轮播圆点区",
+              "visible": true,
+              "bounds": {
+                "x": 871,
+                "y": 307,
+                "width": 160,
+                "height": 31
+              },
+              "rawBounds": {
+                "x": 871,
+                "y": 307,
+                "width": 160,
+                "height": 31
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "02_页面内容区",
+              "visible": true,
+              "bounds": {
+                "x": 329,
+                "y": 352,
+                "width": 1243,
+                "height": 198
+              },
+              "rawBounds": {
+                "x": 329,
+                "y": 352,
+                "width": 1243,
+                "height": 201
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "01_登录信息框",
+              "visible": true,
+              "bounds": {
+                "x": 329,
+                "y": 0,
+                "width": 283,
+                "height": 296
+              },
+              "rawBounds": {
+                "x": 329,
+                "y": -1,
+                "width": 283,
+                "height": 297
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1473,
+                "y": 323,
+                "width": 87,
+                "height": 25
+              },
+              "rawBounds": {
+                "x": 1473,
+                "y": 323,
+                "width": 87,
+                "height": 25
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 1567,
+                "y": 0,
+                "width": 353,
+                "height": 550
+              },
+              "rawBounds": {
+                "x": 1567,
+                "y": -1,
+                "width": 354,
+                "height": 552
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 612,
+                "height": 550
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": -1,
+                "width": 614,
+                "height": 552
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 609,
+                "y": 0,
+                "width": 961,
+                "height": 355
+              },
+              "rawBounds": {
+                "x": 609,
+                "y": -1,
+                "width": 961,
+                "height": 356
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 806,
+                "y": 198,
+                "width": 592,
+                "height": 111
+              },
+              "rawBounds": {
+                "x": 806,
+                "y": 198,
+                "width": 592,
+                "height": 111
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1396,
+                "y": 9,
+                "width": 164,
+                "height": 76
+              },
+              "rawBounds": {
+                "x": 1396,
+                "y": 9,
+                "width": 164,
+                "height": 76
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-04",
+          "name": "版式_04_文竖排居中_图居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "page-occlusion",
+              "name": "03_轮播圆点区",
+              "visible": true,
+              "bounds": {
+                "x": 871,
+                "y": 307,
+                "width": 160,
+                "height": 31
+              },
+              "rawBounds": {
+                "x": 871,
+                "y": 307,
+                "width": 160,
+                "height": 31
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "02_页面内容区",
+              "visible": true,
+              "bounds": {
+                "x": 329,
+                "y": 352,
+                "width": 1243,
+                "height": 198
+              },
+              "rawBounds": {
+                "x": 329,
+                "y": 352,
+                "width": 1243,
+                "height": 201
+              }
+            },
+            {
+              "type": "page-occlusion",
+              "name": "01_登录信息框",
+              "visible": true,
+              "bounds": {
+                "x": 329,
+                "y": 0,
+                "width": 283,
+                "height": 296
+              },
+              "rawBounds": {
+                "x": 329,
+                "y": -1,
+                "width": 283,
+                "height": 297
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1473,
+                "y": 323,
+                "width": 87,
+                "height": 25
+              },
+              "rawBounds": {
+                "x": 1473,
+                "y": 323,
+                "width": 87,
+                "height": 25
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 1567,
+                "y": 0,
+                "width": 353,
+                "height": 550
+              },
+              "rawBounds": {
+                "x": 1567,
+                "y": -1,
+                "width": 354,
+                "height": 552
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 612,
+                "height": 550
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": -1,
+                "width": 614,
+                "height": 552
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 609,
+                "y": 0,
+                "width": 961,
+                "height": 355
+              },
+              "rawBounds": {
+                "x": 609,
+                "y": -1,
+                "width": 961,
+                "height": 356
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 993,
+                "y": 9,
+                "width": 205,
+                "height": 301
+              },
+              "rawBounds": {
+                "x": 993,
+                "y": 9,
+                "width": 205,
+                "height": 301
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 1396,
+                "y": 9,
+                "width": 164,
+                "height": 76
+              },
+              "rawBounds": {
+                "x": 1396,
+                "y": 9,
+                "width": 164,
+                "height": 76
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "auto-from-complete-kv",
+      "globalRegions": [
+        {
+          "type": "fixed",
+          "name": "固定_底部白色渐变",
+          "visible": true,
+          "bounds": {
+            "x": 0,
+            "y": 465,
+            "width": 1920,
+            "height": 85
+          },
+          "rawBounds": {
+            "x": 0,
+            "y": 465,
+            "width": 1920,
+            "height": 85
+          }
+        }
+      ],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "37-home-news-image",
+      "fileName": "20平台首页-新闻图.psd",
+      "canvas": {
+        "width": 84,
+        "height": 62
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "默认版式",
+          "defaultVisible": true,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 68,
+                "y": 55,
+                "width": 16,
+                "height": 6
+              },
+              "rawBounds": {
+                "x": 68,
+                "y": 55,
+                "width": 17,
+                "height": 6
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 84,
+                "height": 62
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": -1,
+                "width": 88,
+                "height": 65
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "single-layout",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "37-home-inbox-image",
+      "fileName": "21平台首页-站内信图.psd",
+      "canvas": {
+        "width": 150,
+        "height": 113
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "默认版式",
+          "defaultVisible": true,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 121,
+                "y": 101,
+                "width": 28,
+                "height": 10
+              },
+              "rawBounds": {
+                "x": 121,
+                "y": 101,
+                "width": 28,
+                "height": 10
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 150,
+                "height": 113
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 152,
+                "height": 115
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "single-layout",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "37-home-recommended-game",
+      "fileName": "2平台首页-推荐游戏.psd",
+      "canvas": {
+        "width": 293,
+        "height": 196
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "默认版式",
+          "defaultVisible": true,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 243,
+                "y": 177,
+                "width": 45,
+                "height": 15
+              },
+              "rawBounds": {
+                "x": 243,
+                "y": 177,
+                "width": 45,
+                "height": 15
+              }
+            },
+            {
+              "type": "kv-input",
+              "name": "04_KV输入占位区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 293,
+                "height": 196
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 296,
+                "height": 198
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "single-layout",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "37-home-popup",
+      "fileName": "3平台首页-弹窗.psd",
+      "canvas": {
+        "width": 800,
+        "height": 600
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "版式_01_上左Logo下文-主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "button",
+              "name": "12_按钮区域",
+              "visible": true,
+              "bounds": {
+                "x": 254,
+                "y": 517,
+                "width": 292,
+                "height": 61
+              },
+              "rawBounds": {
+                "x": 254,
+                "y": 517,
+                "width": 292,
+                "height": 61
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 719,
+                "y": 568,
+                "width": 71,
+                "height": 21
+              },
+              "rawBounds": {
+                "x": 719,
+                "y": 568,
+                "width": 71,
+                "height": 21
+              }
+            },
+            {
+              "type": "extend-bottom",
+              "name": "08_下侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 526,
+                "width": 800,
+                "height": 74
+              },
+              "rawBounds": {
+                "x": -3,
+                "y": 526,
+                "width": 804,
+                "height": 76
+              }
+            },
+            {
+              "type": "extend-top",
+              "name": "07_上侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 800,
+                "height": 75
+              },
+              "rawBounds": {
+                "x": -3,
+                "y": -1,
+                "width": 804,
+                "height": 76
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 72,
+                "width": 800,
+                "height": 457
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": 72,
+                "width": 802,
+                "height": 457
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 75,
+                "y": 416,
+                "width": 650,
+                "height": 105
+              },
+              "rawBounds": {
+                "x": 75,
+                "y": 416,
+                "width": 650,
+                "height": 105
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 24,
+                "y": 26,
+                "width": 147,
+                "height": 75
+              },
+              "rawBounds": {
+                "x": 24,
+                "y": 26,
+                "width": 147,
+                "height": 75
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-02",
+          "name": "版式_02_上右Logo下文-主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "button",
+              "name": "12_按钮区域",
+              "visible": true,
+              "bounds": {
+                "x": 254,
+                "y": 517,
+                "width": 292,
+                "height": 61
+              },
+              "rawBounds": {
+                "x": 254,
+                "y": 517,
+                "width": 292,
+                "height": 61
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 719,
+                "y": 568,
+                "width": 71,
+                "height": 21
+              },
+              "rawBounds": {
+                "x": 719,
+                "y": 568,
+                "width": 71,
+                "height": 21
+              }
+            },
+            {
+              "type": "extend-bottom",
+              "name": "08_下侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 526,
+                "width": 800,
+                "height": 74
+              },
+              "rawBounds": {
+                "x": -3,
+                "y": 526,
+                "width": 804,
+                "height": 76
+              }
+            },
+            {
+              "type": "extend-top",
+              "name": "07_上侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 800,
+                "height": 75
+              },
+              "rawBounds": {
+                "x": -3,
+                "y": -1,
+                "width": 804,
+                "height": 76
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 72,
+                "width": 800,
+                "height": 457
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": 72,
+                "width": 802,
+                "height": 457
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 75,
+                "y": 416,
+                "width": 650,
+                "height": 105
+              },
+              "rawBounds": {
+                "x": 75,
+                "y": 416,
+                "width": 650,
+                "height": 105
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 655,
+                "y": 26,
+                "width": 145,
+                "height": 75
+              },
+              "rawBounds": {
+                "x": 655,
+                "y": 26,
+                "width": 147,
+                "height": 75
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-03",
+          "name": "版式_03_上左Logo左文-主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "button",
+              "name": "12_按钮区域",
+              "visible": true,
+              "bounds": {
+                "x": 254,
+                "y": 507,
+                "width": 292,
+                "height": 61
+              },
+              "rawBounds": {
+                "x": 254,
+                "y": 507,
+                "width": 292,
+                "height": 61
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 719,
+                "y": 568,
+                "width": 71,
+                "height": 21
+              },
+              "rawBounds": {
+                "x": 719,
+                "y": 568,
+                "width": 71,
+                "height": 21
+              }
+            },
+            {
+              "type": "extend-bottom",
+              "name": "08_下侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 526,
+                "width": 800,
+                "height": 74
+              },
+              "rawBounds": {
+                "x": -3,
+                "y": 526,
+                "width": 804,
+                "height": 76
+              }
+            },
+            {
+              "type": "extend-top",
+              "name": "07_上侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 800,
+                "height": 75
+              },
+              "rawBounds": {
+                "x": -3,
+                "y": -1,
+                "width": 804,
+                "height": 76
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 72,
+                "width": 800,
+                "height": 457
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": 72,
+                "width": 802,
+                "height": 457
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 24,
+                "y": 144,
+                "width": 172,
+                "height": 355
+              },
+              "rawBounds": {
+                "x": 24,
+                "y": 144,
+                "width": 172,
+                "height": 355
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 24,
+                "y": 26,
+                "width": 147,
+                "height": 75
+              },
+              "rawBounds": {
+                "x": 24,
+                "y": 26,
+                "width": 147,
+                "height": 75
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-04",
+          "name": "版式_04_上右Logo右文-主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "button",
+              "name": "12_按钮区域",
+              "visible": true,
+              "bounds": {
+                "x": 254,
+                "y": 507,
+                "width": 292,
+                "height": 61
+              },
+              "rawBounds": {
+                "x": 254,
+                "y": 507,
+                "width": 292,
+                "height": 61
+              }
+            },
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 719,
+                "y": 568,
+                "width": 71,
+                "height": 21
+              },
+              "rawBounds": {
+                "x": 719,
+                "y": 568,
+                "width": 71,
+                "height": 21
+              }
+            },
+            {
+              "type": "extend-bottom",
+              "name": "08_下侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 526,
+                "width": 800,
+                "height": 74
+              },
+              "rawBounds": {
+                "x": -3,
+                "y": 526,
+                "width": 804,
+                "height": 76
+              }
+            },
+            {
+              "type": "extend-top",
+              "name": "07_上侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 800,
+                "height": 75
+              },
+              "rawBounds": {
+                "x": -3,
+                "y": -1,
+                "width": 804,
+                "height": 76
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 72,
+                "width": 800,
+                "height": 457
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": 72,
+                "width": 802,
+                "height": 457
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 603,
+                "y": 144,
+                "width": 173,
+                "height": 355
+              },
+              "rawBounds": {
+                "x": 603,
+                "y": 144,
+                "width": 173,
+                "height": 355
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 629,
+                "y": 26,
+                "width": 147,
+                "height": 75
+              },
+              "rawBounds": {
+                "x": 629,
+                "y": 26,
+                "width": 147,
+                "height": 75
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "auto-from-complete-kv",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "37-home-checkin",
+      "fileName": "4平台首页-签到位.psd",
+      "canvas": {
+        "width": 288,
+        "height": 352
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "版式_01_上左Logo下文-主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 237,
+                "y": 335,
+                "width": 45,
+                "height": 14
+              },
+              "rawBounds": {
+                "x": 237,
+                "y": 335,
+                "width": 45,
+                "height": 14
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 274,
+                "y": 0,
+                "width": 14,
+                "height": 352
+              },
+              "rawBounds": {
+                "x": 274,
+                "y": -1,
+                "width": 16,
+                "height": 355
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 14,
+                "height": 352
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 15,
+                "height": 355
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 12,
+                "y": 0,
+                "width": 266,
+                "height": 352
+              },
+              "rawBounds": {
+                "x": 12,
+                "y": -1,
+                "width": 266,
+                "height": 355
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 26,
+                "y": 244,
+                "width": 237,
+                "height": 92
+              },
+              "rawBounds": {
+                "x": 26,
+                "y": 244,
+                "width": 237,
+                "height": 92
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 7,
+                "y": 8,
+                "width": 95,
+                "height": 37
+              },
+              "rawBounds": {
+                "x": 7,
+                "y": 8,
+                "width": 95,
+                "height": 37
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-02",
+          "name": "版式_02_上右Logo下文-主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 237,
+                "y": 335,
+                "width": 45,
+                "height": 14
+              },
+              "rawBounds": {
+                "x": 237,
+                "y": 335,
+                "width": 45,
+                "height": 14
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 274,
+                "y": 0,
+                "width": 14,
+                "height": 352
+              },
+              "rawBounds": {
+                "x": 274,
+                "y": -1,
+                "width": 16,
+                "height": 355
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 14,
+                "height": 352
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 15,
+                "height": 355
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 12,
+                "y": 0,
+                "width": 266,
+                "height": 352
+              },
+              "rawBounds": {
+                "x": 12,
+                "y": -1,
+                "width": 266,
+                "height": 355
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 26,
+                "y": 244,
+                "width": 237,
+                "height": 92
+              },
+              "rawBounds": {
+                "x": 26,
+                "y": 244,
+                "width": 237,
+                "height": 92
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 189,
+                "y": 8,
+                "width": 95,
+                "height": 37
+              },
+              "rawBounds": {
+                "x": 189,
+                "y": 8,
+                "width": 95,
+                "height": 37
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-03",
+          "name": "版式_03_上中Logo上文-主体居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 237,
+                "y": 335,
+                "width": 45,
+                "height": 14
+              },
+              "rawBounds": {
+                "x": 237,
+                "y": 335,
+                "width": 45,
+                "height": 14
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 274,
+                "y": 0,
+                "width": 14,
+                "height": 352
+              },
+              "rawBounds": {
+                "x": 274,
+                "y": -1,
+                "width": 16,
+                "height": 355
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 14,
+                "height": 352
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 15,
+                "height": 355
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 12,
+                "y": 0,
+                "width": 266,
+                "height": 352
+              },
+              "rawBounds": {
+                "x": 12,
+                "y": -1,
+                "width": 266,
+                "height": 355
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 26,
+                "y": 41,
+                "width": 237,
+                "height": 93
+              },
+              "rawBounds": {
+                "x": 26,
+                "y": 41,
+                "width": 237,
+                "height": 93
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 96,
+                "y": 7,
+                "width": 95,
+                "height": 37
+              },
+              "rawBounds": {
+                "x": 96,
+                "y": 7,
+                "width": 95,
+                "height": 37
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "auto-from-complete-kv",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "37-gamebox-kv",
+      "fileName": "5盒子KV.psd",
+      "canvas": {
+        "width": 1070,
+        "height": 334
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "版式_01_左文右图",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 829,
+                "y": 299,
+                "width": 83,
+                "height": 24
+              },
+              "rawBounds": {
+                "x": 829,
+                "y": 299,
+                "width": 83,
+                "height": 24
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 917,
+                "y": 0,
+                "width": 153,
+                "height": 334
+              },
+              "rawBounds": {
+                "x": 917,
+                "y": -1,
+                "width": 154,
+                "height": 337
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 346,
+                "height": 334
+              },
+              "rawBounds": {
+                "x": -3,
+                "y": -1,
+                "width": 349,
+                "height": 337
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 341,
+                "y": 0,
+                "width": 579,
+                "height": 334
+              },
+              "rawBounds": {
+                "x": 341,
+                "y": -1,
+                "width": 579,
+                "height": 336
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 11,
+                "y": 121,
+                "width": 399,
+                "height": 171
+              },
+              "rawBounds": {
+                "x": 11,
+                "y": 121,
+                "width": 399,
+                "height": 171
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 12,
+                "y": 9,
+                "width": 164,
+                "height": 77
+              },
+              "rawBounds": {
+                "x": 12,
+                "y": 9,
+                "width": 164,
+                "height": 77
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "single-layout",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "37-gamebox-background",
+      "fileName": "6盒子背景大图.psd",
+      "canvas": {
+        "width": 480,
+        "height": 968
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "版式_01_上左Logo下文",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 397,
+                "y": 933,
+                "width": 78,
+                "height": 23
+              },
+              "rawBounds": {
+                "x": 397,
+                "y": 933,
+                "width": 78,
+                "height": 23
+              }
+            },
+            {
+              "type": "extend-bottom",
+              "name": "08_下侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 909,
+                "width": 480,
+                "height": 59
+              },
+              "rawBounds": {
+                "x": -3,
+                "y": 909,
+                "width": 484,
+                "height": 60
+              }
+            },
+            {
+              "type": "extend-top",
+              "name": "07_上侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 480,
+                "height": 59
+              },
+              "rawBounds": {
+                "x": -3,
+                "y": -1,
+                "width": 484,
+                "height": 60
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 56,
+                "width": 480,
+                "height": 856
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": 56,
+                "width": 482,
+                "height": 856
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 42,
+                "y": 697,
+                "width": 398,
+                "height": 172
+              },
+              "rawBounds": {
+                "x": 42,
+                "y": 697,
+                "width": 398,
+                "height": 172
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 16,
+                "y": 20,
+                "width": 164,
+                "height": 87
+              },
+              "rawBounds": {
+                "x": 16,
+                "y": 20,
+                "width": 164,
+                "height": 87
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-02",
+          "name": "版式_02_上中Logo下文",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 397,
+                "y": 933,
+                "width": 78,
+                "height": 23
+              },
+              "rawBounds": {
+                "x": 397,
+                "y": 933,
+                "width": 78,
+                "height": 23
+              }
+            },
+            {
+              "type": "extend-bottom",
+              "name": "08_下侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 909,
+                "width": 480,
+                "height": 59
+              },
+              "rawBounds": {
+                "x": -3,
+                "y": 909,
+                "width": 484,
+                "height": 60
+              }
+            },
+            {
+              "type": "extend-top",
+              "name": "07_上侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 480,
+                "height": 59
+              },
+              "rawBounds": {
+                "x": -3,
+                "y": -1,
+                "width": 484,
+                "height": 60
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 56,
+                "width": 480,
+                "height": 856
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": 56,
+                "width": 482,
+                "height": 856
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 42,
+                "y": 697,
+                "width": 398,
+                "height": 172
+              },
+              "rawBounds": {
+                "x": 42,
+                "y": 697,
+                "width": 398,
+                "height": 172
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 152,
+                "y": 20,
+                "width": 164,
+                "height": 87
+              },
+              "rawBounds": {
+                "x": 152,
+                "y": 20,
+                "width": 164,
+                "height": 87
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-03",
+          "name": "版式_03_上右Logo下文",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 397,
+                "y": 933,
+                "width": 78,
+                "height": 23
+              },
+              "rawBounds": {
+                "x": 397,
+                "y": 933,
+                "width": 78,
+                "height": 23
+              }
+            },
+            {
+              "type": "extend-bottom",
+              "name": "08_下侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 909,
+                "width": 480,
+                "height": 59
+              },
+              "rawBounds": {
+                "x": -3,
+                "y": 909,
+                "width": 484,
+                "height": 60
+              }
+            },
+            {
+              "type": "extend-top",
+              "name": "07_上侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 480,
+                "height": 59
+              },
+              "rawBounds": {
+                "x": -3,
+                "y": -1,
+                "width": 484,
+                "height": 60
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 56,
+                "width": 480,
+                "height": 856
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": 56,
+                "width": 482,
+                "height": 856
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 42,
+                "y": 697,
+                "width": 398,
+                "height": 172
+              },
+              "rawBounds": {
+                "x": 42,
+                "y": 697,
+                "width": 398,
+                "height": 172
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 300,
+                "y": 20,
+                "width": 164,
+                "height": 87
+              },
+              "rawBounds": {
+                "x": 300,
+                "y": 20,
+                "width": 164,
+                "height": 87
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "auto-from-complete-kv",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "37-gamebox-bottom-left-kv",
+      "fileName": "7盒子左下角KV.psd",
+      "canvas": {
+        "width": 289,
+        "height": 120
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "版式_01_左文右图",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 248,
+                "y": 106,
+                "width": 38,
+                "height": 12
+              },
+              "rawBounds": {
+                "x": 248,
+                "y": 106,
+                "width": 38,
+                "height": 12
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 106,
+                "height": 120
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 107,
+                "height": 122
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 103,
+                "y": 0,
+                "width": 186,
+                "height": 120
+              },
+              "rawBounds": {
+                "x": 103,
+                "y": -2,
+                "width": 188,
+                "height": 123
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 5,
+                "y": 61,
+                "width": 119,
+                "height": 53
+              },
+              "rawBounds": {
+                "x": 5,
+                "y": 61,
+                "width": 119,
+                "height": 53
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 3,
+                "y": 4,
+                "width": 55,
+                "height": 29
+              },
+              "rawBounds": {
+                "x": 3,
+                "y": 4,
+                "width": 55,
+                "height": 29
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-02",
+          "name": "版式_02_左图右文",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 248,
+                "y": 106,
+                "width": 38,
+                "height": 12
+              },
+              "rawBounds": {
+                "x": 248,
+                "y": 106,
+                "width": 38,
+                "height": 12
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 182,
+                "y": 0,
+                "width": 107,
+                "height": 120
+              },
+              "rawBounds": {
+                "x": 182,
+                "y": -1,
+                "width": 108,
+                "height": 123
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 186,
+                "height": 120
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": -2,
+                "width": 188,
+                "height": 123
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 164,
+                "y": 61,
+                "width": 120,
+                "height": 53
+              },
+              "rawBounds": {
+                "x": 164,
+                "y": 61,
+                "width": 120,
+                "height": 53
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 229,
+                "y": 4,
+                "width": 55,
+                "height": 29
+              },
+              "rawBounds": {
+                "x": 229,
+                "y": 4,
+                "width": 55,
+                "height": 29
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "auto-from-complete-kv",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "37-gamebox-mobile-large-kv",
+      "fileName": "8盒子手游模块大KV.psd",
+      "canvas": {
+        "width": 706,
+        "height": 334
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "版式_01_左文右图",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 645,
+                "y": 309,
+                "width": 53,
+                "height": 16
+              },
+              "rawBounds": {
+                "x": 645,
+                "y": 309,
+                "width": 53,
+                "height": 16
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 259,
+                "height": 334
+              },
+              "rawBounds": {
+                "x": 0,
+                "y": -1,
+                "width": 259,
+                "height": 337
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 256,
+                "y": 0,
+                "width": 450,
+                "height": 334
+              },
+              "rawBounds": {
+                "x": 256,
+                "y": -2,
+                "width": 452,
+                "height": 338
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 15,
+                "y": 152,
+                "width": 288,
+                "height": 125
+              },
+              "rawBounds": {
+                "x": 15,
+                "y": 152,
+                "width": 288,
+                "height": 125
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 12,
+                "y": 11,
+                "width": 130,
+                "height": 66
+              },
+              "rawBounds": {
+                "x": 12,
+                "y": 11,
+                "width": 130,
+                "height": 66
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-02",
+          "name": "版式_02_左图右文",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 645,
+                "y": 309,
+                "width": 53,
+                "height": 16
+              },
+              "rawBounds": {
+                "x": 645,
+                "y": 309,
+                "width": 53,
+                "height": 16
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 449,
+                "y": 0,
+                "width": 257,
+                "height": 334
+              },
+              "rawBounds": {
+                "x": 449,
+                "y": -1,
+                "width": 259,
+                "height": 337
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 452,
+                "height": 334
+              },
+              "rawBounds": {
+                "x": 0,
+                "y": -2,
+                "width": 452,
+                "height": 338
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 401,
+                "y": 152,
+                "width": 288,
+                "height": 125
+              },
+              "rawBounds": {
+                "x": 401,
+                "y": 152,
+                "width": 288,
+                "height": 125
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 563,
+                "y": 11,
+                "width": 130,
+                "height": 66
+              },
+              "rawBounds": {
+                "x": 563,
+                "y": 11,
+                "width": 130,
+                "height": 66
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-03",
+          "name": "版式_03_图文居中",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 645,
+                "y": 309,
+                "width": 53,
+                "height": 16
+              },
+              "rawBounds": {
+                "x": 645,
+                "y": 309,
+                "width": 53,
+                "height": 16
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 706,
+                "height": 334
+              },
+              "rawBounds": {
+                "x": 0,
+                "y": -2,
+                "width": 707,
+                "height": 338
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 159,
+                "y": 208,
+                "width": 390,
+                "height": 103
+              },
+              "rawBounds": {
+                "x": 159,
+                "y": 208,
+                "width": 390,
+                "height": 103
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 563,
+                "y": 11,
+                "width": 130,
+                "height": 66
+              },
+              "rawBounds": {
+                "x": 563,
+                "y": 11,
+                "width": 130,
+                "height": 66
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "auto-from-complete-kv",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    },
+    {
+      "templateId": "37-gamebox-mobile-small-kv",
+      "fileName": "9盒子手游模块小KV.psd",
+      "canvas": {
+        "width": 343,
+        "height": 163
+      },
+      "variants": [
+        {
+          "id": "layout-01",
+          "name": "版式_01_左文右图",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 301,
+                "y": 148,
+                "width": 38,
+                "height": 12
+              },
+              "rawBounds": {
+                "x": 301,
+                "y": 148,
+                "width": 38,
+                "height": 12
+              }
+            },
+            {
+              "type": "extend-left",
+              "name": "05_左侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 120,
+                "height": 163
+              },
+              "rawBounds": {
+                "x": -1,
+                "y": -1,
+                "width": 121,
+                "height": 166
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 117,
+                "y": 0,
+                "width": 226,
+                "height": 163
+              },
+              "rawBounds": {
+                "x": 117,
+                "y": -2,
+                "width": 227,
+                "height": 166
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 6,
+                "y": 73,
+                "width": 142,
+                "height": 63
+              },
+              "rawBounds": {
+                "x": 6,
+                "y": 73,
+                "width": 142,
+                "height": 63
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 5,
+                "y": 4,
+                "width": 64,
+                "height": 34
+              },
+              "rawBounds": {
+                "x": 5,
+                "y": 4,
+                "width": 64,
+                "height": 34
+              }
+            }
+          ]
+        },
+        {
+          "id": "layout-02",
+          "name": "版式_02_左图右文",
+          "defaultVisible": false,
+          "regions": [
+            {
+              "type": "ip",
+              "name": "09_IP版权保护区",
+              "visible": true,
+              "bounds": {
+                "x": 301,
+                "y": 148,
+                "width": 38,
+                "height": 12
+              },
+              "rawBounds": {
+                "x": 301,
+                "y": 148,
+                "width": 38,
+                "height": 12
+              }
+            },
+            {
+              "type": "extend-right",
+              "name": "06_右侧背景延展区",
+              "visible": true,
+              "bounds": {
+                "x": 222,
+                "y": 0,
+                "width": 121,
+                "height": 163
+              },
+              "rawBounds": {
+                "x": 222,
+                "y": -1,
+                "width": 122,
+                "height": 166
+              }
+            },
+            {
+              "type": "core",
+              "name": "04_核心内容保护区",
+              "visible": true,
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 225,
+                "height": 163
+              },
+              "rawBounds": {
+                "x": -2,
+                "y": -2,
+                "width": 227,
+                "height": 166
+              }
+            },
+            {
+              "type": "copy",
+              "name": "03_文案保护区",
+              "visible": true,
+              "bounds": {
+                "x": 191,
+                "y": 73,
+                "width": 142,
+                "height": 63
+              },
+              "rawBounds": {
+                "x": 191,
+                "y": 73,
+                "width": 142,
+                "height": 63
+              }
+            },
+            {
+              "type": "logo",
+              "name": "02_Logo保护区",
+              "visible": true,
+              "bounds": {
+                "x": 268,
+                "y": 4,
+                "width": 65,
+                "height": 34
+              },
+              "rawBounds": {
+                "x": 268,
+                "y": 4,
+                "width": 65,
+                "height": 34
+              }
+            }
+          ]
+        }
+      ],
+      "selectionMode": "auto-from-complete-kv",
+      "globalRegions": [],
+      "issues": [],
+      "deliveryAllowed": true
+    }
+  ]
+}

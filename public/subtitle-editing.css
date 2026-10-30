@@ -1,0 +1,8 @@
+.editor-inspector-panel .element-effect-fields{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.subtitle-backing-controls{display:grid;gap:10px;border-top:1px solid var(--line);padding-top:13px;margin:14px 0}
+.subtitle-backing-controls h4{margin:0;font-size:12px}
+.subtitle-backing-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.subtitle-backing-fields label{display:grid;gap:5px;min-width:0;font-size:11px;color:var(--muted)}
+.subtitle-backing-fields input,.subtitle-backing-fields select{width:100%;min-width:0;height:34px;padding:5px 7px;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--ink);font-size:11px}
+.subtitle-backing-fields input[type=color]{padding:3px;cursor:pointer}
+.subtitle-backing-fields input:disabled{opacity:.5}

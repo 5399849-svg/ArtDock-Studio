@@ -1,0 +1,31 @@
+{
+  "id": "store-preorder-v1",
+  "name": "商店图预约尺寸",
+  "pagesPerSet": 6,
+  "format": "JPG",
+  "source": "2026-09-16 用户确认的商店图预约尺寸表",
+  "specs": [
+    { "channel": "华为", "width": 450, "height": 800, "maxKB": 500 },
+    { "channel": "华为", "width": 800, "height": 450, "maxKB": 500 },
+    { "channel": "OPPO", "width": 720, "height": 1280, "maxKB": 150 },
+    { "channel": "OPPO", "width": 1915, "height": 1080, "maxKB": 1024 },
+    { "channel": "VIVO", "width": 1080, "height": 720, "maxKB": 200, "safeTopPx": 57, "safeBottomPx": 57, "note": "顶部、底部57像素内不要放文案，展示时会被遮挡" },
+    { "channel": "小米", "width": 1080, "height": 1920, "maxKB": 1024 },
+    { "channel": "小米", "width": 2048, "height": 1536, "maxKB": 1024 },
+    { "channel": "小米", "width": 1920, "height": 1080, "maxKB": 1024 },
+    { "channel": "应用宝", "width": 480, "height": 800, "maxKB": 1024 },
+    { "channel": "应用宝", "width": 800, "height": 480, "maxKB": 1024 },
+    { "channel": "应用宝", "width": 720, "height": 1080, "maxKB": 1024 },
+    { "channel": "应用宝", "width": 304, "height": 168, "maxKB": 50 },
+    { "channel": "黑鲨", "width": 1080, "height": 600, "maxKB": 1024 },
+    { "channel": "黑鲨", "width": 600, "height": 600, "maxKB": 1024 },
+    { "channel": "九游UC", "width": 1080, "height": 720, "maxKB": 5120 },
+    { "channel": "九游UC", "width": 720, "height": 1080, "maxKB": 5120 },
+    { "channel": "Taptap", "width": 720, "height": 1280, "maxKB": 2048 },
+    { "channel": "Taptap", "width": 1280, "height": 720, "maxKB": 2048 },
+    { "channel": "B站", "width": 720, "height": 1280, "maxKB": 200 },
+    { "channel": "B站", "width": 1280, "height": 720, "maxKB": 200 },
+    { "channel": "4399", "width": 1600, "height": 960, "maxKB": 1024 },
+    { "channel": "荣耀", "width": 1920, "height": 1080, "maxKB": 5120 }
+  ]
+}

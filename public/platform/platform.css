@@ -1,0 +1,29 @@
+/* 平台接入的提示条、浏览器计算面板、积分确认框 */
+.wb-banner { position: sticky; top: 0; z-index: 9000; padding: 10px 16px; background: #fff7e6; color: #5c3b00; border-bottom: 1px solid #f0d199; font-size: 14px; line-height: 1.6; }
+.wb-banner[data-kind="starting"] { background: #eef5ff; color: #1d3c6b; border-color: #c4d8f5; }
+.wb-banner code { background: rgba(0, 0, 0, .06); padding: 1px 6px; border-radius: 4px; }
+.wb-banner .button { margin-left: 6px; }
+
+.wb-compute { position: fixed; right: 20px; bottom: 20px; z-index: 9001; width: min(380px, calc(100vw - 32px)); padding: 16px; border-radius: 14px; background: #fff; box-shadow: 0 12px 40px rgba(15, 23, 42, .18); font-size: 14px; color: #1f2937; }
+.wb-compute-title { display: block; margin-bottom: 6px; font-size: 15px; }
+.wb-compute-stage { margin: 0 0 8px; color: #374151; }
+.wb-compute-bar { width: 100%; height: 6px; }
+.wb-compute-note { margin: 8px 0 10px; color: #6b7280; font-size: 12px; line-height: 1.5; }
+.wb-compute-stop { padding: 6px 14px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; cursor: pointer; }
+.wb-compute-stop:hover { border-color: #ef4444; color: #b91c1c; }
+
+.wb-confirm { width: min(420px, calc(100vw - 32px)); border: none; border-radius: 14px; padding: 20px; box-shadow: 0 16px 48px rgba(15, 23, 42, .22); font-size: 14px; line-height: 1.6; }
+.wb-confirm::backdrop { background: rgba(15, 23, 42, .35); }
+.wb-confirm b { font-size: 16px; }
+.wb-confirm-note { color: #6b7280; font-size: 12px; }
+.wb-confirm-remember { display: flex; align-items: center; gap: 6px; margin: 8px 0; color: #374151; }
+.wb-confirm-remember input, .wb-font-import input[type="checkbox"] { width: auto; margin: 0; flex: none; }
+.wb-confirm-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+
+/* 平台上没有的本机功能（服务器读不到你电脑上的路径和剪贴板） */
+html[data-wb-mode="platform"] [data-local-only] { display: none !important; }
+
+.wb-folder-pick { display: inline-flex; align-items: center; gap: 8px; }
+.wb-folder-pick small { color: #6b7280; }
+.wb-font-import { margin-top: 12px; padding: 12px; border: 1px dashed #d1d5db; border-radius: 10px; }
+.wb-font-import label { display: block; margin: 6px 0; }

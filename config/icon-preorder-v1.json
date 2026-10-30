@@ -1,0 +1,40 @@
+{
+  "id": "icon-preorder-v1",
+  "name": "ICON预约期尺寸",
+  "format": "PNG",
+  "source": "2026-09-16 用户提供的ICON预约期尺寸表与渠道预约ICONPSD模版.psd",
+  "psdFile": "渠道预约期ICON-模版规范PSD版本：V1.0/渠道预约ICONPSD模版.psd",
+  "specVersion": "V1.0",
+  "sourceAuthority": {
+    "dimensionsAndLimits": "size-table",
+    "cornerAndBadgeGeometry": "psd",
+    "conflictPolicy": "尺寸表优先；PSD用于蒙版、角标和版式几何"
+  },
+  "template": {
+    "canvasWidth": 3813,
+    "canvasHeight": 3356,
+    "layerCount": 68,
+    "smartObjectRecords": 22,
+    "vectorMaskRecords": 16,
+    "automationReady": true
+  },
+  "specs": [
+    { "id": "huawei-216-square", "channel": "华为", "width": 216, "height": 216, "maxKB": 2048, "cornerRadiusPx": 0, "badge": null, "psdGroup": "华为216直角" },
+    { "id": "oppo-256-square", "channel": "OPPO", "width": 256, "height": 256, "maxKB": 50, "cornerRadiusPx": 0, "badge": null, "psdGroup": "OPPO256直角" },
+    { "id": "vivo-256-rounded", "channel": "VIVO", "width": 256, "height": 256, "maxKB": 50, "cornerRadiusPx": 50, "badge": null, "psdGroup": "vivo256圆角" },
+    { "id": "xiaomi-512-rounded", "channel": "小米", "width": 512, "height": 512, "maxKB": 500, "cornerRadiusPx": 100, "badge": null, "psdGroup": "小米512圆角" },
+    { "id": "yingyongbao-16-square", "channel": "应用宝", "width": 16, "height": 16, "maxKB": 30, "cornerRadiusPx": 0, "badge": null, "psdGroup": "应用宝16直角" },
+    { "id": "yingyongbao-512-square", "channel": "应用宝", "width": 512, "height": 512, "maxKB": 300, "cornerRadiusPx": 0, "badge": null, "psdGroup": "应用宝512直角" },
+    { "id": "yingyongbao-28-rounded", "channel": "应用宝", "width": 28, "height": 28, "maxKB": 300, "cornerRadiusPx": 2, "badge": null, "psdGroup": "应用宝28圆角" },
+    { "id": "yingyongbao-108-rounded", "channel": "应用宝", "width": 108, "height": 108, "maxKB": 300, "cornerRadiusPx": 15, "badge": null, "psdGroup": "应用宝108圆角" },
+    { "id": "yingyongbao-512-rounded-badge", "channel": "应用宝", "width": 512, "height": 512, "maxKB": 300, "cornerRadiusPx": 100, "badge": "应用宝", "badgeAsset": "yingyongbao-512-badge.png", "badgeWidth": 146, "badgeHeight": 147, "psdGroup": "应用宝512圆角角标" },
+    { "id": "yingyongbao-128-rounded-badge", "channel": "应用宝", "width": 128, "height": 128, "maxKB": 300, "cornerRadiusPx": 18, "badge": "应用宝", "badgeAsset": "yingyongbao-128-badge.png", "badgeWidth": 37, "badgeHeight": 37, "psdGroup": "应用宝128圆角角标" },
+    { "id": "blackshark-512-rounded", "channel": "黑鲨", "width": 512, "height": 512, "maxKB": 500, "cornerRadiusPx": 100, "badge": null, "psdGroup": "黑鲨512圆角" },
+    { "id": "jiuyou-uc-512-rounded", "channel": "九游UC", "width": 512, "height": 512, "maxKB": 500, "cornerRadiusPx": 100, "badge": null, "psdGroup": "九游UC512圆角" },
+    { "id": "taptap-512-square", "channel": "Taptap", "width": 512, "height": 512, "maxKB": 1024, "cornerRadiusPx": 0, "badge": null, "psdGroup": "Taptap512直角" },
+    { "id": "bilibili-512-square-badge", "channel": "B站", "width": 512, "height": 512, "maxKB": 300, "cornerRadiusPx": 0, "badge": "B站", "badgeAsset": "bilibili-512-badge.png", "badgeWidth": 157, "badgeHeight": 157, "psdGroup": "B站512直角角标" },
+    { "id": "4399-512-rounded-badge", "channel": "4399", "width": 512, "height": 512, "maxKB": 600, "cornerRadiusPx": 100, "badge": "4399", "badgeAsset": "4399-512-badge.png", "badgeWidth": 223, "badgeHeight": 138, "psdGroup": "4399-512圆角角标" },
+    { "id": "honor-512-square", "channel": "荣耀", "width": 512, "height": 512, "maxKB": 200, "cornerRadiusPx": 0, "badge": null, "psdGroup": "荣耀512直角" }
+  ],
+  "knownTemplateConflicts": []
+}

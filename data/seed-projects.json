@@ -1,0 +1,16 @@
+[
+  {
+    "id": "demo-project",
+    "name": "示例项目",
+    "code": "DEMO",
+    "status": "active",
+    "brandId": "demo-brand",
+    "isIpProject": false,
+    "copyrightNotice": "",
+    "businessLineIds": ["platform-community"],
+    "assets": [],
+    "members": [],
+    "createdAt": "2026-08-31T00:00:00.000Z",
+    "updatedAt": "2026-08-31T00:00:00.000Z"
+  }
+]

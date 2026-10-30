@@ -1,0 +1,110 @@
+[
+  {
+    "id": "menghui-zhenhuan-fonts-v1",
+    "projectId": "e6ca7c7c-67e2-4476-b6c9-e35b02070799",
+    "projectName": "《梦回甄嬛传》",
+    "usage": [
+      "button-copy"
+    ],
+    "licenseAssertion": {
+      "source": "user-provided",
+      "licensee": "company",
+      "term": "perpetual",
+      "commercialUse": true,
+      "fontFileRedistribution": "not-asserted",
+      "recordedAt": "2026-09-11",
+      "evidenceStatus": "asserted-by-user",
+      "binaryFilesVerifiedAt": "2026-09-11T07:15:57.988Z"
+    },
+    "licensedFonts": [
+      {
+        "family": "字魂雅致黑",
+        "file": "data/fonts/menghui-zhenhuan/ZihunYazhihei.ttf",
+        "status": "ready",
+        "priority": 1,
+        "bytes": 1880312,
+        "sha256": "3354e9a5c4678c9af23c5027cca1d8283b437caed03119ddebb9d138c3295be2",
+        "internalFamily": [
+          "zihunyazhihei",
+          "字魂雅致黑(商用需授权)"
+        ],
+        "internalFace": [
+          "Regular"
+        ],
+        "sourceDirectory": "C:\\Users\\Administrator\\Documents\\ChatGPT\\平台&社区\\M-《梦回甄嬛传》\\字体包",
+        "binaryNotice": "字体二进制名称包含“商用需授权”；商业使用资格依据公司已购买的项目授权声明"
+      },
+      {
+        "family": "字魂柳叶楷书",
+        "file": "data/fonts/menghui-zhenhuan/ZihunLiuyeKaishu.ttf",
+        "status": "ready",
+        "priority": 2,
+        "bytes": 6623716,
+        "sha256": "9c7be7222a796520562ef30a6fcd889076cabb0ccf6e9497bdf4395c076d58d8",
+        "internalFamily": [
+          "zihunliuyekaishu_T",
+          "字魂柳叶楷书(商用需授权)"
+        ],
+        "internalFace": [
+          "Regular",
+          "常规体"
+        ],
+        "sourceDirectory": "C:\\Users\\Administrator\\Documents\\ChatGPT\\平台&社区\\M-《梦回甄嬛传》\\字体包",
+        "binaryNotice": "字体二进制名称包含“商用需授权”；商业使用资格依据公司已购买的项目授权声明"
+      },
+      {
+        "family": "字小魂吐司体",
+        "file": "data/fonts/menghui-zhenhuan/ZixiaohunTusi.ttf",
+        "status": "ready",
+        "priority": 3,
+        "bytes": 2821400,
+        "sha256": "c6a7b2a27daab7f48fa68da6a220bad8813122415ec68cf2dab6c8cb8b6d2d44",
+        "internalFamily": [
+          "zixiaohuntusiti_trial",
+          "字小魂吐司体(商用需授权)"
+        ],
+        "internalFace": [
+          "Regular",
+          "常规"
+        ],
+        "sourceDirectory": "C:\\Users\\Administrator\\Documents\\ChatGPT\\平台&社区\\M-《梦回甄嬛传》\\字体包",
+        "binaryNotice": "字体二进制名称包含“商用需授权”；商业使用资格依据公司已购买的项目授权声明"
+      },
+      {
+        "family": "字魂佛山彩灯体",
+        "file": "data/fonts/menghui-zhenhuan/ZihunFoshanCaideng.ttf",
+        "status": "ready",
+        "priority": 4,
+        "bytes": 9573984,
+        "sha256": "6ced1bc80e3e8197f12b67d2076f31da7d0568dbeae9f7362e2cec1c437f27d4",
+        "internalFamily": [
+          "ZHFSCDT_T",
+          "字魂佛山彩灯体(商用需授权)"
+        ],
+        "internalFace": [
+          "Regular",
+          "常规体"
+        ],
+        "sourceDirectory": "C:\\Users\\Administrator\\Documents\\ChatGPT\\平台&社区\\M-《梦回甄嬛传》\\字体包",
+        "binaryNotice": "字体二进制名称包含“商用需授权”；商业使用资格依据公司已购买的项目授权声明"
+      }
+    ],
+    "fallback": {
+      "family": "Noto Sans CJK SC",
+      "license": "SIL-OFL-1.1",
+      "file": "data/fonts/open-source/noto-sans-cjk-sc/NotoSansCJKsc-Bold.otf",
+      "status": "ready",
+      "licenseFile": "data/fonts/open-source/noto-sans-cjk-sc/OFL-1.1.txt",
+      "sha256": "b5f0d1a190a7f9b43c310a8850630af12553df32c4c050543f9059732d9b4c0a"
+    },
+    "controls": {
+      "localRasterizationOnly": true,
+      "includeFontFilesInAssetPackages": false,
+      "exposeFontDownload": false,
+      "requireExactCopy": true,
+      "generateButtonBaseWithoutText": true,
+      "officialSiteDownload": "authenticated-entitlement-only",
+      "rejectAnonymousTrialDownloadForCommercialOutput": true
+    }
+  }
+]

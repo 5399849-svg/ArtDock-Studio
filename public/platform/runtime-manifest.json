@@ -1,0 +1,247 @@
+{
+ "note": "浏览器计算用的运行库和模型（随代码包部署，由使用者的浏览器下载）。npm run prepare:browser-runtime 按这里补齐；pack:platform 打包前核对。",
+ "pyodide": "0.27.7",
+ "onnxruntime-web": "1.22.0",
+ "files": [
+  {
+   "path": "models/sam2.1-hiera-small/config.json",
+   "size": 5698,
+   "sha256": "97ff9f65b76d107acda4247885f0a5555d0048850ae3c5f97183df289aaecde9",
+   "source": "build:sam2"
+  },
+  {
+   "path": "models/sam2.1-hiera-small/mask_decoder.onnx",
+   "size": 17009833,
+   "sha256": "9df5db24af2079c82453f53fd2049904fe19a4a4c67f46483d132b032356843e",
+   "source": "build:sam2"
+  },
+  {
+   "path": "models/sam2.1-hiera-small/vision_encoder.onnx",
+   "size": 137982309,
+   "sha256": "cf887b290ba580171f835ea050cbbead4f18640546fd3fae5a87af2e9cc7bef3",
+   "source": "build:sam2"
+  },
+  {
+   "path": "models/u2net.onnx",
+   "size": 175997641,
+   "sha256": "8d10d2f3bb75ae3b6d527c77944fc5e7dcd94b29809d47a739a7a728a912b491",
+   "source": "copy:local-ai/models/u2net.onnx"
+  },
+  {
+   "path": "vendor/ort/LICENSE",
+   "size": 1073,
+   "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c",
+   "source": "https://raw.githubusercontent.com/microsoft/onnxruntime/v1.22.0/LICENSE"
+  },
+  {
+   "path": "vendor/ort/ort-wasm-simd-threaded.jsep.mjs",
+   "size": 44677,
+   "sha256": "1cbcba8f2c769c1eecbab66a1b1e55ef11704515bf4306373e3db3c37cf6dcd8",
+   "source": "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort-wasm-simd-threaded.jsep.mjs"
+  },
+  {
+   "path": "vendor/ort/ort-wasm-simd-threaded.jsep.wasm",
+   "size": 21872216,
+   "sha256": "b45970d0632383a057c27ca5b660b216f8e00c17cf8db9f6207b5e4abc839368",
+   "source": "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort-wasm-simd-threaded.jsep.wasm"
+  },
+  {
+   "path": "vendor/ort/ort.webgpu.min.mjs",
+   "size": 357582,
+   "sha256": "e131e81c9324807e1e6f9103e8f8e936112827dcc9993cde9407a333b1f07ae0",
+   "source": "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.webgpu.min.mjs"
+  },
+  {
+   "path": "vendor/psd_tools-1.19.0.zip",
+   "size": 224888,
+   "sha256": "715e811a2e5b810dbd372ac18b0c6118ef8794bd1d0edb8d313878c61cd6288a",
+   "source": "build:psd-tools"
+  },
+  {
+   "path": "vendor/pyodide/LICENSE",
+   "size": 16725,
+   "sha256": "1f256ecad192880510e84ad60474eab7589218784b9a50bc7ceee34c2b91f1d5",
+   "source": "https://raw.githubusercontent.com/pyodide/pyodide/0.27.7/LICENSE"
+  },
+  {
+   "path": "vendor/pyodide/attrs-23.2.0-py3-none-any.whl",
+   "size": 60751,
+   "sha256": "0ee53cdb902382d5ae8f13992baaa506073dcaef8bda1be86cfba145ee40cd22",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/attrs-23.2.0-py3-none-any.whl"
+  },
+  {
+   "path": "vendor/pyodide/contourpy-1.3.0-cp312-cp312-pyodide_2024_0_wasm32.whl",
+   "size": 112207,
+   "sha256": "f6ca0437a039c40691be53ff5bd3c9774868add8d5c2d032167495c6ff1f1c4b",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/contourpy-1.3.0-cp312-cp312-pyodide_2024_0_wasm32.whl"
+  },
+  {
+   "path": "vendor/pyodide/cycler-0.12.1-py3-none-any.whl",
+   "size": 8321,
+   "sha256": "e33687b4269fe3eda13c2d38006f9a5daa602c95f5c4f8d0576aff0717d001a6",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/cycler-0.12.1-py3-none-any.whl"
+  },
+  {
+   "path": "vendor/pyodide/decorator-5.1.1-py3-none-any.whl",
+   "size": 9073,
+   "sha256": "54f90d6b6745fbb89eb7a1d36252862cda4ca111a945930adf6c3c927e17a1e8",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/decorator-5.1.1-py3-none-any.whl"
+  },
+  {
+   "path": "vendor/pyodide/fonttools-4.51.0-py3-none-any.whl",
+   "size": 1073094,
+   "sha256": "0c9a46b9246333de02d0fe02c0580840d7136744121f256a870218ed7482b607",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/fonttools-4.51.0-py3-none-any.whl"
+  },
+  {
+   "path": "vendor/pyodide/imageio-2.36.0-py3-none-any.whl",
+   "size": 315414,
+   "sha256": "f87ca5f6fc8c965ac35c9d9e716c4691f87923088b1f53a5a09d67f2c6c3d6e6",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/imageio-2.36.0-py3-none-any.whl"
+  },
+  {
+   "path": "vendor/pyodide/kiwisolver-1.4.5-cp312-cp312-pyodide_2024_0_wasm32.whl",
+   "size": 35233,
+   "sha256": "d7652d88b3390d9d1d0175d6c79da675b42bac2cd748cc9b5766a3235da4b762",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/kiwisolver-1.4.5-cp312-cp312-pyodide_2024_0_wasm32.whl"
+  },
+  {
+   "path": "vendor/pyodide/lazy_loader-0.4-py3-none-any.whl",
+   "size": 8809,
+   "sha256": "b2d18752ff3fed4cd3cf7c23a88f84d9b87055c80eae2689ffe809cf766b763a",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/lazy_loader-0.4-py3-none-any.whl"
+  },
+  {
+   "path": "vendor/pyodide/matplotlib-3.8.4-cp312-cp312-pyodide_2024_0_wasm32.whl",
+   "size": 6714844,
+   "sha256": "50d4641b32e84ecb0a2c271728d4be73b1e0a0f5f29aa7dd6ea280f888b91340",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/matplotlib-3.8.4-cp312-cp312-pyodide_2024_0_wasm32.whl"
+  },
+  {
+   "path": "vendor/pyodide/matplotlib_pyodide-0.2.3-py3-none-any.whl",
+   "size": 26183,
+   "sha256": "070d6244e7ae44f8753d3a78cf5c30f93c8d781e620991af848dcfd44112839f",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/matplotlib_pyodide-0.2.3-py3-none-any.whl"
+  },
+  {
+   "path": "vendor/pyodide/networkx-3.4.2-py3-none-any.whl",
+   "size": 1028953,
+   "sha256": "fc86ae678fdbab25783d543290dfd2fea8f9cc5161cdb4e61ce2687de57665bb",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/networkx-3.4.2-py3-none-any.whl"
+  },
+  {
+   "path": "vendor/pyodide/numpy-2.0.2-cp312-cp312-pyodide_2024_0_wasm32.whl",
+   "size": 3061133,
+   "sha256": "ebb61241d962b98b21597d7ce43b67668a6d5bab3acec4fbe958657320d7cd08",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/numpy-2.0.2-cp312-cp312-pyodide_2024_0_wasm32.whl"
+  },
+  {
+   "path": "vendor/pyodide/openblas-0.3.26.zip",
+   "size": 6117592,
+   "sha256": "787ea9a8a5cd160204388d03324b3b7ce5c9aea14b5680cec987f837e76c5198",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/openblas-0.3.26.zip"
+  },
+  {
+   "path": "vendor/pyodide/opencv_python-4.10.0.84-cp312-cp312-pyodide_2024_0_wasm32.whl",
+   "size": 11435963,
+   "sha256": "fae5731bfaa3590eefd92b70fb78a090882031f31905451230b2804e3d576800",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/opencv_python-4.10.0.84-cp312-cp312-pyodide_2024_0_wasm32.whl"
+  },
+  {
+   "path": "vendor/pyodide/packaging-24.2-py3-none-any.whl",
+   "size": 71930,
+   "sha256": "fbf6a5ace596eb8e28fe0089ecfc0bca2eb3930563e9ca06acb98ea5302b99f7",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/packaging-24.2-py3-none-any.whl"
+  },
+  {
+   "path": "vendor/pyodide/pillow-10.2.0-cp312-cp312-pyodide_2024_0_wasm32.whl",
+   "size": 987254,
+   "sha256": "43eab147a9355385a99eeac18fb577d4af2fe4bd0bbd23d3ba3ddb92e72c2815",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pillow-10.2.0-cp312-cp312-pyodide_2024_0_wasm32.whl"
+  },
+  {
+   "path": "vendor/pyodide/pyodide-lock.json",
+   "size": 112205,
+   "sha256": "9c45b916001a750f4102fc287494f3eab215909c7535c626a20db80fd6333e2c",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide-lock.json"
+  },
+  {
+   "path": "vendor/pyodide/pyodide.asm.js",
+   "size": 1255688,
+   "sha256": "6b4c90de5b7172873f04f21884d0e9d2274e305fe32116558fe3e4fbe3618d51",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.asm.js"
+  },
+  {
+   "path": "vendor/pyodide/pyodide.asm.wasm",
+   "size": 10105545,
+   "sha256": "a50dd1843f805a0b7c45b61037ee0d7b26dfe85efe0e18ef95a34ad24e401f5f",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.asm.wasm"
+  },
+  {
+   "path": "vendor/pyodide/pyodide.mjs",
+   "size": 13931,
+   "sha256": "04c052c815abb0bf2981fa38c2dfa58e3120ee5288c956df2b2a15e301782c5f",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.mjs"
+  },
+  {
+   "path": "vendor/pyodide/pyparsing-3.1.2-py3-none-any.whl",
+   "size": 103246,
+   "sha256": "9070866557845375d8180e9236021fdecb2b93be75a7c8de48841f1465133a60",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyparsing-3.1.2-py3-none-any.whl"
+  },
+  {
+   "path": "vendor/pyodide/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+   "size": 229892,
+   "sha256": "02811ea3714f6697d639c07dc5ec63f5774dc7a688e4e1cbbe9beb2f33c3e6c9",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/python_dateutil-2.9.0.post0-py2.py3-none-any.whl"
+  },
+  {
+   "path": "vendor/pyodide/python_stdlib.zip",
+   "size": 2360737,
+   "sha256": "16611534726e5d8ac2bd8f926410b2dcb8d6f49aa24913463533b457a2115c16",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/python_stdlib.zip"
+  },
+  {
+   "path": "vendor/pyodide/pytz-2024.1-py2.py3-none-any.whl",
+   "size": 505474,
+   "sha256": "fcfc168155da8d19057b17bee735fef71dc3a39f1dccd83514e16ecc6abaddc4",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pytz-2024.1-py2.py3-none-any.whl"
+  },
+  {
+   "path": "vendor/pyodide/pywavelets-1.8.0-cp312-cp312-pyodide_2024_0_wasm32.whl",
+   "size": 983566,
+   "sha256": "722b7a4daa4c1d074cf15f0193bf378c8a894da69df493c186cddc899b0e0e6d",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pywavelets-1.8.0-cp312-cp312-pyodide_2024_0_wasm32.whl"
+  },
+  {
+   "path": "vendor/pyodide/scikit_image-0.25.0-cp312-cp312-pyodide_2024_0_wasm32.whl",
+   "size": 10225812,
+   "sha256": "788beea853f8cf25a3d4847e5fe7de9c80045491e12e49842f1c3b16fbcd6db8",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/scikit_image-0.25.0-cp312-cp312-pyodide_2024_0_wasm32.whl"
+  },
+  {
+   "path": "vendor/pyodide/scipy-1.14.1-cp312-cp312-pyodide_2024_0_wasm32.whl",
+   "size": 13477451,
+   "sha256": "997c50a61564a8ce6a56ea98a42e7f4427e5eb98475a73233e83df6a184f415c",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/scipy-1.14.1-cp312-cp312-pyodide_2024_0_wasm32.whl"
+  },
+  {
+   "path": "vendor/pyodide/setuptools-69.5.1-py3-none-any.whl",
+   "size": 843222,
+   "sha256": "6a44af4c5bbd6ae019fbe5fe52e6f3bff3b02ee6cbc543ebdf89d113b1c88c87",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/setuptools-69.5.1-py3-none-any.whl"
+  },
+  {
+   "path": "vendor/pyodide/six-1.16.0-py2.py3-none-any.whl",
+   "size": 11053,
+   "sha256": "f61235bc3a15086f0369585e5071ae9ba0bd244a111d12b37f683862e6850c0a",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/six-1.16.0-py2.py3-none-any.whl"
+  },
+  {
+   "path": "vendor/pyodide/typing_extensions-4.11.0-py3-none-any.whl",
+   "size": 34698,
+   "sha256": "c3f00b6653202513b1f7813ad3c466510ceecc599a37d665a31dcfb5ac7049b9",
+   "source": "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/typing_extensions-4.11.0-py3-none-any.whl"
+  }
+ ]
+}
