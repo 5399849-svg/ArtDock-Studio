@@ -27,3 +27,37 @@ html[data-wb-mode="platform"] [data-local-only] { display: none !important; }
 .wb-folder-pick small { color: #6b7280; }
 .wb-font-import { margin-top: 12px; padding: 12px; border: 1px dashed #d1d5db; border-radius: 10px; }
 .wb-font-import label { display: block; margin: 6px 0; }
+
+/* 组员（不是管理员）看不到改全组共用东西的入口：新建、修改、归档项目，项目素材库的上传、收藏、默认 Logo、改配色、存模板，
+   规范中心的新增和修改，公司字体导入。服务器另外核对（lib/workbench-access.mjs），这里只是不让人点了才被拒。 */
+html[data-wb-role="member"] :is(
+  [data-admin-only], #new-project, #quick-new-project, #quick-project-create, [data-project-edit], [data-project-upload], [data-remove-project-material],
+  #wb-project-edit, #wb-project-archive, [data-logo-add], [data-logo-default], [data-logo-upload],
+  .upload-menu, [data-action="colors"], [data-action="save-template"], [data-action="default-logo"], [data-save-task], [data-star],
+  .wb-font-import, [data-font-import],
+  #new-resource-position, [data-add-and-upload], [data-spec-add], [data-segment-add], [data-rule-edit], [data-region-edit], [data-reference-add],
+  #new-brand, [data-brand-upload], #new-business-line, #new-category, [data-sc-add-line], [data-sc-action="add"], [data-sc-action="rename"]
+) { display: none !important; }
+
+/* 首页任务卡片：状态在左、作者（建这个任务的人）在右，和原来状态的位置、间距一样。 */
+.dashboard .dash-cards .dash-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; align-self: stretch; margin: auto 12px 0; }
+.home-mode .dashboard .dash-cards .dash-card-foot { margin: 8px 11px 0; }
+.dashboard .dash-cards .dash-card-foot > .home-card-status, .dashboard .dash-cards .dash-card-foot > .dash-status,
+.home-mode .dashboard .dash-cards .dash-card-foot > .home-card-status, .home-mode .dashboard .dash-cards .dash-card-foot > .dash-status { margin: 0; flex-shrink: 0; }
+.dashboard .dash-cards .dash-card-foot > .dash-card-author { display: block; margin: 0; min-width: 0; font-size: 12px; color: #8d95a6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* 刚打开、脚本和数据还没到时（body.wb-booting，第一次 render() 去掉）：中间先显示“正在打开工作台…”，
+   首页用不到的搜索按钮先藏起来（它的样式要等 render() 加上 workspace-shell-mode 才有，否则是个空方框）。 */
+.wb-booting .workspace-search-toggle { display: none; }
+.wb-boot-loading { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 240px; margin: 0; color: #8d95a6; font-size: 14px; }
+.wb-boot-loading::before { content: ""; width: 16px; height: 16px; border: 2px solid #ddd8f6; border-top-color: #6b57de; border-radius: 50%; animation: wb-boot-spin .8s linear infinite; }
+@keyframes wb-boot-spin { to { transform: rotate(360deg); } }
+.wb-boot-loading[role="alert"]::before { display: none; }
+/* 刚打开时侧栏图标还是文字符号（⌂ ▣ ✎），脚本跑起来才换成图标：先不显示符号，免得闪一下。 */
+.wb-booting .sidebar .nav-item > span:not(:has(svg)) { visibility: hidden; }
+
+/* 顶栏左边的“返回”：回到上一个页面（首页、任务编辑器不显示；项目详情有自己的返回）。 */
+.topbar-back { display: inline-flex; align-items: center; gap: 4px; height: 34px; margin-right: auto; padding: 0 14px 0 9px; border: 1px solid #e4e7f0; border-radius: 10px; background: #fff; color: #4b5270; font-size: 14px; font-weight: 600; cursor: pointer; flex: 0 0 auto; }
+.topbar-back:hover { border-color: #cfc7f6; background: #f6f4ff; color: #6b57de; }
+.topbar-back svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.topbar-back[hidden], .project-design-mode .topbar-back { display: none; }

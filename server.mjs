@@ -1,4 +1,8 @@
 import {createCommunitySuiteDelivery} from './lib/community-suite-delivery.mjs';
+import {createImagePreviews} from './lib/image-previews.mjs';
+import {createModulePreloads} from './lib/module-preloads.mjs';
+import {sendJson,etagMatches} from './lib/json-response.mjs';
+import {createWorkbenchAccess,currentViewer,ownerStamp,visibleTo} from './lib/workbench-access.mjs';
 import {createCommunityCanvasMaterials} from './lib/community-canvas-materials.mjs';
 import {belongsToCommunityMaster} from './lib/community-master-assets.mjs';
 import {createSourcePopupButtonJobs} from './lib/source-popup-button-jobs.mjs';
@@ -29,7 +33,7 @@ import { prepareNanoOutpaintInput, assertNanoBlankFilled } from "./lib/nano-outp
 import { createSafeOutpaint } from "./lib/safe-outpaint.mjs";
 import { recoverOrphanedOutpaintState } from "./lib/outpaint-job-state.mjs";
 import { isLocalWorkbenchRequest } from "./lib/local-folder-access.mjs";
-import { isPhotoshopAsset, extractTaskPsdAssets } from './lib/task-psd-assets.mjs';
+import { isPhotoshopAsset, extractTaskPsdAssets, exportTaskPsdLayers, discardTaskPsdExport } from './lib/task-psd-assets.mjs';
 import { CHARACTER_ROLES, assessCharacterTransparency, prepareCharacterAssets, replaceCharacterAsset } from './lib/character-preflight.mjs';
 import { protectedComposition } from "./public/outpaint-composite.js";
 import { coverPlacement, keepImageAspect } from "./public/breakout-layer.js";
@@ -58,7 +62,7 @@ import {createCommunityPopup,assertPopupParameterSave,assertPopupPng} from './li
 import {popupConfig} from './public/community-popup-model.js';
 import {createCustomCanvasExporter} from './lib/custom-canvas-export.mjs';
 import {createCustomCanvasResizer,remapCustomCanvasSnapshot} from './lib/custom-canvas-resize.mjs';
-import {writeJson,mutateJson} from './lib/json-store.mjs';
+import {writeJson as writeJsonFile,mutateJson,createRecordFile} from './lib/json-store.mjs';
 import {createCommunityMaterialJobs} from './lib/community-material-jobs.mjs';
 import {createCommunityTargetReflowJobs} from './lib/community-target-reflow-jobs.mjs';
 import {usesLayeredCommunityReflow} from './lib/community-target-reflow.mjs';
@@ -101,6 +105,9 @@ const runtimeDir = process.env.WORKBENCH_RUNTIME_DIR || path.join(root, "data", 
 const storageDir = path.join(runtimeDir, "storage");
 const adAiPreviewHandler=createAdAiPreviewHandler({storageDir});
 const tasksFile = path.join(runtimeDir, "tasks.json");
+// 任务数据很多地方是“先 readJson(tasksFile)，算完再整份 writeJson 回去”：写回时文件被别人改过，就只把这份真正改过的
+// 任务合进最新的文件，别的任务保留别人的修改（lib/json-store.mjs createRecordFile）。
+const taskRecords = createRecordFile(tasksFile);
 const brandsFile = path.join(runtimeDir, "brands.json");
 const jobsFile = path.join(runtimeDir, "jobs.json");
 const categoriesFile = path.join(runtimeDir, "categories.json");
@@ -191,6 +198,31 @@ await ensureJson(projectsFile, JSON.parse(await fs.readFile(path.join(root, "dat
 await ensureJson(resourceProfilesFile, []);
 await ensureJson(resourceRulesOverlayFile, []);
 const recycleBin=await getRecycleBin({runtimeDir,storageDir});
+// 谁能看、谁能改（管理员管共用的项目、素材库、规范中心；组员管自己的任务和文件），见 lib/workbench-access.mjs。
+const workbenchAccess=createWorkbenchAccess({runtimeDir});
+// 回收站里的这些项这个人能不能看到、能不能恢复或彻底删除：属于任务的看任务是不是他的；项目素材（不属于任务）只给管理员。
+async function recycleItemsVisible(keys,viewer){
+  if(!keys)return false;
+  if(!keys.length)return viewer.admin;
+  for(const key of keys)if(await workbenchAccess.canUse(key,viewer))return true;
+  return false;
+}
+async function requireRecycleItems(input,viewer){
+  for(const keys of recycleBin.ownerKeysOf(input?.ids))if(!(await recycleItemsVisible(keys,viewer)))throw Object.assign(Error('回收站里有不是你的内容，请刷新后重新选择'),{status:403});
+}
+// 资产库里的一项：属于任务的看任务是不是他的；项目素材（不属于任务）大家能看，只有管理员能删。
+// 按任务键存的名单（任务名称、任务所属项目）只给看得到的任务那几条。
+async function ownEntries(entries){
+  const viewer=await currentViewer();if(viewer.admin)return entries;
+  const result={};for(const [key,value] of Object.entries(entries||{}))if(await workbenchAccess.canUse(key,viewer))result[key]=value;
+  return result;
+}
+async function assetVisible(asset,viewer){
+  const keys=(asset.sources||[]).map(source=>source.taskKey).filter(Boolean);
+  if(!keys.length)return true;
+  for(const key of keys)if(await workbenchAccess.canUse(key,viewer))return true;
+  return false;
+}
 await migrateStaleTaskData();
 await ensureJson(projectLinksFile, {});
 await workbenchProjectLinkStore.read();
@@ -246,7 +278,12 @@ async function migrateStaleTaskData() {
 }
 
 async function readJson(file) {
+  if (file === tasksFile) return taskRecords.read();
   return JSON.parse(await fs.readFile(file, "utf8"));
+}
+
+function writeJson(file, value) {
+  return file === tasksFile ? taskRecords.write(value) : writeJsonFile(file, value);
 }
 
 async function localAiStatus() {
@@ -307,13 +344,24 @@ async function uploadQuickSource(id,req,{name,expectedUpdatedAt}){
  const check=task=>{if(task.updatedAt!==expectedUpdatedAt||communityGenerationJobs.has(id)||task.communityGeneration?.status==='running'||task.outpaint?.status==='running')throw Object.assign(Error('任务已更新或正在生成，请刷新后再导入'),{status:409});};check(before);
  const original=path.basename(String(name||'')),extension=path.extname(original).toLowerCase();
  const upload=await receiveAdAssetUpload(req,{runtimeDir,name:extension==='.psb'?original.slice(0,-4)+'.psd':original,mime:'application/octet-stream'});
- try{return await mutateJson(tasksFile,async tasks=>{
-  const task=tasks.find(t=>t.id===id);if(!task)throw Object.assign(Error('任务不存在'),{status:404});check(task);
-  const saved=await saveLocalAsset(id,upload.sourcePath,path.basename(original,extension)+'-'+randomUUID().slice(0,8)+extension),psd=/\.ps[db]$/i.test(original);
-  const asset={...saved,label:original,role:psd?'source-psd':'master',createdAt:new Date().toISOString()};task.assets.push(asset);
-  if(psd)await extractTaskPsdAssets({root,storageDir,task,source:asset,role:'master'});
-  invalidateTaskArtifacts(task,'导入源素材，保留原有文件');task.updatedAt=new Date().toISOString();return task;
- });}finally{await upload.cleanup();}
+ // 文件先存进任务文件夹，PSD 的图层在写锁外导出（浏览器计算可能几分钟，lib/task-psd-assets.mjs exportTaskPsdLayers），
+ // 锁里只登记；最后没写进任务（任务已更新等）就删掉存的文件。
+ let saved=null,exported=null,committed=false;
+ try{
+  saved=await saveLocalAsset(id,upload.sourcePath,path.basename(original,extension)+'-'+randomUUID().slice(0,8)+extension);const psd=/\.ps[db]$/i.test(original);
+  if(psd)exported=await exportTaskPsdLayers({root,storageDir,taskId:id,sourceName:saved.name,role:'master',knownHashes:before.assets.map(asset=>asset.psdSourceHash).filter(Boolean)});
+  const result=await mutateJson(tasksFile,async tasks=>{
+   const task=tasks.find(t=>t.id===id);if(!task)throw Object.assign(Error('任务不存在'),{status:404});check(task);
+   const asset={...saved,label:original,role:psd?'source-psd':'master',createdAt:new Date().toISOString()};task.assets.push(asset);
+   if(psd)await extractTaskPsdAssets({root,storageDir,task,source:asset,role:'master',exported});
+   invalidateTaskArtifacts(task,'导入源素材，保留原有文件');task.updatedAt=new Date().toISOString();return task;
+  });
+  committed=true;return result;
+ }finally{
+  await discardTaskPsdExport(exported);
+  if(saved&&!committed)await fs.unlink(safeChild(storageDir,id,'assets',saved.name)).catch(()=>{});
+  await upload.cleanup();
+ }
 }
 const communityTextCleanup=createCommunityTextCleanup({tasksFile,storageDir,templateMap,jobs:communityGenerationJobs,invalidate:invalidateTaskArtifacts,readFonts:()=>readCompanyFontLibrary({root})});
 const communityFontTypesetting=createCommunityFontTypesetting({tasksFile,storageDir,templateMap,jobs:communityGenerationJobs,invalidate:invalidateTaskArtifacts,readFonts:()=>readCompanyFontLibrary({root})});
@@ -339,14 +387,9 @@ await communityObjects.restore();
 const communityTargetReflow=createCommunityTargetReflowJobs({tasksFile,storageDir,templateMap,jobs:communityGenerationJobs,loadConfig:loadAiHuabuConfig,createCanvas,submitGeneration,pollJob,downloadRaw,confirmedSource:confirmedCommunityBackgroundSource,fingerprint:async task=>communityMasterFingerprint(task,(await readJson(projectsFile)).find(p=>p.id===task.projectId)),invalidate:invalidateTaskArtifacts});
 await communityTargetReflow.restore();
 
+// GET 成功的回应带 ETag，没变就 304（lib/json-response.mjs）。
 function json(res, status, data) {
-  const body = Buffer.from(JSON.stringify(data));
-  res.writeHead(status, {
-    "Content-Type": "application/json; charset=utf-8",
-    "Content-Length": body.length,
-    "Cache-Control": "no-store",
-  });
-  res.end(body);
+  sendJson(res, status, data);
 }
 
 async function readBody(req, maxBytes = 80 * 1024 * 1024) {
@@ -396,6 +439,14 @@ function matchRoute(pathname, pattern) {
   if (!match) return null;
   return Object.fromEntries(names.map((name, index) => [name, decodeURIComponent(match[index + 1])]));
 }
+
+// 只有服务器自己用的任务字段：页面从来不读，不发给页面（17 个任务就有约 0.9 MB）。
+const SERVER_ONLY_TASK_FIELDS=['sourceAdaptationVersions','communityTargetRuns','communityTargetVersions','communityMaterialRuns','communityObjectRuns'];
+// 首页和各列表只用任务摘要（/api/bootstrap?tasks=summary）：这些字段只有打开任务后的编辑器用，打开时页面再读 GET /api/tasks/:id。
+const EDITOR_ONLY_TASK_FIELDS=['parameters','communityDesign','templates','communityGeneration','communityTargetReviews','communityPopupVersions','communityArtworkProposals','outpaint','communityObjects'];
+function omitFields(object,fields){const copy={...object};for(const field of fields)delete copy[field];return copy;}
+function pageTask(task){return omitFields(publicTask(task),SERVER_ONLY_TASK_FIELDS);}
+function taskSummary(task){return {...omitFields(pageTask(task),EDITOR_ONLY_TASK_FIELDS),summary:true};}
 
 function publicTask(task) {
   const sourceMaster=registerSourceMaster(task,templateMap);
@@ -1318,26 +1369,30 @@ async function routeApi(req, res, url) {
   }
   if(url.pathname === '/api/workbench/task-names') {
     try{
-      if(req.method==='GET')return json(res,200,await workbenchTaskNames.read());
-      if(req.method==='PUT')return json(res,200,await workbenchTaskNames.rename(await readBody(req)));
+      if(req.method==='GET')return json(res,200,await ownEntries(await workbenchTaskNames.read()));
+      if(req.method==='PUT'){const input=await readBody(req);await workbenchAccess.requireTask(String(input?.key||''),await currentViewer());return json(res,200,await workbenchTaskNames.rename(input));}
       return json(res,405,{error:'不支持的任务名称操作'});
     }catch(error){return json(res,error.status||422,{error:error.message});}
   }
   if(url.pathname === '/api/workbench/project-links') {
-    if(req.method === 'GET') return json(res,200,await workbenchProjectLinkStore.read());
+    if(req.method === 'GET') return json(res,200,await ownEntries(await workbenchProjectLinkStore.read()));
     if(req.method === 'PUT') {
       const input=await readBody(req);
+      const viewer=await currentViewer();
+      for(const key of input?.keys===undefined?[input?.key]:Array.isArray(input.keys)?input.keys:[])await workbenchAccess.requireTask(String(key||''),viewer);
       try{return json(res,200,await workbenchProjectLinkStore.assign(input));}
       catch(error){if(error.status)return json(res,error.status,{error:error.message});throw error;}
     }
   }
 
   if (req.method === "GET" && url.pathname === "/api/bootstrap") {
+    const viewer = await currentViewer();
     const [tasks, brands, jobs, categories, references, specifications, businessLines, projects, resourceProfiles, localAi, aiHuabu] = await Promise.all([readJson(tasksFile), readJson(brandsFile), readJson(jobsFile), readJson(categoriesFile), readJson(referencesFile), readJson(specificationsFile), readJson(businessLinesFile), readJson(projectsFile), readJson(resourceProfilesFile), localAiStatus(), aiHuabuStatus()]);
     return json(res, 200, {
       templates,
       brands,
-      tasks: tasks.filter(task=>!recycleBin.isTaskHidden(`core:${task.id}`)).map((task) => publicTask(normalizeTask(task))),
+      tasks: tasks.filter(task=>!recycleBin.isTaskHidden(`core:${task.id}`)).filter(visibleTo(viewer)).map((task) => (url.searchParams.get('tasks')==='summary'?taskSummary:pageTask)(normalizeTask(task))),
+      viewer: {name: viewer.name, accountId: viewer.accountId, admin: viewer.admin},
       categories: categories.sort((a, b) => a.order - b.order),
       references,
       specifications,
@@ -1674,6 +1729,7 @@ async function routeApi(req, res, url) {
     const projectLogo=await projectLogos.copyToTask({projectId:task.projectId,logoId:input.projectLogoId,folder:task.id});
     if(projectLogo)task.assets.push({...projectLogo,name:projectLogo.file,originalName:projectLogo.name});
     if(input.projectLibraryUse)await projectDesignLibrary.importIntoTask(task,input.projectLibraryUse);
+    task.owner = await ownerStamp();
     const tasks = await readJson(tasksFile);
     tasks.unshift(task);
     await writeJson(tasksFile, tasks);
@@ -2085,7 +2141,7 @@ async function routeApi(req, res, url) {
     const tasks = await readJson(tasksFile);
     const task = tasks.find((item) => item.id === taskMatch.id);
     if (task) normalizeTask(task);
-    return task ? json(res, 200, publicTask(task)) : json(res, 404, { error: "任务不存在" });
+    return task ? json(res, 200, pageTask(task)) : json(res, 404, { error: "任务不存在" });
   }
 
   if (taskMatch && req.method === "DELETE") {
@@ -3083,19 +3139,39 @@ async function routeApi(req, res, url) {
   return false;
 }
 
-const mimeTypes = { ".ttf":"font/ttf", ".otf":"font/otf", ".woff":"font/woff", ".woff2":"font/woff2", ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".gif": "image/gif", ".webp": "image/webp", ".json": "application/json; charset=utf-8" };
+// 在同一个请求里再走一遍某个只读接口，拿到它的 {status, body}（给 /api/workbench/batch 用）。身份、Host 和原请求一样。
+async function internalGet(parent,target){
+  const chunks=[],headers={};let status=200;
+  const {'if-none-match':_,...headers0}=parent.headers;
+  const req={method:'GET',url:target,headers:{...headers0,'sec-fetch-dest':'empty'},socket:parent.socket,async *[Symbol.asyncIterator](){}};
+  const res={statusCode:200,headersSent:false,
+    writeHead(code,values){status=code;this.statusCode=code;Object.assign(headers,values||{});this.headersSent=true;return this;},
+    setHeader(name,value){headers[name]=value;},getHeader(name){return headers[name];},removeHeader(name){delete headers[name];},
+    write(chunk){chunks.push(Buffer.from(chunk));return true;},end(chunk){if(chunk)chunks.push(Buffer.from(chunk));if(!this.headersSent)status=this.statusCode;},
+    on(){return this;},once(){return this;},emit(){return false;},destroy(){}};
+  await handleRequest(req,res);
+  const text=Buffer.concat(chunks).toString('utf8');
+  let body=null;try{body=text?JSON.parse(text):null;}catch{body={error:'接口返回的不是 JSON'};}
+  return {status,body};
+}
 
-async function serveFile(res, filePath) {
-  try {
-    const body = await fs.readFile(filePath);
-    res.writeHead(200, { "Content-Type": mimeTypes[path.extname(filePath).toLowerCase()] || "application/octet-stream", "Content-Length": body.length });
-    res.end(body);
-  } catch {
-    json(res, 404, { error: "文件不存在" });
-  }
+// 文件按流发送并带 ETag（没变就 304）；图片地址带 ?w= 时给缩小的预览（lib/image-previews.mjs）。
+const imagePreviews = createImagePreviews({ runtimeDir });
+// 发首页时列出全部脚本，浏览器一开始就同时下载，不用一层层等（lib/module-preloads.mjs）。
+const modulePreloads = createModulePreloads(publicDir);
+// 回收站里彻底删除的图片，它的预览一起删掉。
+recycleBin.onFileDeleted(file => imagePreviews.forget(file));
+// 启动 1 分钟后、之后每 6 小时，空闲时把已有的任务图片提前转成压缩版（lib/image-previews.mjs warm），第一次打开任务不用现转。
+const warmPreviews = () => imagePreviews.warm(storageDir).catch(error => console.error(`[图片压缩] 提前转图失败：${error.message}`));
+setTimeout(warmPreviews, 60_000).unref?.();
+setInterval(warmPreviews, 6 * 3600_000).unref?.();
+async function serveFile(res, filePath, req = { method: "GET", headers: {} }, url = null) {
+  if (!(await imagePreviews.serve(req, res, filePath, url))) json(res, 404, { error: "文件不存在" });
 }
 
 const workbenchDownloads=createWorkbenchDownloads({
+  // 一次下载多个任务时，每个都要是自己的（管理员不限）。
+  authorize:async keys=>{const viewer=await currentViewer();for(const key of keys)await workbenchAccess.requireTask(key,viewer);},
   dispatch:async(req,res,url)=>{
     const handlers=[['ad-resources',adResourcesHandler],['channel-resources',channelResourcesHandler],['store-preorder',storePreorderHandler],['store-launch',storeLaunchHandler],['icon-preorder',iconPreorderHandler],['icon-launch',iconLaunchHandler]];
     const target=handlers.find(([module])=>url.pathname.startsWith(`/api/${module}`));
@@ -3128,6 +3204,15 @@ export async function handleRequest(req, res) {
   let finishMutation;
   try {
     const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
+    // 改共用的东西要管理员；地址里带任务（含 /storage 下任务的文件）的要是自己的任务（lib/workbench-access.mjs）。
+    const denied=await workbenchAccess.check(req,url);
+    if(denied)return json(res,denied.status,denied.body);
+    // 页面把同一时刻的多个只读请求合成一个（public/api-batch.js）：在这里逐个走原来的处理（权限照旧核对），一次返回。
+    if(url.pathname==='/api/workbench/batch'&&req.method==='GET'){
+      const paths=url.searchParams.getAll('p');
+      if(!paths.length||paths.length>40||paths.some(target=>!/^\/api\/[A-Za-z0-9/_.~%-]+(?:\?[A-Za-z0-9/_.~%=&-]*)?$/.test(target)||target.startsWith('/api/workbench/batch')||target.split('?')[0].split('/').some(part=>part==='.'||part==='..')))return json(res,422,{error:'合并请求里的接口无效'});
+      return json(res,200,{results:await Promise.all(paths.map(target=>internalGet(req,target)))});
+    }
     if(url.pathname==='/api/company-fonts'||url.pathname.startsWith('/api/company-fonts/')){
       // 平台上字体库给能打开工作台的同事用（字体由有授权的人在线导入）；本机没有库时照旧只给本机页面。
       if(!process.env.DATABASE_URL){
@@ -3144,9 +3229,7 @@ export async function handleRequest(req, res) {
       }
       const removeMatch=matchRoute(url.pathname,'/api/company-fonts/:id');
       if(removeMatch&&req.method==='DELETE'){
-        const identity=await currentIdentity({required:Boolean(process.env.DATABASE_URL)});
-        const font=(await readCompanyFontCatalog({root})).fonts.find(item=>item.id===removeMatch.id);
-        if(identity&&font?.importedBy&&font.importedBy.accountId!==identity.accountId)return json(res,403,{error:`这个字体由 ${font.importedBy.name||'其他同事'} 导入，只能由导入的人删除`});
+        // 只有管理员能删（进这里之前已核对，lib/workbench-access.mjs），哪位管理员导入的都能删。
         await removeCompanyFont({root,id:removeMatch.id});
         return json(res,200,await readCompanyFontLibrary({root}));
       }
@@ -3155,20 +3238,30 @@ export async function handleRequest(req, res) {
       if(url.pathname==='/api/company-fonts')return json(res,200,await readCompanyFontLibrary({root}));
       const fontMatch=matchRoute(url.pathname,'/api/company-fonts/:id/file');
       if(!fontMatch)return json(res,404,{error:'字体不存在'});
+      // 字体编号里带着内容摘要，同一个编号内容不会变：带 ETag，浏览器已有就回 304，不再读盘、核对、整份重传（一个 2–16 MB）。
+      const listed=(await readCompanyFontCatalog({root})).fonts.find(item=>item.id===fontMatch.id);
+      const fontEtag=listed?.sha256?`"${listed.sha256}"`:'';
+      if(fontEtag&&etagMatches(req,fontEtag)){res.writeHead(304,{ETag:fontEtag,'Cache-Control':'private, no-cache'});return res.end();}
       const fontFile=await readCompanyFontBytes(fontMatch.id,{root});
       if(!fontFile)return json(res,404,{error:'字体不存在'});
-      res.writeHead(200,{'Content-Type':fontFile.contentType,'Content-Length':fontFile.bytes.length,'X-Content-Type-Options':'nosniff'});
+      res.writeHead(200,{'Content-Type':fontFile.contentType,'Content-Length':fontFile.bytes.length,'X-Content-Type-Options':'nosniff','Cache-Control':'private, no-cache',...(fontEtag?{ETag:fontEtag}:{})});
       return res.end(fontFile.bytes);
     }
     if (url.pathname.startsWith("/api/")) {
         if(!['GET','HEAD'].includes(req.method)&&url.pathname!=='/api/workbench/recycle-bin/purge')finishMutation=recycleBin.beginMutation();
-        if(url.pathname==='/api/workbench/recycle-bin'&&req.method==='GET')return json(res,200,await recycleBin.list());
-        if(url.pathname==='/api/workbench/recycle-bin/restore'&&req.method==='POST')return json(res,200,await recycleBin.restore(await readBody(req)));
-        if(url.pathname==='/api/workbench/recycle-bin/purge-preview'&&req.method==='POST')return json(res,200,await recycleBin.preview(await readBody(req)));
-        if(url.pathname==='/api/workbench/recycle-bin/purge'&&req.method==='POST')return json(res,200,await recycleBin.purge(await readBody(req)));
+        if(url.pathname.startsWith('/api/workbench/recycle-bin')){
+          const viewer=await currentViewer();
+          if(url.pathname==='/api/workbench/recycle-bin'&&req.method==='GET')return json(res,200,await recycleBin.list(keys=>recycleItemsVisible(keys,viewer)));
+          const input=req.method==='POST'?await readBody(req):{};
+          if(req.method==='POST')await requireRecycleItems(input,viewer);
+          if(url.pathname==='/api/workbench/recycle-bin/restore'&&req.method==='POST')return json(res,200,await recycleBin.restore(input));
+          if(url.pathname==='/api/workbench/recycle-bin/purge-preview'&&req.method==='POST')return json(res,200,await recycleBin.preview(input));
+          if(url.pathname==='/api/workbench/recycle-bin/purge'&&req.method==='POST')return json(res,200,await recycleBin.purge(input));
+        }
         const designMatch=/^\/api\/projects\/([^/]+)\/design-library(?:\/(sources|assets|fonts|colors|default-logo|templates))?(?:\/([^/]+))?(?:\/(use))?$/.exec(url.pathname);
         if(designMatch){
           const [,projectId,area,assetId,action]=designMatch,input=['POST','PATCH','PUT'].includes(req.method)?await readBody(req):{};
+          if(action==='use')await workbenchAccess.requireTask(`core:${input.taskId}`,await currentViewer());
           if(!area&&req.method==='GET')return json(res,200,await projectDesignLibrary.list(projectId));
           if(area==='sources'&&req.method==='GET')return json(res,200,await projectDesignLibrary.sources(projectId));
           if(area==='assets'&&!assetId&&req.method==='POST')return json(res,201,await projectDesignLibrary.add(projectId,input));
@@ -3182,9 +3275,22 @@ export async function handleRequest(req, res) {
           return json(res,405,{error:'不支持此项目素材操作'});
         }
         if(url.pathname==='/api/workbench/asset-library'&&req.method==='GET')return json(res,200,await assetLibraryCleanup.status());
-        if(url.pathname==='/api/workbench/asset-library/index'&&req.method==='GET')return json(res,200,await assetLibraryCleanup.index());
-        if(url.pathname==='/api/workbench/asset-library/delete-preview'&&req.method==='POST')return json(res,200,await assetLibraryCleanup.preview(await readBody(req)));
-        if(url.pathname==='/api/workbench/asset-library/delete'&&req.method==='POST')return json(res,200,await assetLibraryCleanup.erase(await readBody(req)));
+        if(url.pathname==='/api/workbench/asset-library/index'&&req.method==='GET'){
+          const viewer=await currentViewer(),index=await assetLibraryCleanup.index(),assets=[];
+          for(const asset of index.assets)if(await assetVisible(asset,viewer))assets.push(asset);
+          return json(res,200,{...index,assets});
+        }
+        if((url.pathname==='/api/workbench/asset-library/delete-preview'||url.pathname==='/api/workbench/asset-library/delete')&&req.method==='POST'){
+          // 删资产库里的东西（先进回收站）：任务里的要是自己的任务；项目素材只给管理员。
+          const viewer=await currentViewer(),input=await readBody(req),index=await assetLibraryCleanup.index(),byId=new Map(index.assets.map(asset=>[assetLibraryKey(asset),asset]));
+          for(const id of Array.isArray(input.ids)?input.ids:[]){
+            const asset=byId.get(id);if(!asset)continue;
+            const keys=(asset.sources||[]).map(source=>source.taskKey).filter(Boolean);
+            if(!keys.length&&!viewer.admin)return json(res,403,{error:'项目素材库里的素材只有管理员可以删除，请联系管理员',code:'ADMIN_REQUIRED'});
+            if(keys.length&&!(await assetVisible(asset,viewer)))return json(res,403,{error:'选中的素材里有不是你的任务的，请刷新后重新选择'});
+          }
+          return json(res,200,url.pathname.endsWith('/delete')?await assetLibraryCleanup.erase(input):await assetLibraryCleanup.preview(input));
+        }
         if(await workbenchDownloads(req,res,url))return;
         if (url.pathname.startsWith('/api/ad-resources')) { await adResourcesHandler(req,res,url); return; }
         if (url.pathname.startsWith('/api/channel-resources')) { await channelResourcesHandler(req,res,url); return; }
@@ -3204,18 +3310,19 @@ export async function handleRequest(req, res) {
     }
     if(await adAiPreviewHandler(req,res,url))return;
     const storageMatch = matchRoute(url.pathname, "/storage/:taskId/:bucket/:name");
-    if (storageMatch) return serveFile(res, safeChild(storageDir, storageMatch.taskId, storageMatch.bucket, storageMatch.name));
+    if (storageMatch) return serveFile(res, safeChild(storageDir, storageMatch.taskId, storageMatch.bucket, storageMatch.name), req, url);
     const adReferenceMatch = matchRoute(url.pathname, "/ad-reference/:name");
     if (adReferenceMatch && /^row-\d{4}-\d{2}\.(?:jpe?g|png|webp)$/i.test(adReferenceMatch.name))
-      return serveFile(res, safeChild(runtimeDir, 'ad-resources', 'references', adReferenceMatch.name));
+      return serveFile(res, safeChild(runtimeDir, 'ad-resources', 'references', adReferenceMatch.name), req, url);
     const channelSampleMatch = matchRoute(url.pathname, "/channel-sample/:folder/:name");
     if (channelSampleMatch && ['candidates-v1','candidates-v2','scene-previews-v1','psd-scenes'].includes(channelSampleMatch.folder))
-      return serveFile(res, safeChild(channelSampleDir, channelSampleMatch.folder, channelSampleMatch.name));
+      return serveFile(res, safeChild(channelSampleDir, channelSampleMatch.folder, channelSampleMatch.name), req, url);
     if (channelSampleMatch?.folder === 'source' && /^image[1-6]\.(?:png|jpe?g)$/i.test(channelSampleMatch.name))
-      return serveFile(res, safeChild(channelSampleDir, channelSampleMatch.name));
+      return serveFile(res, safeChild(channelSampleDir, channelSampleMatch.name), req, url);
     const requested = url.pathname === "/" ? "index.html" : url.pathname.slice(1);
     const filePath = safeChild(publicDir, requested);
-    await serveFile(res, filePath);
+    if (requested === "index.html") return await modulePreloads.serveIndex(req, res, filePath);
+    await serveFile(res, filePath, req, url);
   } catch (error) {
     if (!error.status || error.status >= 500) console.error(error);
     // 登录失效按平台的格式回（页面据此提示重新连接，不自动刷新）；其他错误带上 code 方便页面区分。

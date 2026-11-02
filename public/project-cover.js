@@ -1,3 +1,4 @@
+import {previewSrc} from './image-preview.js';
 const imageMime=/^image\/(?:png|jpe?g|webp|gif|avif|bmp|svg\+xml|x-icon|vnd\.microsoft\.icon)$/i;
 const imageExtension=/\.(?:png|jpe?g|webp|gif|avif|bmp|svg|ico)(?:[?#]|$)/i;
 const nonImageExtension=/\.(?:ttf|otf|woff2?|psd|psb|pdf|zip)(?:[?#]|$)/i;
@@ -49,7 +50,8 @@ export async function mountProjectCover(element,candidates,{ImageClass=globalThi
   const image=new ImageClass();image.decoding='async';
   const ready=await new Promise(resolve=>{
    image.onload=()=>resolve(Boolean(image.naturalWidth&&image.naturalHeight));
-   image.onerror=()=>resolve(false);image.src=candidate.url;
+   // 卡片上的封面只要缩小过的预览（image-preview.js）；没有预览的地址原样用。
+   image.onerror=()=>resolve(false);image.src=previewSrc(candidate.url,240);
   });
   if(!element.isConnected)return null;
   if(!ready)continue;

@@ -1,3 +1,4 @@
+import {previewSrc} from './image-preview.js';
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const stageModules=['store-preorder','store-launch','icon-preorder','icon-launch'];
 const moduleLabels={'store-preorder':'商店图 · 预约期','store-launch':'商店图 · 测试与首发期','icon-preorder':'ICON · 预约期','icon-launch':'ICON · 测试与首发期','channel-resources':'渠道资源位','ad-resources':'投放资源位'};
@@ -50,7 +51,7 @@ export function createSpecCenterNavigation({data,api,onSelect,onSelectionChange=
  const jobs=new Map();
  async function load(force=false){
   if(catalogPromise)return catalogPromise;
-  const sources=[...stageModules.map(module=>[module,`/api/${module}/specs`]),['channel-resources','/api/channel-resources/rules'],['ad-resources','/api/ad-resources']];
+  const sources=[...stageModules.map(module=>[module,`/api/${module}/specs`]),['channel-resources','/api/channel-resources/rules'],['ad-resources','/api/ad-resources?view=specs']];
   const needed=sources.filter(([module])=>force||!catalogs[module]);
   if(!needed.length)return catalogs;
   catalogPromise=(async()=>{const outcomes=await Promise.allSettled(needed.map(async([module,url])=>[module,await api(url)]));outcomes.forEach((result,index)=>{const module=needed[index][0];if(result.status==='fulfilled'){catalogs[module]=result.value[1];delete errors[module];}else errors[module]=result.reason?.message||'读取失败';});return catalogs;})();
@@ -126,7 +127,7 @@ export function createSpecCenterNavigation({data,api,onSelect,onSelectionChange=
   }
   const image=localImage(row.referenceUrl);
   const linked=module==='channel-resources'?findCoreRule(row):null;
-  return `<div class="sc-rule-layout"><section class="sc-rule-section"><h3>基本规格</h3><dl>${fields.join('')}</dl></section><section class="sc-rule-section"><h3>制作要求</h3>${rules.length?rules.map(paragraph).join(''):'<p>按目标尺寸与格式制作，其他内容以本次需求为准。</p>'}${linked?`<button type="button" class="button secondary" data-sc-core-rule="${escapeHtml(linked.id)}">查看模板与区域</button>`:''}</section>${source.length?`<section class="sc-rule-section sc-rule-source"><h3>规范来源</h3>${source.map(paragraph).join('')}</section>`:''}${image?`<section class="sc-rule-section sc-rule-source"><h3>参考示意</h3><img class="sc-rule-reference" src="${escapeHtml(image)}" alt="${escapeHtml(row._title)}参考示意"/></section>`:''}</div>`;
+  return `<div class="sc-rule-layout"><section class="sc-rule-section"><h3>基本规格</h3><dl>${fields.join('')}</dl></section><section class="sc-rule-section"><h3>制作要求</h3>${rules.length?rules.map(paragraph).join(''):'<p>按目标尺寸与格式制作，其他内容以本次需求为准。</p>'}${linked?`<button type="button" class="button secondary" data-sc-core-rule="${escapeHtml(linked.id)}">查看模板与区域</button>`:''}</section>${source.length?`<section class="sc-rule-section sc-rule-source"><h3>规范来源</h3>${source.map(paragraph).join('')}</section>`:''}${image?`<section class="sc-rule-section sc-rule-source"><h3>参考示意</h3><img class="sc-rule-reference" src="${escapeHtml(previewSrc(image,640))}" alt="${escapeHtml(row._title)}参考示意"/></section>`:''}</div>`;
  }
  async function usageRows(module,row){
   if(module==='channel-resources')return [];

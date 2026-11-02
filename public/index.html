@@ -40,7 +40,7 @@
     <link rel="stylesheet" href="/platform/platform.css" />
     <script src="/platform/wg-shim.js"></script>
   </head>
-  <body>
+  <body class="wb-booting home-mode workspace-shell-mode overview-mode">
     <div class="app-shell">
       <aside class="sidebar">
         <div class="brand-mark"><span>▱</span><div class="brand-copy">素材自动化<br />生产工作台</div><button id="sidebar-toggle" type="button" aria-label="收起侧栏" title="收起侧栏">‹</button></div>
@@ -88,17 +88,22 @@
       <main>
         <header class="topbar">
           <div class="topbar-main">
+            <button id="topbar-back" class="topbar-back" type="button" hidden title="回到上一个页面"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>返回</button>
             <div class="topbar-title"><p class="eyebrow">DESIGN PRODUCTION WORKBENCH</p><h1 id="page-title">首页</h1></div>
             <button id="workspace-search-toggle" class="workspace-search-toggle" type="button" aria-label="全站搜索" title="全站搜索" aria-expanded="false" aria-controls="workspace-search-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button>
             <div id="workspace-search-panel" class="workspace-search-panel" hidden><label class="topbar-search">⌕<input id="topbar-search-input" aria-label="全站搜索" placeholder="搜索项目、任务或资源位" /></label></div>
           </div>
           <div class="topbar-account">
             <button class="topbar-notification" hidden id="topbar-notification" type="button" aria-label="消息通知"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" /></svg><i></i></button>
-            <button class="topbar-user-button" id="topbar-user-button" type="button" aria-expanded="false"><span class="avatar" data-wb-avatar>设</span><b data-wb-user>设计师</b><span>⌄</span></button>
-            <div class="topbar-user-menu" id="topbar-user-menu" hidden><b data-wb-user>设计师</b><small data-wb-env>本机运行</small><small data-wb-storage>项目与素材保存在本机 data/runtime</small></div>
+            <button class="topbar-user-button" id="topbar-user-button" type="button" aria-expanded="false"><span class="avatar" data-wb-avatar></span><b data-wb-user></b><span>⌄</span></button>
+            <div class="topbar-user-menu" id="topbar-user-menu" hidden><b data-wb-user></b><small data-wb-env>本机运行</small><small data-wb-storage>项目与素材保存在本机 data/runtime</small></div>
+            <script>
+              // 上次登录的名字先显示出来（platform/wg-shim.js 记下的），不再先闪一下“设计师”；读到账号后会再核对一次。
+              try { const name = localStorage.getItem('wb-user-name'); if (name) { document.querySelectorAll('[data-wb-user]').forEach(node => { node.textContent = name; }); document.querySelectorAll('[data-wb-avatar]').forEach(node => { node.textContent = name.slice(0, 1); }); } } catch {}
+            </script>
           </div>
         </header>
-        <section id="app-content" class="content"></section>
+        <section id="app-content" class="content"><p class="wb-boot-loading" role="status">正在打开工作台…</p></section>
       </main>
     </div>
 
@@ -208,7 +213,7 @@
     <link rel="stylesheet" href="/community-material-fonts.css?v=20261021-direct-font" />
   <link rel="stylesheet" href="/community-text-cleanup.css?v=20261021-text-cleanup" />
   <link rel="stylesheet" href="/target-size-actions.css?v=20261029-direct-sizes" />
-  <script type="module" src="/app.js?v=20261030-button-text-layer"></script>
+  <script type="module" src="/app.js"></script>
   </body>
 </html>
 

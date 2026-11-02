@@ -1,4 +1,5 @@
-import {taskStatusBucket, statusLabels} from '/workbench-model.js?v=20261022-bulk-create';
+import {previewSrc} from './image-preview.js';
+import {taskStatusBucket, statusLabels} from '/workbench-model.js';
 
 const esc = value => String(value ?? '').replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
 
@@ -108,7 +109,7 @@ export function mountTaskTypeWorkbench(content, {
       const project = projects.get(task.archiveProjectId??task.projectId) || '未归档';
       const count = Array.isArray(task.targetTemplateIds) ? task.targetTemplateIds.length : 0;
       return `<article class="ttw-task-card"><button type="button" data-task-type-open="${esc(task.id)}" aria-label="打开任务：${esc(title)}">
-        <span class="ttw-task-cover">${cover ? `<img src="${esc(cover)}" alt="" loading="lazy">` : '<span class="ttw-cover-placeholder">暂无预览</span>'}</span>
+        <span class="ttw-task-cover">${cover ? `<img src="${esc(previewSrc(cover,330))}" alt="" loading="lazy">` : '<span class="ttw-cover-placeholder">暂无预览</span>'}</span>
         <span class="ttw-task-info"><span class="ttw-task-title"><strong title="${esc(title)}">${esc(title)}</strong><small>更新于 ${dateLabel(task.updatedAt || task.createdAt)}</small></span>
         <span class="ttw-task-context" title="${esc(project)}">${esc(project)} · ${task.customCanvas?`${task.customCanvas.width} × ${task.customCanvas.height} px`:count+' 个资源位'}</span>
         <span class="ttw-status ttw-status-${state}">${statusLabels[state]}</span></span>

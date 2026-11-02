@@ -1,4 +1,4 @@
-import {communityArtworkTargetPending,communityTargetHasComposition,communityTargetReviewMatches} from './community-artwork-state.js?v=20261022-reviewed-suite';
+import {communityArtworkTargetPending,communityTargetHasComposition,communityTargetReviewMatches} from './community-artwork-state.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function communityExtensionProgress(task,template){
  const run=task.communityGeneration||{},sync=task.communityTargetSync;if(run.workflow!=='layered-reflow-v1'&&!sync)return '';

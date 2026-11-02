@@ -47,8 +47,40 @@
     } catch { return false; }
   }
 
+  // 记下页面最近上传的大文件（PSD、大图）：服务器要请浏览器计算这个文件时（解析 PSD 图层等），
+  // local-compute/client.mjs 先看这里有没有大小和内容摘要都一样的，有就直接用，不再从服务器下载一遍（出口只有 1.5 MB/s）。
+  // 只记 File/Blob 的引用（选的文件在硬盘上，不占内存），最多 4 个、两小时内的。
+  const recentUploads = [];
+  function rememberUpload(body) {
+    const blobs = body instanceof Blob ? [body] : body instanceof FormData ? [...body.values()].filter(value => value instanceof Blob) : [];
+    for (const file of blobs) {
+      if (file.size < 1024 * 1024 || recentUploads.some(entry => entry.file === file)) continue;
+      recentUploads.unshift({file, at: Date.now(), sha256: null});
+      recentUploads.length = Math.min(recentUploads.length, 4);
+    }
+  }
+  window.wbRecentUploads = () => recentUploads.filter(entry => Date.now() - entry.at < 2 * 60 * 60 * 1000);
+
+  // 每个标签页一个编号，工作台的请求都带上：服务器把这次操作要的浏览器计算和“确认消耗积分”交给发起的这个标签页，
+  // 不会弹到你没在看的另一个标签页上（platform/local-compute.mjs）。
+  const pageId = (crypto.randomUUID?.() || `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 12)}`).replace(/[^A-Za-z0-9-]/g, '');
+  window.wbPageId = pageId;
+  const withPage = (input, init) => {
+    const headers = new Headers(init?.headers || (input instanceof Request ? input.headers : undefined));
+    headers.set('X-Workbench-Page', pageId);
+    return {...init, headers};
+  };
+  const nativeOpen = XMLHttpRequest.prototype.open, nativeSend = XMLHttpRequest.prototype.send;
+  XMLHttpRequest.prototype.open = function (method, url, ...rest) { this.wbApi = isApi(String(url)); return nativeOpen.call(this, method, url, ...rest); };
+  XMLHttpRequest.prototype.send = function (body) {
+    try { rememberUpload(body); if (this.wbApi) this.setRequestHeader('X-Workbench-Page', pageId); } catch {}
+    return nativeSend.call(this, body);
+  };
+
   window.fetch = async function (input, init) {
     if (!isApi(input)) return nativeFetch(input, init);
+    try { rememberUpload(init?.body); } catch {}
+    init = withPage(input, init);
     const method = String(init?.method || (typeof input === 'object' && input.method) || 'GET').toUpperCase();
     for (let attempt = 0; ; attempt++) {
       const response = await nativeFetch(input, init);
@@ -78,10 +110,11 @@
     state.user = status.user;
     document.documentElement.dataset.wbMode = status.mode;
     const apply = () => {
-      if (status.user?.name) {
-        document.querySelectorAll('[data-wb-user]').forEach(node => { node.textContent = status.user.name; });
-        document.querySelectorAll('[data-wb-avatar]').forEach(node => { node.textContent = status.user.name.slice(0, 1); });
-      }
+      // 记下名字，下次打开页面直接显示（index.html 里读）；本机不登录时照旧叫“设计师”。
+      const name = status.user?.name || '设计师';
+      try { if (status.user?.name) localStorage.setItem('wb-user-name', status.user.name); else localStorage.removeItem('wb-user-name'); } catch {}
+      document.querySelectorAll('[data-wb-user]').forEach(node => { node.textContent = name; });
+      document.querySelectorAll('[data-wb-avatar]').forEach(node => { node.textContent = name.slice(0, 1); });
       document.querySelectorAll('[data-wb-env]').forEach(node => { node.textContent = status.mode === 'platform' ? '微光平台' : '本机运行'; });
       document.querySelectorAll('[data-wb-storage]').forEach(node => {
         node.textContent = status.mode === 'platform' ? '项目与素材存在工作台自己的数据库里，全组共用' : '项目与素材保存在本机 data/runtime';

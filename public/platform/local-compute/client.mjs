@@ -37,6 +37,22 @@ const panel = (() => {
 function claimHeaders(job, extra = {}) {
   return {'X-Compute-Claim': job.claim, ...extra};
 }
+
+const hex = buffer => [...new Uint8Array(buffer)].map(byte => byte.toString(16).padStart(2, '0')).join('');
+// 页面刚上传过、手里还有的文件（platform/wg-shim.js 记下的，例如刚传的 PSD）：大小和内容摘要（服务器给的 sha256）
+// 都对上就直接用，不再从服务器下载一遍。对不上或算不了摘要就照旧下载。
+async function localCopy(input) {
+  if (!input.sha256 || !globalThis.crypto?.subtle) return null;
+  for (const entry of window.wbRecentUploads?.() || []) {
+    if (entry.file.size !== input.size || (entry.sha256 && entry.sha256 !== input.sha256)) continue;
+    try {
+      const buffer = await entry.file.arrayBuffer();
+      entry.sha256 ||= hex(await crypto.subtle.digest('SHA-256', buffer));
+      if (entry.sha256 === input.sha256) return buffer;
+    } catch {}
+  }
+  return null;
+}
 async function send(job, action, body) {
   await fetch(`/api/local-compute/jobs/${job.id}/${action}`, {
     method: 'POST', headers: claimHeaders(job, {'Content-Type': 'application/json'}), body: JSON.stringify(body || {}),
@@ -90,6 +106,8 @@ async function runCompute(job) {
     for (const input of job.inputs) {
       if (stopped) throw new Error('cancelled');
       panel.stage(`读取输入文件 ${++index}/${job.inputs.length}`, 0, 0);
+      const local = await localCopy(input);
+      if (local) { files.set(input.path, local); continue; }
       const response = await fetch(`/api/local-compute/jobs/${job.id}/input/${input.n}`, {headers: claimHeaders(job), cache: 'no-store'});
       if (!response.ok) throw new Error(`读取输入文件失败（HTTP ${response.status}）`);
       files.set(input.path, await response.arrayBuffer());
@@ -176,7 +194,9 @@ async function loop() {
   for (;;) {
     const started = Date.now();
     try {
-      const response = await fetch('/api/local-compute/next?wait=25', {cache: 'no-store'});
+      // wait 是毫秒：没有任务时服务器把请求留 25 秒，有任务立刻回（以前写成 25，等于每秒问一次）。
+      // 带上这个标签页的编号（platform/wg-shim.js）：在这里发起的计算和确认框先交给这里。
+      const response = await fetch('/api/local-compute/next?wait=25000', {cache: 'no-store', headers: {'X-Workbench-Page': window.wbPageId || ''}});
       if (response.status === 401) { await sleep(30000); continue; }
       if (!response.ok) { await sleep(5000); continue; }
       const {job} = await response.json();

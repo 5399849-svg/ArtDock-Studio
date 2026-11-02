@@ -1,4 +1,4 @@
-import {escapeHtml as esc} from './workbench-model.js?v=20261028-resize-cleanup-final';
+import {escapeHtml as esc} from './workbench-model.js';
 const size=n=>n>=1073741824?`${(n/1073741824).toFixed(2)} GB`:n>=1048576?`${(n/1048576).toFixed(2)} MB`:n>=1024?`${(n/1024).toFixed(1)} KB`:`${n||0} B`;
 const icon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14M10 11v6m4-6v6"/></svg>';
 export async function mountRecycleBin(content,{api,toast,onChanged,isActive,projects=[]}){

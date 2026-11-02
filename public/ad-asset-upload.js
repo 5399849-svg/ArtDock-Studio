@@ -1,4 +1,4 @@
-import {validateAdUploadFile} from './ad-upload-policy.js?v=20261015-psd500';
+import {validateAdUploadFile} from './ad-upload-policy.js';
 
 export function adAssetUploadProgressText(file, progress) {
   if (progress.phase === 'processing') return /\.psd$/i.test(file.name) ? 'PSD 解析中…' : '正在处理素材…';

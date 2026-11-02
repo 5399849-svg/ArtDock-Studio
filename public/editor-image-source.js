@@ -1,4 +1,4 @@
-import {loadCommunityObjectLayerImages} from './community-object-layers.js?v=20261022-object-canvas';
+import {loadCommunityObjectLayerImages} from './community-object-layers.js';
 // Photoshop source documents remain downloadable assets, but cannot be decoded by <img>.
 export function isRenderableImageAsset(asset) {
   if (!asset?.url) return false;

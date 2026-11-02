@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import os from 'node:os';
+import {Readable} from 'node:stream';
+import {createChannelResourcesHandler} from '../lib/channel-resources-server.mjs';
+test('copying a channel project creates fresh drafts for its full set of dimensions without copying approvals or starting generation',async t=>{
+ const runtimeDir=await fs.mkdtemp(path.join(os.tmpdir(),'home-task-copy-')),storageDir=path.join(runtimeDir,'storage');t.after(()=>fs.rm(runtimeDir,{recursive:true,force:true,maxRetries:4,retryDelay:100}));await fs.mkdir(storageDir);await fs.mkdir(path.join(runtimeDir,'channel-analysis','huawei-current'),{recursive:true});await fs.writeFile(path.join(runtimeDir,'channel-analysis','huawei-current','华为资源位规则清单.csv'),'编号,尺寸,资源位\n');
+ const item=(id,project,width,height)=>({id,project,width,height,resource:'社区',format:'PNG',sourceCopy:'每日奖励',requirements:'保留标题位置',sourceImages:[{url:'/storage/original.png'}],versions:[{file:'done.png'}],review:{approved:true}}),original={id:'original',channel:'huawei',name:'原任务',items:[item('one','游戏A',900,383),item('two','游戏A',984,562),item('three','游戏B',512,512)]};await fs.writeFile(path.join(runtimeDir,'channel-resource-jobs.json'),JSON.stringify([original]));let generated=0;const handler=await createChannelResourcesHandler({root:process.cwd(),runtimeDir,storageDir,generateImage:()=>{generated++;throw Error('No generation expected');}}),request=async(method,url,body)=>{let status,text;const req=Readable.from(body?[Buffer.from(JSON.stringify(body))]:[]);req.method=method;await handler(req,{writeHead:code=>status=code,end:b=>text=String(b)},new URL(url,'http://localhost'));return{status,body:JSON.parse(text)};};
+ const copied=await request('POST','/api/channel-resources/batches/original/projects/'+encodeURIComponent('游戏A')+'/copy',{name:'游戏A 副本',projectId:''});assert.equal(copied.status,201);assert.equal(copied.body.itemCount,2);const rows=JSON.parse(await fs.readFile(path.join(runtimeDir,'channel-resource-jobs.json'),'utf8')),copy=rows.find(b=>b.id===copied.body.id);assert.deepEqual(rows.find(b=>b.id==='original'),original);assert.deepEqual(copy.items.map(i=>[i.width,i.height,i.sourceCopy,i.requirements]),[[900,383,'每日奖励','保留标题位置'],[984,562,'每日奖励','保留标题位置']]);assert.ok(copy.items.every(i=>i.id.startsWith(copy.id)&&i.versions.length===0&&i.sourceImages.length===0&&i.review===null));assert.equal(generated,0);
+});

@@ -1,6 +1,7 @@
-import {bindProjectLogoChoice} from './project-logos.js?v=20261023-project-create';
+import {previewSrc} from './image-preview.js';
+import {bindProjectLogoChoice} from './project-logos.js';
 const launch = new URL(import.meta.url).searchParams.get('phase') === 'launch';
-import { psdEditor, bindPsdEditors } from './store-psd-editor.js?v=20261022-project-logo-reuse-v2';
+import { psdEditor, bindPsdEditors } from './store-psd-editor.js';
 const psdImportDrafts = new Map();
 const state = { config: null, projects:[], jobs: [], selectedJobId: "", selectedSpec: "", onlyWarnings:false, sourceExpanded:{}, editingOutput: "", pollTimer: null, busy: false, isActive: () => true };
 
@@ -38,7 +39,7 @@ function batchUploadCard(current, variant) {
   const sources = (current?.sources || []).filter((item) => item.variant === variant).sort((a, b) => a.page - b.page);
   const previews = Array.from({ length: 6 }, (_, index) => {
     const source = sources.find((item) => item.page === index + 1);
-    return `<li>${source?.url ? `<img src="${source.url}" alt="${label}第${index + 1}张">` : `<span>${index + 1}</span>`}<small>${source ? esc(source.name) : `第${index + 1}张`}</small></li>`;
+    return `<li>${source?.url ? `<img src="${previewSrc(source.url, 120)}" alt="${label}第${index + 1}张">` : `<span>${index + 1}</span>`}<small>${source ? esc(source.name) : `第${index + 1}张`}</small></li>`;
   }).join("");
   return `<article class="store-batch-card ${sources.length === 6 ? "complete" : ""}"><header><div><b>${label}六张源图</b><small>${ratio}</small></div><em>${sources.length}/6</em></header><ol>${previews}</ol><label class="store-batch-upload">${sources.length === 6 ? `重新上传${label}六张` : `一次上传${label}六张`}<input type="file" multiple accept="image/png,image/jpeg,image/webp" data-source-batch="${variant}"></label><p>选择6个独立文件；优先按文件名末尾 -1 至 -6 排序，否则按文件名数字顺序排列。</p></article>`;
 }
@@ -70,7 +71,7 @@ function outputGallery(current) {
     const layers = layerSet?.manifest?.layers || [];
     const layerStage = layers.length ? `<div class="store-layer-stage" style="aspect-ratio:${spec.width}/${spec.height}">${layerOrder.map((id) => { const layer = layers.find((item) => item.id === id); const value = layerAdjustment[id] || defaultLayers()[id]; return layer?.url && value.visible !== false ? `<img data-layer-preview="${id}" data-layer-kind="${id}" src="${layer.url}" style="--lx:${value.x};--ly:${value.y};--ls:${value.scale / 100}">` : ""; }).join("")}</div>` : "";
     const advancedPanel = layerSet?.status === "ready" ? `<form class="store-layer-panel" data-layer-form data-channel="${esc(spec.channel)}" data-width="${spec.width}" data-height="${spec.height}" data-page="${index + 1}">${layerStage}<div class="store-layer-note"><b>原JPG像素拆层</b><span>背景、人物、截图、文案、Logo 可分别移动和等比缩放。数值框可精确输入，修改后预览立即更新。</span></div><div class="store-layer-list">${layerOrder.map((id) => { const value = layerAdjustment[id] || defaultLayers()[id]; const available = layers.find((item) => item.id === id)?.visible !== false; const control = (key, label, min, max, suffix = "") => `<label>${label}<input class="store-layer-number" type="number" data-number-for="${id}.${key}" min="${min}" max="${max}" step="1" value="${value[key]}"><input type="range" name="${id}.${key}" min="${min}" max="${max}" value="${value[key]}" aria-label="${layerLabels[id]}${label}"><small>${suffix}</small></label>`; return `<fieldset data-layer-row="${id}" ${available ? "" : "disabled"}><legend>${layerLabels[id]}${id === "background" && index + 1 > 1 ? " · 第2–6张共用底图" : ""}</legend><label><input type="checkbox" name="${id}.visible" ${value.visible !== false ? "checked" : ""}>显示</label>${control("x", "X", -100, 100)}${control("y", "Y", -100, 100)}${control("scale", "缩放", 40, 240, "%")}</fieldset>`; }).join("")}</div><label class="store-layer-sync"><input type="checkbox" name="syncPages" ${index + 1 > 1 ? "checked" : "disabled"}>将当前图层参数同步到第2–6张（背景始终共用）</label><div class="store-layer-actions"><button type="button" data-layer-reset>恢复全部图层</button><button class="button primary" type="submit">保存分层构图</button></div></form>` : `<div class="store-layer-prepare"><p>这个尺寸比例改动较大。系统将一次性拆分并重绘整套六张，避免同一套混用不同背景。</p><button class="button primary" data-layer-prepare data-channel="${esc(spec.channel)}" data-width="${spec.width}" data-height="${spec.height}" data-page="${index + 1}">${layerSet?.status === "running" ? "正在拆分整套六张…" : "拆分整套六张并进入调整"}</button></div>`;
-    return `<article class="store-output-card ${editing ? "editing" : ""}"><div class="store-output-image" style="aspect-ratio:${spec.width}/${spec.height}">${output ? `<img src="${output.url}?v=${current.version}" alt="${esc(spec.channel)} ${spec.width}×${spec.height} 第${index + 1}张">${safeTop ? `<i class="store-safe-zone top" style="height:${safeTop}%"></i><i class="store-safe-zone bottom" style="height:${safeBottom}%"></i>` : ""}` : `<span>第${index + 1}张待生成</span>`}</div><b>${spec.width}x${spec.height}-${index + 1}.jpg</b><small>${output ? `${Math.ceil(output.bytes / 1024)}KB / ${spec.maxKB}KB${output.quality ? ` · Q${output.quality}` : ""}${output.layerMethod?.startsWith("psd-direct") ? " · PSD真实图层" : output.layerMethod ? " · 原图像素分层" : output.outpaintApplied ? " · Nano真实扩图" : ""}` : ""}</small>${output?.warnings?.length ? `<p>${output.warnings.map(esc).join("；")}</p>` : ""}${output ? `<button class="store-adjust-toggle" ${current.status !== "complete" ? "disabled" : ""} data-store-adjust="${esc(outputKey)}">${editing ? "收起调整" : advanced ? "高级分层调整" : "调整画面"}</button>` : ""}${editing && current.status === "complete" ? (layerSet?.method?.startsWith("psd-direct") ? psdEditor(current, output, layerSet, spec) : advanced ? advancedPanel : basicPanel) : ""}</article>`;
+    return `<article class="store-output-card ${editing ? "editing" : ""}"><div class="store-output-image" style="aspect-ratio:${spec.width}/${spec.height}">${output ? `<img src="${previewSrc(`${output.url}?v=${current.version}`, 320)}" alt="${esc(spec.channel)} ${spec.width}×${spec.height} 第${index + 1}张">${safeTop ? `<i class="store-safe-zone top" style="height:${safeTop}%"></i><i class="store-safe-zone bottom" style="height:${safeBottom}%"></i>` : ""}` : `<span>第${index + 1}张待生成</span>`}</div><b>${spec.width}x${spec.height}-${index + 1}.jpg</b><small>${output ? `${Math.ceil(output.bytes / 1024)}KB / ${spec.maxKB}KB${output.quality ? ` · Q${output.quality}` : ""}${output.layerMethod?.startsWith("psd-direct") ? " · PSD真实图层" : output.layerMethod ? " · 原图像素分层" : output.outpaintApplied ? " · Nano真实扩图" : ""}` : ""}</small>${output?.warnings?.length ? `<p>${output.warnings.map(esc).join("；")}</p>` : ""}${output ? `<button class="store-adjust-toggle" ${current.status !== "complete" ? "disabled" : ""} data-store-adjust="${esc(outputKey)}">${editing ? "收起调整" : advanced ? "高级分层调整" : "调整画面"}</button>` : ""}${editing && current.status === "complete" ? (layerSet?.method?.startsWith("psd-direct") ? psdEditor(current, output, layerSet, spec) : advanced ? advancedPanel : basicPanel) : ""}</article>`;
   }).join("");
   return `<div class="store-preview-head"><div><h3>${esc(spec.channel)} ${spec.width}×${spec.height}</h3><span>六张顺序预览 · JPG ≤${spec.maxKB}KB</span></div>${spec.note ? `<small>${esc(spec.note)}</small>` : ""}</div><div class="store-output-gallery">${cards}</div>`;
 }
@@ -117,7 +118,7 @@ function render(content) {
     try { const result = await call(`/api/store-preorder/jobs/${current.id}/psd/import`, {method:'POST',body:JSON.stringify({landscape:content.querySelector('[data-psd-path="landscape"]').value.trim(),portrait:content.querySelector('[data-psd-path="portrait"]').value.trim()})}); replaceJob(result); notify('正在读取 PSD 图层…'); }
     catch(error) {notify(error.message);event.target.disabled=false;}
   };
-  if(current?.projectLogo){const panel=document.createElement('div');panel.className='project-logo-current';panel.innerHTML=`<img src="${esc(current.projectLogo.url)}" alt="项目 Logo"><div><b>${esc(current.projectLogo.name)}</b><small>任务创建时选用的项目 Logo</small></div><a class="button secondary" href="${esc(current.projectLogo.url)}" download="${esc(current.projectLogo.name)}">使用此 Logo 素材</a>`;content.querySelector('.store-main')?.prepend(panel);}
+  if(current?.projectLogo){const panel=document.createElement('div');panel.className='project-logo-current';panel.innerHTML=`<img src="${esc(previewSrc(current.projectLogo.url, 96))}" alt="项目 Logo"><div><b>${esc(current.projectLogo.name)}</b><small>任务创建时选用的项目 Logo</small></div><a class="button secondary" href="${esc(current.projectLogo.url)}" download="${esc(current.projectLogo.name)}">使用此 Logo 素材</a>`;content.querySelector('.store-main')?.prepend(panel);}
   bindProjectLogoChoice(content.querySelector('#store-create-form [name=projectId]'),state.projects,{api:call,businessLineIds:['channel-distribution'],anchor:content.querySelector('#store-create-form').lastElementChild,note:'项目 Logo 已作为独立素材带入，原图中的 Logo 可在制作时保留或替换。'});
   content.querySelector("#store-create-form")?.addEventListener("submit", async (event) => {
     event.preventDefault();if(state.busy)return;
@@ -214,11 +215,14 @@ function startPolling(content, isActive = state.isActive) {
   if (!job() || (job().status !== "running" && !job().candidates?.some(c => c.status === "running"))) return;
   state.pollTimer = setInterval(async () => {
     if (!isActive()) { clearInterval(state.pollTimer); return; }
+    if (document.hidden) return; // 标签页在后台时不问，回到前台接着问
     try {
       const updated = await call(`/api/store-preorder/jobs/${state.selectedJobId}`);
       if (!isActive() || updated.id !== state.selectedJobId) return;
+      const before = state.jobs.find((item) => item.id === updated.id);
       state.jobs = state.jobs.map((item) => item.id === updated.id ? updated : item);
-      if (updated.status !== "complete" || !updated.candidates?.some(c => c.status === "running")) render(content);
+      // 内容没变不重画整页
+      if (JSON.stringify(before) !== JSON.stringify(updated) && (updated.status !== "complete" || !updated.candidates?.some(c => c.status === "running"))) render(content);
       if (updated.status !== "running" && !updated.candidates?.some(c => c.status === "running")) clearInterval(state.pollTimer);
     } catch (error) { notify(error.message); clearInterval(state.pollTimer); }
   }, 1500);
@@ -230,7 +234,7 @@ export async function mountStorePreorder(content, title, isActive = () => true, 
   title.textContent = launch ? "测试和首发商店图" : "预约商店图";
   content.innerHTML = `<div class="store-loading">正在读取商店图规格…</div>`;
   try {
-    const [config, jobs, bootstrap] = await Promise.all([call("/api/store-preorder/specs"), call("/api/store-preorder/jobs"),call("/api/bootstrap").catch(()=>({projects:[]}))]);
+    const [config, jobs, bootstrap] = await Promise.all([call("/api/store-preorder/specs"), call("/api/store-preorder/jobs"),call("/api/bootstrap?tasks=summary").catch(()=>({projects:[]}))]);
     if (!isActive()) return;
     state.config = config; state.jobs = jobs; state.projects=bootstrap.projects||[];
     if (selectedJobId && jobs.some(j=>j.id===selectedJobId)) state.selectedJobId=selectedJobId;

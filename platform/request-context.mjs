@@ -10,11 +10,18 @@ const IDENTITY_TTL_MS = 5 * 60 * 1000;
 export function runWithRequest(req, work) {
   const header = req.headers.authorization;
   const authorization = typeof header === 'string' && /^Bearer [A-Za-z0-9._~+/=-]{20,4096}$/.test(header) ? header : '';
-  return storage.run({authorization, identity: null}, work);
+  // 发起这次请求的是哪个标签页（platform/wg-shim.js 给每个标签页一个编号）：浏览器计算和确认框交给它，不交给别的标签页。
+  const page = req.headers['x-workbench-page'];
+  const pageId = typeof page === 'string' && /^[A-Za-z0-9-]{8,64}$/.test(page) ? page : '';
+  return storage.run({authorization, identity: null, pageId}, work);
 }
 
 export function currentAuthorization() {
   return storage.getStore()?.authorization || '';
+}
+
+export function currentPageId() {
+  return storage.getStore()?.pageId || '';
 }
 
 // 投放、渠道、商店这些批次的接口先记下这次请求属于哪个项目，画布生成据此找归属游戏。

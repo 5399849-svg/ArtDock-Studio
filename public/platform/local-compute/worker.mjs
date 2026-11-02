@@ -20,10 +20,18 @@ const videoWaiters = new Map();
 const post = (type, payload = {}) => self.postMessage({type, ...payload});
 const progress = (stage, loaded, total) => post('progress', {stage, loaded, total});
 
+// 平台网关会给响应加 gzip、去掉 Content-Length：按运行库清单里的文件大小显示进度。
+let manifestSizes = null;
+async function knownSize(url) {
+  manifestSizes ||= fetch('/platform/runtime-manifest.json', {cache: 'no-cache'}).then(response => response.json())
+    .then(manifest => new Map(manifest.files.map(file => [`/platform/${file.path}`, file.size]))).catch(() => new Map());
+  return (await manifestSizes).get(new URL(url, self.location.href).pathname) || 0;
+}
+
 async function fetchBytes(url, label) {
   const response = await fetch(url, {cache: 'no-cache'});
   if (!response.ok) throw new Error(`下载${label}失败（HTTP ${response.status}）`);
-  const total = Number(response.headers.get('content-length')) || 0;
+  const total = (response.headers.get('content-encoding') ? 0 : Number(response.headers.get('content-length'))) || await knownSize(url);
   if (!response.body) return new Uint8Array(await response.arrayBuffer());
   const reader = response.body.getReader(), chunks = [];
   let loaded = 0, last = 0;

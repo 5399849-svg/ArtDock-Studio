@@ -1,4 +1,4 @@
-import {isAdImageUrl} from './ad-image-url.js?v=20261022-ai-preview';
+import {isAdImageUrl} from './ad-image-url.js';
 
 export function createAdAiPreview({root,onState=()=>{}}){
  let state={status:'idle',url:''},request=0,disposed=false,options={},image,message;

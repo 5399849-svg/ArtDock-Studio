@@ -40,7 +40,7 @@ export function groupChannelBatchTasks(data={},links={}) {
    groups.push({module:'channel-resources',key,id:items[0].id,batchId:batch.id,channelId:batch.channel,projectKey:project,project:items[0].taskName||`${project} · ${batch.name||batch.id}`,
     projectId:projectIds.length===1?projectIds[0]:groupProject,projectIds,items:resolvedItems,sources,outputs,status,reviewed:reviewed===items.length,
     channelName:channelNames.get(batch.channel)||batch.channel,itemCount:items.length,progress:candidates,total:items.length,
-    phase:`${reviewed}/${items.length} 已验收 · ${candidates}/${items.length} 有候选`,createdAt:batch.createdAt,
+    phase:`${reviewed}/${items.length} 已验收 · ${candidates}/${items.length} 有候选`,createdAt:batch.createdAt,owner:batch.owner||null,
     updatedAt:latestDate([batch.createdAt,...items.flatMap(item=>[item.updatedAt,item.editor?.updatedAt,item.review?.at,...(item.versions||[]).map(version=>version.createdAt)])]),
     cover:coverItem?.versions?.at(-1)?.url||coverItem?.sourceImages?.[0]?.url});
   }

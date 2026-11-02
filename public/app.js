@@ -1,62 +1,64 @@
 import {drawLayerHandles} from '/source-canvas-transform.js';
+import {previewSrc} from '/image-preview.js';
+import {keepOpenTaskFull} from '/open-task-refresh.js';
 import {folderPickerHtml,bindFolderPickers,pickMaterialFolder} from '/platform/folder-upload.js';
 import {clipboardSourceFiles,quickSourceFile} from '/quick-source-files.js';
 import {usesTaskSizeName,taskSizeImageName} from '/task-output-name.js';
 import {targetSizeRemoveButton,nextTargetAfterRemoval} from '/target-size-actions.js';
-import {mountRecycleBin} from '/workbench-recycle-bin.js?v=20261028-recycle';
+import {mountRecycleBin} from '/workbench-recycle-bin.js';
 import { projectFonts, projectFontFamily, loadProjectFonts, selectedProjectFont, setCompanyFonts, companyFonts, loadFontAsset, popupFontFamily } from '/project-fonts.js';
-import { renderCommunityComposer,hasCommunityMaster } from '/community-composer.js?v=20261020-daylight-reflow';
-import {renderMasterInputs,renderMasterAi,renderMasterWorkspace} from '/community-master-page.js?v=20261028-resize-cleanup-final';
+import { renderCommunityComposer,hasCommunityMaster } from '/community-composer.js';
+import {renderMasterInputs,renderMasterAi,renderMasterWorkspace} from '/community-master-page.js';
 import {assertSourceExport,isSourceAdaptation,drawSourceComposition,sourceComposition} from '/source-adaptation-model.js';
 import {sourceCopyrightKey,sourceCopyrightArtifactsCurrent} from '/source-copyright.js';
 import {renderSourceWorkspace,mountSourceWorkspace} from '/source-adaptation-ui.js';
-import {renderCommunityObjectTabs,renderCommunityObjectInspector,mountCommunityObjects} from '/community-objects.js?v=20261027-prompt-character';
-import {mountCommunityObjectCanvas} from '/community-object-canvas.js?v=20261026-character-scale-stack';
+import {renderCommunityObjectTabs,renderCommunityObjectInspector,mountCommunityObjects} from '/community-objects.js';
+import {mountCommunityObjectCanvas} from '/community-object-canvas.js';
 import {renderSizeMaterials,sourceMaterialDialog,mountSizeMaterials} from '/community-size-materials.js';
-import {drawCommunityObjectLayers,placedCommunityObjects,communityObjectLayerImageKey,loadCommunityObjectLayerImages} from '/community-object-layers.js?v=20261026-character-scale-stack';
-import {illustrationOptions,illustrationCharacterSources} from '/community-illustration-state.js?v=20261027-prompt-character';
-import {mountCharacterReuseMenus,setCharacterReuse,assertReusableCharacterImage} from '/community-character-reuse.js?v=20261027-prompt-character';
-import {drawCommunityCopyright,copyrightColorMode} from '/community-copyright.js?v=20261026-copyright-regular';
-import {renderCommunityProperties,mountCommunityProperties,syncCommunityPropertyControls,communityPropertyKey} from '/community-properties.js?v=20261027-properties-final';
-import {changeCommunityWorkspaceStage,disableDeliveredEditing} from '/community-workspace-navigation.js?v=20261028-resize-cleanup-final';
-import {communityArtworkTargetPending,communityTargetHasComposition} from '/community-artwork-state.js?v=20261028-source-reflow';
+import {drawCommunityObjectLayers,placedCommunityObjects,communityObjectLayerImageKey,loadCommunityObjectLayerImages} from '/community-object-layers.js';
+import {illustrationOptions,illustrationCharacterSources} from '/community-illustration-state.js';
+import {mountCharacterReuseMenus,setCharacterReuse,assertReusableCharacterImage} from '/community-character-reuse.js';
+import {drawCommunityCopyright,copyrightColorMode} from '/community-copyright.js';
+import {renderCommunityProperties,mountCommunityProperties,syncCommunityPropertyControls,communityPropertyKey} from '/community-properties.js';
+import {changeCommunityWorkspaceStage,disableDeliveredEditing} from '/community-workspace-navigation.js';
+import {communityArtworkTargetPending,communityTargetHasComposition} from '/community-artwork-state.js';
 import {isCommunityPopup,popupConfig,popupLayerBox,popupButtonTextBox,drawPopupBackground,drawPopupButton,clipPopupCharacterBottom,assertPopupPixels} from '/community-popup-model.js';
-import {renderPopupPanel,mountPopupPanel} from '/community-popup-panel.js?v=20261028-inherit-master';
-import {communityExtensionProgress} from '/community-extension-progress.js?v=20261022-reviewed-suite';
-import {openMaterialFontPicker} from '/community-material-fonts.js?v=20261028-source-han';
-import {renderTextCleanupTool,openCommunityTextCleanup} from '/community-text-cleanup.js?v=20261021-text-cleanup';
-import {createBannerDesignLayout,renderBannerTitleMask} from '/banner-design-input.js?v=20261015-artwork';
-import {planBannerEdit,applyBannerLayoutOperations,shouldGenerateBannerBacking} from '/banner-edit-plan.js?v=20261015-follow-backing';
-import {chooseBannerFont,bannerTypographyTheme} from '/banner-font-direction.js?v=20261015-artwork';
-import {createWorkbench} from '/workbench-management.js?v=20261028-task-thumbnails';
-import {openProjectMaterialPicker} from '/project-design-center.js?v=20261028-resize-cleanup-final';
-import {taskStatus,taskStatusBucket} from '/workbench-model.js?v=20261028-resize-cleanup-final';
-import {homeTaskMenu,copyModuleTaskSetup} from '/home-task-menu.js?v=20261028-task-menu';
-import {openTaskRename} from '/task-rename.js?v=20261022-task-name-logo-range';
-import {mountDashboard,mountBusinessHub,mountBusinessOverview,businesses} from '/home-dashboard.js?v=20261028-task-menu';
-import {mountTaskTypeWorkbench} from '/task-type-workbench.js?v=20261028-resize-cleanup-final';
-import {openCustomCanvasTask,openCustomCanvasResize} from '/custom-canvas.js?v=20261028-resize-cleanup-final';
-import {customCanvasTemplate} from '/custom-canvas-model.js?v=20261028-resize-cleanup-final';
-import {customCanvasSpec} from '/custom-canvas-model.js?v=20261028-resize-cleanup-final';
-import {renderTargetSizeDialog,bindTargetSizeDialog} from '/target-size-dialog.js?v=20261028-custom-targets';
-import {mountPhaseWorkbench} from '/phase-workbench.js?v=20261015-consolidation';
-import {createSpecCenterNavigation,normalizeSpecSelection} from '/spec-center-navigation.js?v=20261015-consolidation';
-import { protectedComposition, drawRegisteredComposite, drawFeatheredOriginal } from "/outpaint-composite.js?v=20260911-universal-feather";
-import { openRegionEditor } from "/region-editor.js?v=20260907-region-editor";
-import { resolveProductionScope, selectProductionTemplates } from "/production-scope.js?v=20260908-intent-scope-2";
-import { transformButtonPixels } from "/button-state.js?v=20260909-mumu-button-original-text";
-import { coverPlacement, findForegroundOutput, fitSubjectToBreakout, isProductionForeground, keepImageAspect } from "/breakout-layer.js?v=20260915-dual-popup-layers-3";
-import { mountStorePreorder } from "/store-preorder.js?v=20261023-project-create";
-import { mountIconPreorder as mountIconLaunch } from '/icon-preorder.js?phase=launch&v=20261023-project-create';
-import { mountStorePreorder as mountStoreLaunch } from '/store-preorder.js?phase=launch&v=20261023-project-create';
-import { mountIconPreorder } from "/icon-preorder.js?v=20261023-project-create";
-import { mountChannelResources } from "/channel-resources.js?v=20261023-project-create";
-import { mountAdResources } from "/ad-resources.js?v=20261023-project-create";
-import { normalizeElementEffects, drawElementWithEffects } from "/element-effects.js?v=20261009-flip";
-import { remapCommunityLayer, remapCommunitySubtitleBacking } from "/community-auto-layout.js?v=20261015-artwork";
-import { normalizeSubtitleBacking, createSubtitleBackingLayout, drawSubtitleBacking } from '/subtitle-backing.js?v=20261015-conversation';
-import { measureNativeCopy, drawNativeCopy, defaultNativeCopyEffects } from '/native-copy-layer.js?v=20261015-follow-backing-v2';
-import { isRenderableImageAsset, preferredSourceAsset, loadEditorImages } from '/editor-image-source.js?v=20261028-source-reflow';
+import {renderPopupPanel,mountPopupPanel} from '/community-popup-panel.js';
+import {communityExtensionProgress} from '/community-extension-progress.js';
+import {openMaterialFontPicker} from '/community-material-fonts.js';
+import {renderTextCleanupTool,openCommunityTextCleanup} from '/community-text-cleanup.js';
+import {createBannerDesignLayout,renderBannerTitleMask} from '/banner-design-input.js';
+import {planBannerEdit,applyBannerLayoutOperations,shouldGenerateBannerBacking} from '/banner-edit-plan.js';
+import {chooseBannerFont,bannerTypographyTheme} from '/banner-font-direction.js';
+import {createWorkbench} from '/workbench-management.js';
+import {openProjectMaterialPicker} from '/project-design-center.js';
+import {taskStatus,taskStatusBucket} from '/workbench-model.js';
+import {homeTaskMenu,copyModuleTaskSetup} from '/home-task-menu.js';
+import {openTaskRename} from '/task-rename.js';
+import {mountDashboard,mountBusinessHub,mountBusinessOverview,businesses} from '/home-dashboard.js';
+import {mountTaskTypeWorkbench} from '/task-type-workbench.js';
+import {openCustomCanvasTask,openCustomCanvasResize} from '/custom-canvas.js';
+import {customCanvasTemplate} from '/custom-canvas-model.js';
+import {customCanvasSpec} from '/custom-canvas-model.js';
+import {renderTargetSizeDialog,bindTargetSizeDialog} from '/target-size-dialog.js';
+import {mountPhaseWorkbench} from '/phase-workbench.js';
+import {createSpecCenterNavigation,normalizeSpecSelection} from '/spec-center-navigation.js';
+import { protectedComposition, drawRegisteredComposite, drawFeatheredOriginal } from "/outpaint-composite.js";
+import { openRegionEditor } from "/region-editor.js";
+import { resolveProductionScope, selectProductionTemplates } from "/production-scope.js";
+import { transformButtonPixels } from "/button-state.js";
+import { coverPlacement, findForegroundOutput, fitSubjectToBreakout, isProductionForeground, keepImageAspect } from "/breakout-layer.js";
+import { mountStorePreorder } from "/store-preorder.js";
+import { mountIconPreorder as mountIconLaunch } from '/icon-preorder.js?phase=launch';
+import { mountStorePreorder as mountStoreLaunch } from '/store-preorder.js?phase=launch';
+import { mountIconPreorder } from "/icon-preorder.js";
+import { mountChannelResources } from "/channel-resources.js";
+import { mountAdResources } from "/ad-resources.js";
+import { normalizeElementEffects, drawElementWithEffects } from "/element-effects.js";
+import { remapCommunityLayer, remapCommunitySubtitleBacking } from "/community-auto-layout.js";
+import { normalizeSubtitleBacking, createSubtitleBackingLayout, drawSubtitleBacking } from '/subtitle-backing.js';
+import { measureNativeCopy, drawNativeCopy, defaultNativeCopyEffects } from '/native-copy-layer.js';
+import { isRenderableImageAsset, preferredSourceAsset, loadEditorImages } from '/editor-image-source.js';
 const state = { data: null, view: "home", task: null, previewTemplateId: null, previewMode: "target", sourceImage: null, sourceAsset: null, assetImages: new Map(), filter: "全部", assetFilter: "全部素材", editorAssetFilter: "全部", editorAssetQuery: "", showGuides: true, editorHistory: null, reviewTaskId: null, reviewTab: "待审核", annotationType: "core-character", polygonPoints: [], cutoutPoints: [], cutoutSourceName: "", paramsSaveTimer: null, paramsSavePromise: Promise.resolve(true), inspectorTab: "elements", inspectorElement: "title", canvasDrag: null };
 state.communitySideTab = "ai";
 state.communityGenerationPoll = null;
@@ -84,6 +86,8 @@ const taskWorkbenchRoutes = Object.freeze({
 const phaseWorkbenchViews = ['store-workbench', 'icon-workbench'];
 const content = document.querySelector("#app-content");
 const title = document.querySelector("#page-title");
+const topbarBack = document.querySelector("#topbar-back");
+topbarBack.addEventListener("click", () => goBack());
 const taskDialog = document.querySelector("#task-dialog");
 const brandDialog = document.querySelector("#brand-dialog");
 const specDialog = document.querySelector("#spec-dialog");
@@ -116,7 +120,9 @@ function toast(message) {
   toast.timer = setTimeout(() => el.classList.remove("show"), 2600);
 }
 
-const management=createWorkbench({content,data:()=>state.data,api,toast,reload:async()=>{state.data=await api("/api/bootstrap");management.invalidate();},
+// 列表只要任务摘要；打开任务时 openTask 再读完整的（编辑器用的字段只在完整任务里，见 server.mjs EDITOR_ONLY_TASK_FIELDS）。
+const BOOTSTRAP_URL="/api/bootstrap?tasks=summary";
+const management=createWorkbench({content,data:()=>state.data,api,toast,reload:async()=>{state.data=await api(BOOTSTRAP_URL);management.invalidate();},
  openTask,openModule:(view,id,channel,specId)=>goDashboardView(view,channel||'',id,specId||''),
  navigate:(view,selection)=>{if(view==='specs')return openSpecCenter(selection||{module:'core'});state.managementSelection=selection;goDashboardView(view);},
  createTask:(projectId,asset,mode='original')=>{openNewTask();if(projectId){document.querySelector('#project-select').value=projectId;document.querySelector('#project-select').dispatchEvent(new Event('change'));}if(asset?.category&&asset.id){document.querySelector('#task-business-line').value='platform-community';syncTaskSegments();document.querySelectorAll('#task-segment-menu input').forEach(input=>input.checked=['community','official-media'].includes(input.value));updateTaskSegmentSummary();syncTaskTemplates();document.querySelector('#task-mode').value='master';syncTaskModeFields();quickProjectLibraryUse={projectId,assetId:asset.id,mode,asset};renderQuickPastedAssets();return;}if(asset){const session=quickTaskSession;quickAssetLoading=true;document.querySelector('#quick-source-result').textContent='正在读取所选素材…';(async()=>{try{const response=await fetch(asset.url);if(!response.ok)throw Error('原素材文件无法读取');const blob=await response.blob();if(!blob.type.startsWith('image/'))throw Error('此素材请通过文件夹导入');const file=new File([blob],asset.name,{type:blob.type});if(session!==quickTaskSession||!taskDialog.open)return;quickPastedAssets.push({id:crypto.randomUUID(),file,role:asset.role||"master",url:URL.createObjectURL(file),uploaded:false});renderQuickPastedAssets();document.querySelector('#quick-source-result').textContent='所选素材已加入，创建任务时保存。';}catch(e){toast(e.message);}finally{if(session===quickTaskSession)quickAssetLoading=false;}})();}},
@@ -166,16 +172,21 @@ globalSearch.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!globalSearc
 document.addEventListener('error',e=>{if(e.target instanceof HTMLImageElement&&!e.target.dataset.failed){e.target.dataset.failed='true';e.target.hidden=true;const note=document.createElement('span');note.className='wb-file-missing';note.textContent='预览不可用 · 请检查原文件';e.target.after(note);}},true);
 
 async function refresh() {
-  const [data, fontLibrary] = await Promise.all([api("/api/bootstrap"), api('/api/company-fonts').catch(() => ({ fonts: companyFonts(), issues:state.companyFontIssues || [] }))]);
+  const openId = state.task?.id;
+  const [data, fontLibrary, openFull] = await Promise.all([api(BOOTSTRAP_URL), api('/api/company-fonts').catch(() => ({ fonts: companyFonts(), issues:state.companyFontIssues || [] })),
+    openId ? api(`/api/tasks/${encodeURIComponent(openId)}`).catch((error) => ({ error })) : null]);
   state.data = data;
+  // 组员看不到改项目、素材库、规范中心的入口（platform/platform.css；服务器另外核对，lib/workbench-access.mjs）。
+  document.documentElement.dataset.wbRole = data.viewer?.admin === false ? "member" : "admin";
   setCompanyFonts(fontLibrary.fonts || []);
   state.companyFontIssues = fontLibrary.issues || [];
   management.invalidate();
-  if (state.task) state.task = state.data.tasks.find((task) => task.id === state.task.id) || null;
+  if (state.task) state.task = keepOpenTaskFull(state.data.tasks, openId, openFull);
   render();
 }
 
 function render() {
+  document.body.classList.remove("wb-booting");
   closeGlobalSearch();
   if(state.view !== 'home'||state.task)moveGlobalSearchToPanel();
   globalSearch.placeholder=state.view==='home'&&!state.task?'搜索任意内容':'搜索项目、任务或资源位';
@@ -194,6 +205,7 @@ function render() {
   document.body.classList.toggle("phase-workbench-mode", (phaseWorkbenchViews.includes(state.view)||/^(store|icon)-(preorder|launch)$/.test(state.view)) && !state.task);
   const topbarEyebrow = document.querySelector(".topbar-title .eyebrow");
   if (topbarEyebrow) topbarEyebrow.textContent = "DESIGN PRODUCTION WORKBENCH";
+  topbarBack.hidden = state.view === "home" || Boolean(state.task); // 任务编辑器有自己的返回
   document.querySelectorAll(".nav-item").forEach((item) => item.classList.toggle("active", item.dataset.view === state.view || (item.dataset.view === "business-platform" && ['platform-workbench','community-workbench'].includes(state.view)) || (item.dataset.view === "business-channel" && (/^(store|icon)-(preorder|launch)$/.test(state.view)||phaseWorkbenchViews.includes(state.view)||state.view==='channel-resources')) || (item.dataset.view === "business-ads" && ['ad-resources','ads-mumu','ads-leidian'].includes(state.view))));
   document.querySelector('.home-create-nav')?.classList.toggle('active',state.view==='business-all');
   const activeBusiness=/^(store|icon)-(preorder|launch)$/.test(state.view)||phaseWorkbenchViews.includes(state.view)||state.view==='channel-resources'?'business-channel':['ad-resources','ads-mumu','ads-leidian'].includes(state.view)?'business-ads':['community-specs','platform-workbench','community-workbench'].includes(state.view)?'business-platform':state.view;
@@ -212,7 +224,7 @@ function render() {
   if (state.view === "projects") return renderProjects();
   if (state.view === "tasks") return renderTasks();
   if (state.view === "assets") return renderAssets();
-  if (state.view === "recycle-bin") {title.textContent='回收站';return mountRecycleBin(content,{api,toast,projects:state.data?.projects||[],isActive:()=>state.view==='recycle-bin'&&!state.task,onChanged:async()=>{state.data=await api('/api/bootstrap');management.invalidate();}});}
+  if (state.view === "recycle-bin") {title.textContent='回收站';return mountRecycleBin(content,{api,toast,projects:state.data?.projects||[],isActive:()=>state.view==='recycle-bin'&&!state.task,onChanged:async()=>{state.data=await api(BOOTSTRAP_URL);management.invalidate();}});}
   if (state.view === "specs") return renderBusinessLines();
   if (state.view === "review") return renderReview();
   if (state.view === "templates") return renderTemplates();
@@ -221,8 +233,27 @@ function render() {
   renderHome();
 }
 
-function goDashboardView(view, anchor = '', jobId = '', specId = '') {
+// 顶栏“返回”：记下从哪一页来的（换了页面才记，同一页里切渠道、切预约期/首发期不算），返回时回到上一页；
+// 直接打开链接、没有上一页时，回到上一级（各业务的工作台回业务总览，其余回首页）。
+const viewTrail = [];
+function parentView(view) {
+  if (['ad-resources', 'ads-mumu', 'ads-leidian'].includes(view)) return 'business-ads';
+  if (view === 'channel-resources' || /^(store|icon)-(preorder|launch)$/.test(view) || phaseWorkbenchViews.includes(view)) return 'business-channel';
+  if (['platform-workbench', 'community-workbench', 'community-specs'].includes(view)) return 'business-platform';
+  return 'home';
+}
+function goBack() {
+  const previous = viewTrail.pop();
+  if (previous) goDashboardView(previous.view, previous.anchor, '', '', {back: true});
+  else goDashboardView(parentView(state.view), '', '', '', {back: true});
+}
+
+function goDashboardView(view, anchor = '', jobId = '', specId = '', {back = false} = {}) {
   if(view==='channel-resources'&&anchor.startsWith('rules:')){const channel=anchor.split(':')[1];return openSpecCenter(channel==='huawei'?{module:'channel-resources',channelId:channel}:{module:'core',lineId:'channel-distribution',segmentId:channel});}
+  if (!back && !state.task && view !== state.view) {
+    viewTrail.push({view: state.view, anchor: state.view === 'channel-resources' ? state.channelResourceChannel : ''});
+    if (viewTrail.length > 20) viewTrail.shift();
+  }
   state.view=view;state.task=null;state.businessAnchor=anchor;state.moduleJobId=jobId;state.moduleSpecId=specId;if(view==='channel-resources'&&anchor){if(anchor.startsWith('create:')||anchor.startsWith('rules:')){state.businessAnchor=anchor.split(':')[0];state.channelResourceChannel=anchor.split(':')[1];}else state.channelResourceChannel=anchor;}
   const phaseRoute=/^(store|icon)-(preorder|launch)$/.exec(view);
   if(phaseRoute)state.modulePhases[phaseRoute[1]]=phaseRoute[2];
@@ -260,7 +291,7 @@ function renderHome() {
   title.textContent='首页';
   if(globalSearchLabel.parentElement!==globalSearchPanel)globalSearchPanel.append(globalSearchLabel);
   mountDashboard(content,{
-    data:state.data,thumb:taskThumb,coreCard:homeRecentTaskCard,loadTasks:()=>management.load(true),openIndexedTask:management.open,
+    data:state.data,thumb:taskThumb,coreCard:homeRecentTaskCard,loadTasks:()=>management.load(true),cachedIndex:management.peek(),openIndexedTask:management.open,
     form:`<form class="home-auto-form" id="home-auto-form">
           <textarea name="instruction" rows="2" required placeholder="例如：为XXX项目XXXKV生成平台全套资源位图"></textarea>
           <div>${folderPickerHtml()}<button class="button primary">一键自动生成</button></div>
@@ -410,7 +441,7 @@ async function runOneClickProduction(event) {
 }
 
 function relativeDate(value) { if (!value) return "刚刚"; const days = Math.max(0, Math.floor((Date.now() - new Date(value).getTime()) / 86400000)); return days === 0 ? "今天" : `${days} 天前`; }
-function homeCover(url, label, index = 0) { return url ? `<img src="${esc(url)}" alt="" />` : `<span class="home-cover-fallback tone-${index % 4}">${esc(label.slice(0,2))}</span>`; }
+function homeCover(url, label, index = 0) { return url ? `<img src="${esc(previewSrc(url, 330))}" alt="" />` : `<span class="home-cover-fallback tone-${index % 4}">${esc(label.slice(0,2))}</span>`; }
 function homeProjectCard(project, index) { return `<button class="home-work-card" data-project-open="${project.id}" data-home-search-card><span class="home-card-cover">${homeCover(project.thumb, project.name, index)}</span><b>${esc(project.name)}</b><small>更新于 ${relativeDate(project.updatedAt)}</small></button>`; }
 function homeRecentTaskCard(task, index) {
   const businessLine=state.data.businessLines?.find(line=>line.id===task.businessLineId);
@@ -418,7 +449,7 @@ function homeRecentTaskCard(task, index) {
   const taskContext=`${businessLine?.name||'素材制作'} / ${segment?.name||'资源位'} · ${task.targetTemplateIds?.length||1}张交付稿`;
   return `<article class="home-work-card home-recent-task-card" data-home-search-card>
     <div class="home-task-card-tools"><label title="选择任务"><input type="checkbox" data-dash-select="core:${task.id}" aria-label="选择${esc(task.project)}"></label><span class="home-task-tool-actions"><button type="button" class="home-task-favorite" data-dash-favorite="core:${task.id}" title="收藏任务" aria-label="收藏任务" aria-pressed="false">☆</button><button type="button" class="home-task-more" data-home-task-menu="${task.id}" title="更多操作" aria-label="更多操作">•••</button></span></div>
-    <button class="home-task-open" data-task="${task.id}"><span class="home-card-cover">${homeCover(taskThumb(task), task.project, index)}</span><span class="home-task-card-meta"><strong>${esc(task.project)}</strong><small>更新于 ${relativeDate(task.updatedAt || task.createdAt)}</small></span><small class="dash-card-context">${esc(taskContext)}</small><em class="home-card-status ${taskStatusBucket(task)}" data-status="${taskStatus(task)}">${taskStatus(task)}</em></button>
+    <button class="home-task-open" data-task="${task.id}"><span class="home-card-cover">${homeCover(taskThumb(task), task.project, index)}</span><span class="home-task-card-meta"><strong>${esc(task.project)}</strong><small>更新于 ${relativeDate(task.updatedAt || task.createdAt)}</small></span><small class="dash-card-context">${esc(taskContext)}</small><span class="dash-card-foot"><em class="home-card-status ${taskStatusBucket(task)}" data-status="${taskStatus(task)}">${taskStatus(task)}</em>${task.owner?.name?`<small class="dash-card-author" title="作者：${esc(task.owner.name)}">${esc(task.owner.name)}</small>`:''}</span></button>
     ${homeTaskMenu({taskId:task.id})}
   </article>`;
 }
@@ -536,7 +567,7 @@ function renderTasksLegacy() {
   const selected = all.find((task) => task.id === state.reviewTaskId) || filtered[0] || all[0];
   state.reviewTaskId = selected?.id || null;
   content.innerHTML = `<div class="task-page-layout"><section class="task-list-area"><div class="task-toolbar"><label class="global-search compact">⌕<input placeholder="搜索任务名称 / 项目名称" /></label><div class="filters">${["全部","草稿","主图制作","批量生成","成套审核","已完成","生成失败"].map((item) => `<button class="filter ${state.filter === item ? "active" : ""}" data-task-filter="${item}">${item}</button>`).join("")}</div></div>
-    <section class="panel task-table-panel">${filtered.length ? `<table><thead><tr><th>任务名称</th><th>所属项目</th><th>任务类型</th><th>业务方向</th><th>目标资源位</th><th>负责人</th><th>截止时间</th><th>状态</th></tr></thead><tbody>${filtered.map((task) => `<tr class="selectable-row ${task.id === selected?.id ? "selected" : ""}" data-select-task="${task.id}"><td><div class="task-name-cell">${taskThumb(task) ? `<img src="${taskThumb(task)}" />` : `<i>${esc(task.project.slice(0,1))}</i>`}<span><b>${esc(task.project)}</b><small>${task.id.slice(0,8)}</small></span></div></td><td>${esc(projectName(task.archiveProjectId??task.projectId))}</td><td><span class="tag">${modeLabel(task.mode)}</span></td><td>${esc(lineName(task.businessLineId))}</td><td>${task.targetTemplateIds.length} 个</td><td>${esc(task.assignee || "待认领")}</td><td>${task.dueDate || "—"}</td><td><span class="status" data-status="${task.status}">${task.status}</span></td></tr>`).join("")}</tbody></table>` : `<div class="empty"><b>没有符合条件的任务</b>请切换筛选条件或创建新任务。</div>`}</section></section>${selected ? taskSummaryPanel(selected) : ""}</div>`;
+    <section class="panel task-table-panel">${filtered.length ? `<table><thead><tr><th>任务名称</th><th>所属项目</th><th>任务类型</th><th>业务方向</th><th>目标资源位</th><th>负责人</th><th>截止时间</th><th>状态</th></tr></thead><tbody>${filtered.map((task) => `<tr class="selectable-row ${task.id === selected?.id ? "selected" : ""}" data-select-task="${task.id}"><td><div class="task-name-cell">${taskThumb(task) ? `<img src="${previewSrc(taskThumb(task), 56)}" />` : `<i>${esc(task.project.slice(0,1))}</i>`}<span><b>${esc(task.project)}</b><small>${task.id.slice(0,8)}</small></span></div></td><td>${esc(projectName(task.archiveProjectId??task.projectId))}</td><td><span class="tag">${modeLabel(task.mode)}</span></td><td>${esc(lineName(task.businessLineId))}</td><td>${task.targetTemplateIds.length} 个</td><td>${esc(task.assignee || "待认领")}</td><td>${task.dueDate || "—"}</td><td><span class="status" data-status="${task.status}">${task.status}</span></td></tr>`).join("")}</tbody></table>` : `<div class="empty"><b>没有符合条件的任务</b>请切换筛选条件或创建新任务。</div>`}</section></section>${selected ? taskSummaryPanel(selected) : ""}</div>`;
   content.querySelectorAll("[data-task-filter]").forEach((button) => button.addEventListener("click", () => { state.filter = button.dataset.taskFilter; renderTasks(); }));
   content.querySelectorAll("[data-select-task]").forEach((row) => row.addEventListener("click", () => { state.reviewTaskId = row.dataset.selectTask; renderTasks(); }));
   content.querySelector("[data-continue-task]")?.addEventListener("click", () => openTask(selected.id));
@@ -567,7 +598,7 @@ function renderAssetsLegacy() {
   title.textContent = "资产库";
   const assets = collectAssets(); const categories = ["全部素材","原始KV","主标美术字","副标美术字","Logo","IP版权","按钮素材","补充素材","拆分结果"];
   const visible = state.assetFilter === "全部素材" ? assets : assets.filter((asset) => assetCategory(asset) === state.assetFilter);
-  content.innerHTML = `<div class="asset-toolbar"><label class="global-search compact">⌕<input placeholder="搜索素材名称、标签、描述" /></label><div class="filters">${categories.map((item) => `<button class="filter ${state.assetFilter === item ? "active" : ""}" data-asset-filter="${item}">${item}</button>`).join("")}</div></div><div class="asset-page-layout"><aside class="asset-tree"><h3>全部分类</h3><b>人工上传的源素材</b>${["原始KV","主标美术字","副标美术字","Logo","IP版权","按钮素材","补充素材"].map((name) => `<button data-asset-filter="${name}">${name}<span>${assets.filter((a) => assetCategory(a) === name).length}</span></button>`).join("")}<b>系统派生素材</b>${["重构背景","核心人物","次要人物","装饰元素"].map((name) => `<button disabled>${name}<span>0</span></button>`).join("")}</aside><section class="asset-main"><div class="section-title"><h2>${state.assetFilter}</h2><span>${visible.length} 项素材</span></div><div class="asset-card-grid">${visible.map((asset) => `<article class="library-asset"><div class="asset-preview">${asset.mime?.startsWith("image/") ? `<img src="${asset.url}" />` : `<i>FILE</i>`}<span>${esc(asset.source)}</span></div><b>${esc(asset.name)}</b><small>${assetCategory(asset)} · ${formatBytes(asset.bytes)}</small><small>${esc(projectName(asset.projectId))}</small></article>`).join("") || `<div class="empty"><b>暂无${state.assetFilter}</b>系统拆分结果会在设计师确认后出现在这里。</div>`}</div></section></div>`;
+  content.innerHTML = `<div class="asset-toolbar"><label class="global-search compact">⌕<input placeholder="搜索素材名称、标签、描述" /></label><div class="filters">${categories.map((item) => `<button class="filter ${state.assetFilter === item ? "active" : ""}" data-asset-filter="${item}">${item}</button>`).join("")}</div></div><div class="asset-page-layout"><aside class="asset-tree"><h3>全部分类</h3><b>人工上传的源素材</b>${["原始KV","主标美术字","副标美术字","Logo","IP版权","按钮素材","补充素材"].map((name) => `<button data-asset-filter="${name}">${name}<span>${assets.filter((a) => assetCategory(a) === name).length}</span></button>`).join("")}<b>系统派生素材</b>${["重构背景","核心人物","次要人物","装饰元素"].map((name) => `<button disabled>${name}<span>0</span></button>`).join("")}</aside><section class="asset-main"><div class="section-title"><h2>${state.assetFilter}</h2><span>${visible.length} 项素材</span></div><div class="asset-card-grid">${visible.map((asset) => `<article class="library-asset"><div class="asset-preview">${asset.mime?.startsWith("image/") ? `<img src="${previewSrc(asset.url, 170)}" />` : `<i>FILE</i>`}<span>${esc(asset.source)}</span></div><b>${esc(asset.name)}</b><small>${assetCategory(asset)} · ${formatBytes(asset.bytes)}</small><small>${esc(projectName(asset.projectId))}</small></article>`).join("") || `<div class="empty"><b>暂无${state.assetFilter}</b>系统拆分结果会在设计师确认后出现在这里。</div>`}</div></section></div>`;
   content.querySelectorAll("[data-asset-filter]").forEach((button) => button.addEventListener("click", () => { state.assetFilter = button.dataset.assetFilter; renderAssets(); }));
   const assetSearch = content.querySelector(".global-search input");
   if (assetSearch) assetSearch.addEventListener("input", (event) => {
@@ -591,7 +622,7 @@ function renderAssetsPrevious() {
   }
   const unfiled = selectedAssets.filter((asset) => !asset.projectId || !projectIds.has(asset.projectId));
   if (unfiled.length) groups.push({ id: "unfiled", name: "未归档素材", items: unfiled });
-  const assetCard = (asset) => `<article class="library-asset" data-asset-search-card><div class="asset-preview">${asset.mime?.startsWith("image/") ? `<img src="${asset.url}" alt="${esc(asset.name)}" loading="lazy" />` : `<i>FILE</i>`}</div><b title="${esc(asset.name)}">${esc(asset.name)}</b><small>▧ ${assetCategory(asset)} · ${formatBytes(asset.bytes)}</small><small>${esc(asset.source)}${asset.projectId ? ` · ${esc(projectName(asset.projectId))}` : ""}</small></article>`;
+  const assetCard = (asset) => `<article class="library-asset" data-asset-search-card><div class="asset-preview">${asset.mime?.startsWith("image/") ? `<img src="${previewSrc(asset.url, 170)}" alt="${esc(asset.name)}" loading="lazy" />` : `<i>FILE</i>`}</div><b title="${esc(asset.name)}">${esc(asset.name)}</b><small>▧ ${assetCategory(asset)} · ${formatBytes(asset.bytes)}</small><small>${esc(asset.source)}${asset.projectId ? ` · ${esc(projectName(asset.projectId))}` : ""}</small></article>`;
   content.innerHTML = `<div class="asset-toolbar"><label class="global-search compact">⌕<input placeholder="搜索素材名称、标签、描述" /></label><div class="filters">${categories.map((item) => `<button class="filter ${state.assetFilter === item ? "active" : ""}" data-asset-filter="${item}">${item}</button>`).join("")}</div></div>
     <div class="asset-page-layout"><aside class="asset-tree"><h3>按项目归类</h3><button class="${state.assetProjectFilter === "all" ? "active" : ""}" data-asset-project="all">全部项目<span>${categoryAssets.length}</span></button>${(state.data.projects || []).map((project) => `<button class="${state.assetProjectFilter === project.id ? "active" : ""}" data-asset-project="${project.id}">${esc(project.name)}<span>${projectCount(project.id)}</span></button>`).join("")}<button class="${state.assetProjectFilter === "unfiled" ? "active" : ""}" data-asset-project="unfiled">未归档素材<span>${projectCount("unfiled")}</span></button><h3 class="asset-tree-subtitle">素材类型</h3>${categories.slice(1).map((name) => `<button data-asset-filter="${name}">${name}<span>${assets.filter((asset) => assetCategory(asset) === name).length}</span></button>`).join("")}</aside>
       <section class="asset-main"><div class="section-title"><h2>${state.assetProjectFilter === "all" ? "全部项目素材" : state.assetProjectFilter === "unfiled" ? "未归档素材" : esc(projectName(state.assetProjectFilter))}</h2><span>${selectedAssets.length} 项素材</span></div><div class="asset-project-groups">${groups.map((group) => `<section class="asset-project-group" data-asset-project-group><div class="asset-project-heading"><div><h3>${esc(group.name)}</h3><small>${group.items.length} 项素材</small></div><button data-open-project-assets="${group.id}" ${group.id === "unfiled" ? "disabled" : ""}>查看项目</button></div><div class="asset-card-grid">${group.items.map(assetCard).join("")}</div></section>`).join("") || `<div class="empty"><b>当前分类没有素材</b>可切换项目或素材类型查看。</div>`}</div></section></div>`;
@@ -620,6 +651,16 @@ function renderReview() {
   const tasks = groups[state.reviewTab] || [];
   const selected = tasks.find((task) => task.id === state.reviewTaskId) || tasks[0];
   state.reviewTaskId = selected?.id || null;
+  if (selected?.summary) {
+    // 审核要看描边、投影这些编辑器字段，先读完整任务。
+    content.innerHTML = '<p role="status">正在读取任务…</p>';
+    api(`/api/tasks/${encodeURIComponent(selected.id)}`).then((full) => {
+      const index = state.data.tasks.findIndex((task) => task.id === full.id);
+      if (index >= 0) state.data.tasks[index] = full;
+      if (state.view === "review" && !state.task) renderReview();
+    }).catch((error) => toast(error.message));
+    return;
+  }
   const partialReviewIds = Object.entries(selected?.resourceReviews || {}).filter(([, item]) => item.status === "submitted").map(([id]) => id);
   const isPartialReview = partialReviewIds.length > 0;
   const artifacts = (selected?.artifacts || []).filter((artifact) => !isPartialReview || partialReviewIds.includes(artifact.templateId));
@@ -712,7 +753,7 @@ function reviewArtifactCard(artifact, task, index = 0) {
   const passed = artifact.qc?.passed === true;
   const statusClass = review?.status === "rejected" || !passed ? "warning" : review?.status === "submitted" ? "pending" : "passed";
   const statusText = review?.status === "submitted" ? "等待单项审核" : review?.status === "approved" ? "单项审核通过" : review?.status === "rejected" ? "单项审核退回" : passed ? "质检通过" : "需要确认";
-  return `<article class="review-card ${statusClass === "warning" ? "needs-confirmation" : ""}"><button class="review-artifact-preview" data-review-preview="${encodeURIComponent(artifact.url || "")}" ${artifact.url ? "" : "disabled"}>${artifact.url ? `<img src="${artifact.url}" alt="${esc(template?.name || artifact.name)}" />` : ""}</button><b>${String(index + 1).padStart(2, "0")} · ${esc(template?.name || artifact.name)}</b><small>${artifact.width || "—"}×${artifact.height || "—"}.${String(artifact.format || "").toLowerCase()} · ${formatBytes(artifact.bytes || 0)}</small><span class="review-status ${statusClass}">${statusClass === "warning" ? "▲" : "●"} ${statusText}</span>${canSubmit ? `<button class="button secondary small" data-review-submit="${artifact.templateId}">提交单资源位审核</button>` : ""}</article>`;
+  return `<article class="review-card ${statusClass === "warning" ? "needs-confirmation" : ""}"><button class="review-artifact-preview" data-review-preview="${encodeURIComponent(artifact.url || "")}" ${artifact.url ? "" : "disabled"}>${artifact.url ? `<img src="${previewSrc(artifact.url, 280)}" alt="${esc(template?.name || artifact.name)}" />` : ""}</button><b>${String(index + 1).padStart(2, "0")} · ${esc(template?.name || artifact.name)}</b><small>${artifact.width || "—"}×${artifact.height || "—"}.${String(artifact.format || "").toLowerCase()} · ${formatBytes(artifact.bytes || 0)}</small><span class="review-status ${statusClass}">${statusClass === "warning" ? "▲" : "●"} ${statusText}</span>${canSubmit ? `<button class="button secondary small" data-review-submit="${artifact.templateId}">提交单资源位审核</button>` : ""}</article>`;
 }
 
 function projectCover(project, tasks) {
@@ -726,7 +767,7 @@ function projectCard(project) {
   const cover = projectCover(project, tasks);
   const lastTask = [...tasks].sort((a, b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0))[0];
   return `<article class="project-showcase-card ${project.status === "archived" ? "is-disabled" : ""}">
-    <div class="project-showcase-cover">${cover ? `<img src="${cover}" alt="${esc(project.name)}" />` : `<span>${esc(project.name.slice(0, 1))}</span>`}</div>
+    <div class="project-showcase-cover">${cover ? `<img src="${previewSrc(cover, 240)}" alt="${esc(project.name)}" />` : `<span>${esc(project.name.slice(0, 1))}</span>`}</div>
     <div class="project-showcase-copy"><div><b>${esc(project.name)}</b><small>更新于 ${relativeDate(project.updatedAt || project.createdAt)}</small></div><strong>${esc(lastTask?.project || `${tasks.length} 个生产任务`)}</strong><div class="project-card-footer"><span class="home-card-status" data-status="${lastTask?.status || (project.status === "active" ? "已完成" : "草稿")}">${lastTask?.status || (project.status === "active" ? "启用" : "已归档")}</span><button data-project-edit="${project.id}">编辑</button><button data-project-toggle="${project.id}">${project.status === "active" ? "归档" : "启用"}</button></div></div>
   </article>`;
 }
@@ -755,7 +796,7 @@ function renderProjectsLegacy() {
     <section class="projects-hero"><h2>所有项目</h2><label class="project-search"><span>⌕</span><input id="project-search" value="${esc(state.projectSearch)}" placeholder="搜索设计、文件夹和上传内容" /></label><div class="project-filter-row"><select id="project-type-filter"><option value="all">类型</option><option value="ip" ${state.projectTypeFilter === "ip" ? "selected" : ""}>IP项目</option><option value="standard" ${state.projectTypeFilter === "standard" ? "selected" : ""}>普通项目</option></select><select id="project-category-filter"><option value="all">类别</option>${categories.map((line) => `<option value="${line.id}" ${state.projectCategoryFilter === line.id ? "selected" : ""}>${esc(line.name)}</option>`).join("")}</select><select id="project-owner-filter"><option value="all">所有者</option>${ownerNames.map((name) => `<option value="${esc(name)}" ${state.projectOwnerFilter === name ? "selected" : ""}>${esc(name)}</option>`).join("")}</select><select id="project-date-filter"><option value="all">修改日期</option><option value="7" ${state.projectDateFilter === "7" ? "selected" : ""}>最近7天</option><option value="30" ${state.projectDateFilter === "30" ? "selected" : ""}>最近30天</option><option value="90" ${state.projectDateFilter === "90" ? "selected" : ""}>最近90天</option></select></div></section>
     <div class="project-view-tools"><button data-tooltip="${state.projectSortAsc ? "按最新修改排序" : "按最早修改排序"}" id="project-sort" aria-label="排序方式">⇅</button><button data-tooltip="${state.projectListView ? "以卡片形式查看" : "以列表形式查看"}" id="project-view-toggle" aria-label="切换项目视图">${state.projectListView ? "▦" : "☷"}</button><button data-tooltip="新建项目" id="new-project" aria-label="新建项目">＋</button></div>
     <section class="recent-projects"><h3>最近项目</h3><div class="project-carousel-shell"><button class="project-carousel-arrow previous" id="project-prev" aria-label="查看上一页">‹</button><div class="project-carousel-track ${state.projectListView ? "list-view" : ""}" id="project-carousel">${projects.map(projectCard).join("") || `<div class="empty"><b>没有符合条件的项目</b>请更改搜索或筛选条件。</div>`}</div><button class="project-carousel-arrow next" id="project-next" aria-label="查看更多项目">›</button></div></section>
-    <details class="project-images" open><summary>图片 <span>${uploadedImages.length}</span></summary><div class="project-image-list">${uploadedImages.map((asset) => `<a href="${asset.url}" target="_blank" rel="noreferrer" class="project-image-card"><span><img src="${asset.url}" alt="${esc(asset.name)}" /></span><b title="${esc(asset.name)}">${esc(asset.name)}</b><small>${esc(asset.projectName || "未归档项目")} · ${formatBytes(asset.bytes || 0)}</small></a>`).join("") || `<div class="empty"><b>暂无上传图片</b>可在项目卡片的编辑入口中管理项目，并通过下方入口上传素材。</div>`}</div></details>
+    <details class="project-images" open><summary>图片 <span>${uploadedImages.length}</span></summary><div class="project-image-list">${uploadedImages.map((asset) => `<a href="${asset.url}" target="_blank" rel="noreferrer" class="project-image-card"><span><img src="${previewSrc(asset.url, 200)}" alt="${esc(asset.name)}" /></span><b title="${esc(asset.name)}">${esc(asset.name)}</b><small>${esc(asset.projectName || "未归档项目")} · ${formatBytes(asset.bytes || 0)}</small></a>`).join("") || `<div class="empty"><b>暂无上传图片</b>可在项目卡片的编辑入口中管理项目，并通过下方入口上传素材。</div>`}</div></details>
     ${projects.length ? `<section class="project-management-list">${projects.map((project) => `<label class="project-upload-row"><span>${esc(project.name)}</span><small>${(project.assets || []).length} 项项目素材</small><b>＋ 上传图片<input type="file" accept="image/*" multiple data-project-upload="${project.id}" /></b></label>`).join("")}</section>` : ""}
   </div>`;
   document.querySelector("#new-project")?.addEventListener("click", () => openProjectDialog());
@@ -879,7 +920,7 @@ function specDetailBody(template, profile) {
   const artifacts = state.data.tasks?.flatMap((task) => (task.artifacts || []).filter((artifact) => artifact.templateId === template.id).map((artifact) => ({ ...artifact, taskName: task.project }))) || [];
   if (state.specTab === "versions") return `<div class="spec-tab-list">${specs.map((item, index) => `<article><b>版本 ${specs.length - index}</b><span>${esc(item.name)}</span><small>${relativeDate(item.createdAt)} · ${item.assets?.length || 0} 个文件</small><span class="spec-version-actions">${(item.assets || []).map((asset) => `<a href="${asset.url}" ${asset.mime === "image/vnd.adobe.photoshop" ? "download" : "target=\"_blank\""}>${asset.mime === "image/vnd.adobe.photoshop" ? "下载 PSD" : "查看预览"}</a>`).join("")}</span></article>`).join("") || `<div class="empty">尚未上传规范版本</div>`}</div>`;
   if (state.specTab === "usage") return `<div class="spec-tab-list">${uses.map((task) => `<article><b>${esc(task.project)}</b><span>${esc(projectName(task.archiveProjectId??task.projectId))}</span><small>${task.status} · ${relativeDate(task.updatedAt || task.createdAt)}</small><button data-task="${task.id}">查看任务</button></article>`).join("") || `<div class="empty">暂无任务使用该资源位</div>`}</div>`;
-  if (state.specTab === "assets") return `<div class="spec-related-assets">${artifacts.map((item) => `<article>${item.url ? `<img src="${item.url}">` : ""}<b>${esc(item.name)}</b><small>${esc(item.taskName)} · ${formatBytes(item.bytes || 0)}</small></article>`).join("") || `<div class="empty">暂无关联成品素材</div>`}</div>`;
+  if (state.specTab === "assets") return `<div class="spec-related-assets">${artifacts.map((item) => `<article>${item.url ? `<img src="${previewSrc(item.url, 160)}">` : ""}<b>${esc(item.name)}</b><small>${esc(item.taskName)} · ${formatBytes(item.bytes || 0)}</small></article>`).join("") || `<div class="empty">暂无关联成品素材</div>`}</div>`;
   const layoutRule = state.data.psdLayoutRules?.templates?.find((item) => item.templateId === template.id);
   const hasRegions = [...(layoutRule?.globalRegions || []), ...(layoutRule?.variants || []).flatMap((variant) => variant.regions || [])].some((region) => region.bounds);
   const hasSpecImage = specs.some(item => item.assets?.some(asset => asset.mime?.startsWith("image/")));
@@ -1003,9 +1044,9 @@ function renderTemplates() {
   document.querySelectorAll("[data-spec-add]").forEach((button) => button.addEventListener("click", () => openSpecificationUpload(button.dataset.specAdd)));
 }
 
-function templateCard(template) { const specs = state.data.specifications?.filter((item) => item.templateId === template.id) || []; const psd = state.data.psdBaseline?.templates?.find((item) => item.workbenchTemplateId === template.id); const coordinates = state.data.psdLayoutRules?.templates?.find((item) => item.templateId === template.id); return `<article class="template-card ${template.automationReady === false ? "template-pending" : ""}">${specs[0]?.assets?.[0] ? `<img class="spec-thumb" src="${specs[0].assets[0].url}" alt="${esc(specs[0].name)}" />` : `<div class="ratio-box" style="height:${Math.max(80, Math.min(140, 110 * template.height / template.width + 50))}px"><span>${template.width} × ${template.height}</span></div>`}<p>${esc(template.family)}</p><h3>${esc(template.name)}</h3><div class="tags"><span class="tag">${template.format || "格式待核实"}</span>${template.maxBytes ? `<span class="tag">≤ ${Math.round(template.maxBytes / 1024)}KB</span>` : `<span class="tag warning-tag">大小待核实</span>`}<span class="tag">${template.automationReady === false ? "禁止任务选择" : template.pagePreviewPsd ? "含页面PSD预览" : "Banner直接生产"}</span>${template.specification?.bottomWhiteGradientPx ? `<span class="tag">底部${template.specification.bottomWhiteGradientPx}px白色渐变</span>` : ""}${psd ? `<span class="tag psd-tag">PSD ${esc(psd.sourceVersion)}</span><span class="tag">${psd.layoutGroups.length || 1}套版式</span>` : `<span class="tag warning-tag">未关联V1.0 PSD</span>`}${coordinates ? `<span class="tag coordinate-tag">坐标已解析</span>` : ""}</div>${psd ? `<p class="spec-status ${template.automationReady === false || coordinates?.issues?.length ? "pending" : ""}">${template.automationReady === false || coordinates?.issues?.length ? "!" : "✓"} 已读取 ${psd.layerCount} 个图层 · ${coordinates?.issues?.length ? esc(coordinates.issues.join("；")) : esc(template.readinessNote || psd.fileName)}</p>` : specs.length ? `<p class="spec-status">✓ 已保存 ${specs.length} 套规范图</p>` : `<p class="spec-status pending">尚未上传规范图</p>`}<button class="button secondary full-button" data-spec-add="${template.id}">＋ ${specs.length ? "补充规范图" : "上传规范图"}</button></article>`; }
+function templateCard(template) { const specs = state.data.specifications?.filter((item) => item.templateId === template.id) || []; const psd = state.data.psdBaseline?.templates?.find((item) => item.workbenchTemplateId === template.id); const coordinates = state.data.psdLayoutRules?.templates?.find((item) => item.templateId === template.id); return `<article class="template-card ${template.automationReady === false ? "template-pending" : ""}">${specs[0]?.assets?.[0] ? `<img class="spec-thumb" src="${previewSrc(specs[0].assets[0].url, 260)}" alt="${esc(specs[0].name)}" />` : `<div class="ratio-box" style="height:${Math.max(80, Math.min(140, 110 * template.height / template.width + 50))}px"><span>${template.width} × ${template.height}</span></div>`}<p>${esc(template.family)}</p><h3>${esc(template.name)}</h3><div class="tags"><span class="tag">${template.format || "格式待核实"}</span>${template.maxBytes ? `<span class="tag">≤ ${Math.round(template.maxBytes / 1024)}KB</span>` : `<span class="tag warning-tag">大小待核实</span>`}<span class="tag">${template.automationReady === false ? "禁止任务选择" : template.pagePreviewPsd ? "含页面PSD预览" : "Banner直接生产"}</span>${template.specification?.bottomWhiteGradientPx ? `<span class="tag">底部${template.specification.bottomWhiteGradientPx}px白色渐变</span>` : ""}${psd ? `<span class="tag psd-tag">PSD ${esc(psd.sourceVersion)}</span><span class="tag">${psd.layoutGroups.length || 1}套版式</span>` : `<span class="tag warning-tag">未关联V1.0 PSD</span>`}${coordinates ? `<span class="tag coordinate-tag">坐标已解析</span>` : ""}</div>${psd ? `<p class="spec-status ${template.automationReady === false || coordinates?.issues?.length ? "pending" : ""}">${template.automationReady === false || coordinates?.issues?.length ? "!" : "✓"} 已读取 ${psd.layerCount} 个图层 · ${coordinates?.issues?.length ? esc(coordinates.issues.join("；")) : esc(template.readinessNote || psd.fileName)}</p>` : specs.length ? `<p class="spec-status">✓ 已保存 ${specs.length} 套规范图</p>` : `<p class="spec-status pending">尚未上传规范图</p>`}<button class="button secondary full-button" data-spec-add="${template.id}">＋ ${specs.length ? "补充规范图" : "上传规范图"}</button></article>`; }
 
-function referenceCard(item) { return `<article class="reference-card">${item.assets?.length ? `<div class="reference-images">${item.assets.slice(0,3).map((asset) => `<img src="${asset.url}" alt="${esc(item.name)}" />`).join("")}</div>` : ""}<b>${esc(item.name)}</b><p>${esc(item.description)}</p><div class="tags">${item.tags.map((tag) => `<span class="tag">${esc(tag)}</span>`).join("")}</div><small>${item.layoutReusable ? "可直接作为布局参考" : "仅分析构图规律"}</small></article>`; }
+function referenceCard(item) { return `<article class="reference-card">${item.assets?.length ? `<div class="reference-images">${item.assets.slice(0,3).map((asset) => `<img src="${previewSrc(asset.url, 110)}" alt="${esc(item.name)}" />`).join("")}</div>` : ""}<b>${esc(item.name)}</b><p>${esc(item.description)}</p><div class="tags">${item.tags.map((tag) => `<span class="tag">${esc(tag)}</span>`).join("")}</div><small>${item.layoutReusable ? "可直接作为布局参考" : "仅分析构图规律"}</small></article>`; }
 
 async function addCategory() { const name = prompt("新大类名称"); if (name?.trim()) { await api("/api/categories", { method:"POST", body:JSON.stringify({name}) }); await refresh(); } }
 async function renameCategory(id) { const current = state.data.categories.find((item) => item.id === id); const name = prompt("修改大类名称", current.name); if (name?.trim()) await updateCategory(id, {name}); }
@@ -1343,12 +1384,12 @@ function communityCandidateStrip(task) {
   if(task.communityDesign?.currentVersionId){
     let preview='';try{preview=renderCanvas(task.masterTemplate,false).toDataURL('image/png');}catch{}
     const whole=Boolean(task.parameters?.communityArtworkByTemplate?.[task.masterTemplateId]);
-    return `<section class="community-candidate-strip"><div class="community-candidate-intro"><b>完整母版</b><small>历史版本可在右侧恢复</small></div><div class="community-candidate-list"><button class="community-candidate selected" data-preview-template="${esc(task.masterTemplateId)}">${preview?`<img src="${preview}" alt="当前完整母版">`:''}<span><b>${whole?'当前整稿母版':'当前分层母版'}</b><small>${whole?'AI 整稿 · 独立 Logo':'背景 · 人物 · 文案 · 底板 · Logo'}</small></span></button></div></section>`;
+    return `<section class="community-candidate-strip"><div class="community-candidate-intro"><b>完整母版</b><small>历史版本可在右侧恢复</small></div><div class="community-candidate-list"><button class="community-candidate selected" data-preview-template="${esc(task.masterTemplateId)}">${preview?`<img src="${previewSrc(preview, 160)}" alt="当前完整母版">`:''}<span><b>${whole?'当前整稿母版':'当前分层母版'}</b><small>${whole?'AI 整稿 · 独立 Logo':'背景 · 人物 · 文案 · 底板 · Logo'}</small></span></button></div></section>`;
   }
   const candidates = task.assets.filter(asset => asset.role === 'mother-candidate').slice(-8).reverse();
   const selected = task.parameters?.assetByTemplate?.[task.masterTemplateId]?.background;
   const run = task.communityGeneration;
-  return `<section class="community-candidate-strip"><div class="community-candidate-intro"><b>母版候选</b><small>${run?.status==='running'&&run.phase==='master'?`画布生成中 ${run.done}/${run.total}`:'生成后先比较调性，再选用母版'}</small></div><div class="community-candidate-list">${candidates.map((asset,index) => `<button class="community-candidate ${selected===asset.name?'selected':''}" data-community-candidate="${encodeURIComponent(asset.name)}"><img src="${esc(asset.url)}" alt="母版候选"><span><b>${asset.generatorModel==='gpt-image-2'?'GPT Image':asset.generatorModel==='banana_pro'?'Nano Banana':'导入候选'} ${candidates.length-index}</b><small>${selected===asset.name?'当前母版':asset.toneIssues?.length?`调性${esc(asset.toneIssues.join('、'))} · 点击仍可选用`:'点击预览并选用'}</small></span></button>`).join('') || '<span class="community-candidate-empty">生成或导入图片后，方案会显示在这里</span>'}<label class="community-candidate-import">＋<small>导入 IMAGE 候选</small><input id="community-candidate-upload" type="file" accept="image/png,image/jpeg,image/webp" hidden></label></div></section>`;
+  return `<section class="community-candidate-strip"><div class="community-candidate-intro"><b>母版候选</b><small>${run?.status==='running'&&run.phase==='master'?`画布生成中 ${run.done}/${run.total}`:'生成后先比较调性，再选用母版'}</small></div><div class="community-candidate-list">${candidates.map((asset,index) => `<button class="community-candidate ${selected===asset.name?'selected':''}" data-community-candidate="${encodeURIComponent(asset.name)}"><img src="${esc(previewSrc(asset.url, 160))}" alt="母版候选"><span><b>${asset.generatorModel==='gpt-image-2'?'GPT Image':asset.generatorModel==='banana_pro'?'Nano Banana':'导入候选'} ${candidates.length-index}</b><small>${selected===asset.name?'当前母版':asset.toneIssues?.length?`调性${esc(asset.toneIssues.join('、'))} · 点击仍可选用`:'点击预览并选用'}</small></span></button>`).join('') || '<span class="community-candidate-empty">生成或导入图片后，方案会显示在这里</span>'}<label class="community-candidate-import">＋<small>导入 IMAGE 候选</small><input id="community-candidate-upload" type="file" accept="image/png,image/jpeg,image/webp" hidden></label></div></section>`;
 }
 
 function communityAiPanel(task) {
@@ -1473,7 +1514,7 @@ function editorTargetDock(task) {
     const active = template.id === selected;
     const failed = failedNames.includes(template.name);
     const pending = communityArtworkTargetPending(task,template) || failed && task.communityGeneration.errors.some(error=>error.startsWith(`${template.name}：`)&&error.includes('待按确认母版延展'));
-    return `<div class="target-size-item"><button class="target-size-card ${active ? "active" : ""} ${failed ? 'extension-failed' : ''}" data-preview-template="${template.id}" aria-pressed="${active}"><span class="target-thumb" style="aspect-ratio:${template.width}/${template.height}">${preview ? `<img src="${preview}" alt=""/>` : ""}${active ? `<i class="target-selected-mark">✓ 当前</i>` : ""}</span><b>${template.width}×${template.height}</b><small>${pending?'待重排 · ':failed?'⚠ 延展失败 · ':''}${esc(template.name.replace(/^.*?-/, ""))}</small></button>${targetSizeRemoveButton(task,template)}</div>`;
+    return `<div class="target-size-item"><button class="target-size-card ${active ? "active" : ""} ${failed ? 'extension-failed' : ''}" data-preview-template="${template.id}" aria-pressed="${active}"><span class="target-thumb" style="aspect-ratio:${template.width}/${template.height}">${preview ? `<img src="${previewSrc(preview, 120)}" alt=""/>` : ""}${active ? `<i class="target-selected-mark">✓ 当前</i>` : ""}</span><b>${template.width}×${template.height}</b><small>${pending?'待重排 · ':failed?'⚠ 延展失败 · ':''}${esc(template.name.replace(/^.*?-/, ""))}</small></button>${targetSizeRemoveButton(task,template)}</div>`;
   }).join("")}<button class="target-size-card target-add" id="editor-add-size"><span>＋</span><b>添加尺寸</b></button></div><button type="button" class="target-size-edge target-size-edge-right" data-target-scroll="1" aria-label="向右浏览目标尺寸">›</button></div></section>`;
 }
 
@@ -1499,7 +1540,7 @@ function editorAssetLibrary(task) {
     const orderedItems = [...items].sort((a, b) => Number(b.name === selectedName) - Number(a.name === selectedName) || String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
     return `<section class="editor-asset-group" data-editor-asset-group="${name}"><div><b>${name}</b><span>⌄</span></div><div class="editor-asset-thumbs">${orderedItems.map((item) => {
     const selected = selectedAssetName(task, template, role) === item.name || (role === "character" && templateAllowsElement(task,template,"character2") && selectedAssetName(task,template,"character2") === item.name);
-    return `<span class="editor-asset-wrap" data-editor-asset-name="${esc(item.name.toLowerCase())}"><button class="editor-asset-thumb ${selected ? "selected" : ""}" draggable="true" data-canvas-asset="${encodeURIComponent(item.name)}" data-canvas-role="${role}" data-apply-asset="${encodeURIComponent(item.name)}"><img src="${item.url}" draggable="false" alt="${esc(item.name)}" title="拖到画布使用：${esc(item.name)}"/><span class="asset-drag-hint">拖入</span></button>${item.needsCutout ? `<button type="button" class="editor-asset-cutout" data-cutout-asset="${encodeURIComponent(item.name)}" title="人物素材仍带背景，点击抠图">待抠图</button>` : ''}${isDerived || item.derived ? "" : `<button class="editor-asset-delete" data-delete-asset="${encodeURIComponent(item.name)}" title="删除素材“${esc(item.name)}”">×</button>`}</span>`;
+    return `<span class="editor-asset-wrap" data-editor-asset-name="${esc(item.name.toLowerCase())}"><button class="editor-asset-thumb ${selected ? "selected" : ""}" draggable="true" data-canvas-asset="${encodeURIComponent(item.name)}" data-canvas-role="${role}" data-apply-asset="${encodeURIComponent(item.name)}"><img src="${previewSrc(item.url, 72)}" draggable="false" alt="${esc(item.name)}" title="拖到画布使用：${esc(item.name)}"/><span class="asset-drag-hint">拖入</span></button>${item.needsCutout ? `<button type="button" class="editor-asset-cutout" data-cutout-asset="${encodeURIComponent(item.name)}" title="人物素材仍带背景，点击抠图">待抠图</button>` : ''}${isDerived || item.derived ? "" : `<button class="editor-asset-delete" data-delete-asset="${encodeURIComponent(item.name)}" title="删除素材“${esc(item.name)}”">×</button>`}</span>`;
   }).join("")}<button class="editor-asset-add" data-upload-kind="${kind}">＋</button></div></section>`;
   }).join("") + editorSourceDocuments(task);
 }
@@ -2065,7 +2106,7 @@ function actionButtons(task) {
 
 function previewGallery(task) {
   if (!task.pagePreviews?.length) return "";
-  return `<section class="result-section"><div class="result-head"><div><p class="eyebrow">PAGE PREVIEWS</p><h3>页面效果预览</h3></div><span class="status" data-status="已完成">${task.pagePreviews.length} 张</span></div><div class="result-grid">${task.pagePreviews.map((item) => `<article class="result-card"><a href="${item.url}" target="_blank"><img src="${item.url}" alt="页面效果预览" /></a><div class="result-meta"><b>${esc(state.data.templates.find((t) => t.id === item.templateId)?.name || item.name)}</b><span>页面PSD预览 · ${item.format}</span></div></article>`).join("")}</div></section>`;
+  return `<section class="result-section"><div class="result-head"><div><p class="eyebrow">PAGE PREVIEWS</p><h3>页面效果预览</h3></div><span class="status" data-status="已完成">${task.pagePreviews.length} 张</span></div><div class="result-grid">${task.pagePreviews.map((item) => `<article class="result-card"><a href="${item.url}" target="_blank"><img src="${previewSrc(item.url, 320)}" alt="页面效果预览" /></a><div class="result-meta"><b>${esc(state.data.templates.find((t) => t.id === item.templateId)?.name || item.name)}</b><span>页面PSD预览 · ${item.format}</span></div></article>`).join("")}</div></section>`;
 }
 
 function info(label, value) { return `<div class="info-row"><span>${label}</span><b>${esc(value)}</b></div>`; }
@@ -2089,7 +2130,7 @@ function artifactGallery(task) {
   if (!task.artifacts.length) return "";
   return `<section class="result-section"><div class="result-head"><div><p class="eyebrow">GENERATED OUTPUTS</p><h3>生成结果</h3></div><span class="status" data-status="${task.qc?.passed ? "已完成" : "生成失败"}">${task.artifacts.length} 张成品</span></div><div class="result-grid">${task.artifacts.map((artifact) => {
     const template = state.data.templates.find((item) => item.id === artifact.templateId);
-    return `<article class="result-card"><a href="${artifact.url}" target="_blank" rel="noopener"><img src="${artifact.url}" alt="${esc(template?.name || artifact.name)}" loading="lazy" /></a><div class="result-meta"><b>${esc(template?.name || artifact.name)}</b><span>${artifact.width}×${artifact.height} · ${artifact.format} · ${formatBytes(artifact.bytes)}</span><div><span class="${artifact.qc.passed ? "result-pass" : "result-fail"}">${artifact.qc.passed ? "✓ 质检通过" : "! 质检失败"}</span>${artifact.templateApplied ? `<span class="result-pass">✓ PSD模板</span>` : ""}<a href="${artifact.url}" download="${esc(artifact.name)}">下载单张</a></div></div></article>`;
+    return `<article class="result-card"><a href="${artifact.url}" target="_blank" rel="noopener"><img src="${previewSrc(artifact.url, 320)}" alt="${esc(template?.name || artifact.name)}" loading="lazy" /></a><div class="result-meta"><b>${esc(template?.name || artifact.name)}</b><span>${artifact.width}×${artifact.height} · ${artifact.format} · ${formatBytes(artifact.bytes)}</span><div><span class="${artifact.qc.passed ? "result-pass" : "result-fail"}">${artifact.qc.passed ? "✓ 质检通过" : "! 质检失败"}</span>${artifact.templateApplied ? `<span class="result-pass">✓ PSD模板</span>` : ""}<a href="${artifact.url}" download="${esc(artifact.name)}">下载单张</a></div></div></article>`;
   }).join("")}</div></section>`;
 }
 
@@ -2386,6 +2427,7 @@ function resolveBackgroundSourceUrl(task, template) {
 async function pollOutpaintUntilSettled(taskId, deadline = 600_000) {
   const startedAt = Date.now();
   while (Date.now() - startedAt < deadline) {
+    if (document.hidden) { await new Promise((resolve) => setTimeout(resolve, 2500)); continue; }
     const fresh = await api(`/api/tasks/${taskId}`);
     if (fresh.outpaint?.status !== "running") return fresh;
     await new Promise((resolve) => setTimeout(resolve, 2500));
@@ -3525,6 +3567,8 @@ function scheduleCommunityGenerationPoll() {
   const taskId=state.task.id;
   state.communityGenerationPoll=setTimeout(async()=>{
     if(state.task?.id!==taskId)return;
+    // 标签页不在前台时不问（生成在服务器上照常进行），回到前台的下一轮接着问。
+    if(document.hidden)return scheduleCommunityGenerationPoll();
     try{
       if(!await flushPendingParameterSave())return scheduleCommunityGenerationPoll();
       if(state.task?.id!==taskId)return;
@@ -3532,6 +3576,10 @@ function scheduleCommunityGenerationPoll() {
       const fresh=await api(`/api/tasks/${taskId}`);
       if(state.task?.id!==taskId)return;
       if(state.paramsSaveTimer||JSON.stringify({parameters:state.task.parameters,copy:state.task.copy})!==localSnapshot)return scheduleCommunityGenerationPoll();
+      // 和上一轮一模一样就不重画整个编辑器（服务器带 ETag，没变时浏览器用缓存，也不重新下载）。
+      const freshText=JSON.stringify(fresh);
+      if(freshText===state.communityGenerationPolled&&fresh.communityGeneration?.status==='running')return scheduleCommunityGenerationPoll();
+      state.communityGenerationPolled=freshText;
       const oldNames=new Set(state.task.assets.map(asset=>asset.name));
       state.task=fresh;
       const cached=state.data.tasks.findIndex(task=>task.id===taskId);
@@ -4539,7 +4587,7 @@ let quickProjectBusy = false;
 let quickProjectLibraryUse = null;
 function renderQuickPastedAssets() {
   const staged=quickProjectLibraryUse;
-  document.querySelector('#quick-pasted-assets').innerHTML=(staged?`<div class="quick-pasted-asset">${staged.asset.category==='font'?'':`<img src="${esc(staged.asset.url)}" alt="项目素材预览">`}<span>${esc(staged.asset.displayName||staged.asset.name)}<small>项目素材 · ${staged.mode==='reference'?'AI 参考':'原样使用'}</small></span><button type="button" data-remove-project-material aria-label="移除项目素材" ${quickBusy?'disabled':''}>×</button></div>`:'')+quickPastedAssets.map(a=>`<div class="quick-pasted-asset">${a.url?`<img src="${a.url}" alt="源素材预览"/>`:`<span class="quick-source-file-icon">${/\.psb$/i.test(a.file.name)?'PSB':/\.psd$/i.test(a.file.name)?'PSD':'图片'}</span>`}<span>${esc(a.file.name)}<small>${formatBytes(a.file.size)}${a.uploaded?' · 已保存':''}</small></span><button type="button" data-remove-paste="${a.id}" aria-label="移除 ${esc(a.file.name)}" ${a.uploaded||quickBusy?'disabled':''}>×</button></div>`).join('');
+  document.querySelector('#quick-pasted-assets').innerHTML=(staged?`<div class="quick-pasted-asset">${staged.asset.category==='font'?'':`<img src="${esc(previewSrc(staged.asset.url, 64))}" alt="项目素材预览">`}<span>${esc(staged.asset.displayName||staged.asset.name)}<small>项目素材 · ${staged.mode==='reference'?'AI 参考':'原样使用'}</small></span><button type="button" data-remove-project-material aria-label="移除项目素材" ${quickBusy?'disabled':''}>×</button></div>`:'')+quickPastedAssets.map(a=>`<div class="quick-pasted-asset">${a.url?`<img src="${previewSrc(a.url, 64)}" alt="源素材预览"/>`:`<span class="quick-source-file-icon">${/\.psb$/i.test(a.file.name)?'PSB':/\.psd$/i.test(a.file.name)?'PSD':'图片'}</span>`}<span>${esc(a.file.name)}<small>${formatBytes(a.file.size)}${a.uploaded?' · 已保存':''}</small></span><button type="button" data-remove-paste="${a.id}" aria-label="移除 ${esc(a.file.name)}" ${a.uploaded||quickBusy?'disabled':''}>×</button></div>`).join('');
 }
 function clearQuickPastedAssets(){quickPastedAssets.forEach(a=>{if(a.url)URL.revokeObjectURL(a.url);});quickPastedAssets=[];renderQuickPastedAssets();}
 const quickSourceBox=document.querySelector('.quick-source-box'),quickSourceFiles=document.querySelector('#quick-source-files');
@@ -4844,7 +4892,12 @@ const homeNavIcons={
   specs:'<path d="M5 1h14a2 2 0 0 1 2 2v19a1 1 0 0 1-1.5.9L12 19l-7.5 3.9A1 1 0 0 1 3 22V3a2 2 0 0 1 2-2m2 4v2h10V5zm5 5-1 2.2-2.4.3 1.8 1.7-.4 2.4 2-1.1 2 1.1-.4-2.4 1.8-1.7-2.4-.3z" fill-rule="evenodd"/>'
 };
 document.querySelectorAll('.nav-item').forEach(b=>{const span=b.querySelector('span'),key=b.classList.contains('home-create-nav')?'create':b.dataset.view,path=navIcons[key],homePath=homeNavIcons[key];if(span&&homePath)span.innerHTML=`${path?`<svg class="nav-default-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`:''}<svg class="nav-home-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${homePath}</svg>`;else if(span&&path)span.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;});
-await refresh();
+try { await refresh(); }
+catch (error) {
+  // 读不到数据时别一直转圈：说清楚，让人刷新（登录失效另有横幅提示）。
+  content.innerHTML = `<p class="wb-boot-loading" role="alert">工作台没有打开：${esc(error.message)}。请刷新页面重试。</p>`;
+  throw error;
+}
 const startupUrl=new URL(location.href),linkedTaskId=startupUrl.searchParams.get("task"),linkedJobId=startupUrl.searchParams.get('job')||'';
 if (linkedTaskId && state.data.tasks.some((task) => task.id === linkedTaskId)) await openTask(linkedTaskId);
 else if (startupUrl.searchParams.get('view') === 'channel-resources') goDashboardView('channel-resources',startupUrl.searchParams.get('channel')||'huawei',linkedJobId);

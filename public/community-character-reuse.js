@@ -1,4 +1,4 @@
-import {illustrationOptions,illustrationCharacterSources} from './community-illustration-state.js?v=20261027-prompt-character';
+import {illustrationOptions,illustrationCharacterSources} from './community-illustration-state.js';
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function renderCharacterReuseMenu(task,asset,{disabled=false}={}){
  const selected=illustrationOptions(task).characterSourceName===asset.name,png=asset.mime?.split(';')[0].toLowerCase()==='image/png';

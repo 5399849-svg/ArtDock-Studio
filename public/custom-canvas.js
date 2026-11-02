@@ -1,4 +1,4 @@
-import {customCanvasSpec} from './custom-canvas-model.js?v=20261028-resize-cleanup-final';
+import {customCanvasSpec} from './custom-canvas-model.js';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function openCustomCanvasTask({projects,api,created}){
  document.querySelector('.custom-canvas-dialog')?.remove();const dialog=document.createElement('dialog');dialog.className='custom-canvas-dialog';

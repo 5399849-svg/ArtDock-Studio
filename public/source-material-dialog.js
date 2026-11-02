@@ -1,3 +1,4 @@
+import {previewSrc} from './image-preview.js';
 import {projectMaterialCategories,projectMaterialLabel} from './project-material-model.js';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const image=a=>/^image\/(png|jpeg|webp)$/.test(a.mime||'');
@@ -13,7 +14,7 @@ export function mountSourceMaterialDialog({root,task,api,add,readFile,isBusy=()=
  const release=()=>{if(url)URL.revokeObjectURL(url);url='';};
  const draw=()=>{const query=dialog.querySelector('#source-material-search').value.trim().toLowerCase(),category=dialog.querySelector('#source-material-category').value,favorites=dialog.querySelector('#source-material-favorites').checked;
   const shown=assets.filter(a=>(!favorites||a.favorite)&&(category==='all'||a.category===category)&&`${projectMaterialLabel(a)} ${(a.tags||[]).join(' ')}`.toLowerCase().includes(query));
-  grid.innerHTML=shown.map(a=>`<button type="button" class="source-project-material ${asset?.id===a.id?'selected':''}" data-project-material="${esc(a.id)}" aria-pressed="${asset?.id===a.id}" title="${esc(projectMaterialLabel(a))}" ${submitting?'disabled':''}><span class="source-material-art"><img src="${esc(a.url)}" alt="" loading="lazy">${a.favorite?'<i aria-label="常用素材">★</i>':''}</span><b>${esc(projectMaterialLabel(a))}</b><small>${a.width&&a.height?`${a.width} × ${a.height}`:'图片'}</small></button>`).join('')||`<p class="source-material-empty">${!task.projectId?'请先为任务关联项目':query||favorites||category!=='all'?'没有符合筛选条件的项目素材':'项目中还没有可用图片，可先上传或粘贴图片'}</p>`;
+  grid.innerHTML=shown.map(a=>`<button type="button" class="source-project-material ${asset?.id===a.id?'selected':''}" data-project-material="${esc(a.id)}" aria-pressed="${asset?.id===a.id}" title="${esc(projectMaterialLabel(a))}" ${submitting?'disabled':''}><span class="source-material-art"><img src="${esc(previewSrc(a.url,180))}" alt="" loading="lazy">${a.favorite?'<i aria-label="常用素材">★</i>':''}</span><b>${esc(projectMaterialLabel(a))}</b><small>${a.width&&a.height?`${a.width} × ${a.height}`:'图片'}</small></button>`).join('')||`<p class="source-material-empty">${!task.projectId?'请先为任务关联项目':query||favorites||category!=='all'?'没有符合筛选条件的项目素材':'项目中还没有可用图片，可先上传或粘贴图片'}</p>`;
  };
  const selection=()=>{preview.hidden=!file&&!asset;preview.querySelector('img')?.remove();preview.querySelector('.wb-file-missing')?.remove();const source=file?url:asset?.url;
   if(source){const img=new Image();img.alt='已选素材预览';img.src=source;preview.prepend(img);}

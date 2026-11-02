@@ -1,6 +1,8 @@
 // 工作台的启动入口（平台上和本机都用它）：
 // - 健康检查 /healthz 一开始监听就返回 200；数据还没从库里恢复好时，接口返回 503 WORKBENCH_STARTING；
-// - 声明了 database（有 DATABASE_URL）时，数据存在应用自己的库里（persistence.mjs）；
+// - 数据目录：平台上声明了 folder，在应用自己的文件夹 /data/runtime（图片、PSD 都在这里，重新部署不丢）；
+//   本机在 data/runtime，或用 WEIGUANG_DATA_DIR 指定一个文件夹（数据目录是它下面的 runtime）；
+// - 声明了 database（有 DATABASE_URL）时，记录（JSON）另存一份在应用自己的库里（persistence.mjs）；
 // - 每个请求带着使用者的微光凭据进入请求上下文；改数据、花积分的请求核对来自本应用的页面；
 // - /api/local-compute/* 把 Python 计算交给使用者的浏览器（local-compute.mjs）。
 import http from 'node:http';
@@ -8,14 +10,20 @@ import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
-import {runWithRequest, sameApp, currentIdentity} from './request-context.mjs';
+import {runWithRequest, sameApp} from './request-context.mjs';
 import {configureCanvas, listGameTags} from './canvas.mjs';
 import {createPersistence} from './persistence.mjs';
 import {createLocalCompute, setLocalCompute} from './local-compute.mjs';
+import {LEGACY_OWNER, adminAccountIds, createWorkbenchAccess, currentViewer} from '../lib/workbench-access.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const publicDir = path.join(root, 'public');
-const runtimeDir = process.env.WORKBENCH_RUNTIME_DIR || path.join(root, 'data', 'runtime');
+// 平台给的文件夹挂在 /data（Windows 上 /data 是某个盘的根目录，不算）。
+const folder = process.env.WEIGUANG_DATA_DIR || (process.platform === 'win32' ? '' : '/data');
+const hasFolder = Boolean(folder) && fs.statSync(folder, {throwIfNoEntry: false})?.isDirectory() === true;
+const runtimeDir = process.env.WORKBENCH_RUNTIME_DIR || (hasFolder ? path.join(folder, 'runtime') : path.join(root, 'data', 'runtime'));
+// server.mjs 和 lib/ 里的模块都从这个环境变量取数据目录。
+process.env.WORKBENCH_RUNTIME_DIR = runtimeDir;
 const portArg = process.argv.indexOf('--port');
 // 平台上 weiguang.json 的启动命令是 node platform/bootstrap.mjs（node 直接收到 SIGTERM，才能存完最后的改动再退出），端口 3000；
 // 本机 npm start 带 --port 4173。
@@ -92,10 +100,11 @@ async function handle(req, res) {
     if (url.pathname.startsWith('/platform/')) return sendJson(res, 404, {error: '文件不存在'});
   }
   if (url.pathname === '/api/platform/status' && req.method === 'GET') {
-    const identity = await currentIdentity({required: false}).catch(() => null);
+    const viewer = await currentViewer().catch(() => null);
     return sendJson(res, 200, {
-      phase: state.phase, persistence: persistence ? {...persistence.state} : null, user: identity ? {name: identity.name} : null,
-      mode: databaseUrl ? 'platform' : 'local', localCompute: {pending: compute.pending()},
+      phase: state.phase, persistence: persistence ? {...persistence.state} : null,
+      user: viewer ? {name: viewer.name, accountId: viewer.accountId, admin: viewer.admin} : null,
+      mode: databaseUrl ? 'platform' : 'local', folder: hasFolder, localCompute: {pending: compute.pending()},
     });
   }
   if (url.pathname.startsWith('/api/local-compute/')) { await compute.handle(req, res, url); return; }
@@ -130,6 +139,7 @@ async function copySeed(from = path.join(root, 'config', 'runtime-seed'), to = r
 }
 
 async function start() {
+  if (databaseUrl && !hasFolder && process.env.WG_SDK_ORIGIN) console.warn('平台上没有挂好 /data 文件夹：图片和 PSD 写在容器里，重新部署就没了。weiguang.json 要声明 folder。');
   if (databaseUrl) {
     persistence = createPersistence({runtimeDir, databaseUrl});
     state.phase = 'restoring';
@@ -139,6 +149,11 @@ async function start() {
   }
   await fsp.mkdir(runtimeDir, {recursive: true});
   await copySeed();
+  // 管理员名单写错了就不启动，免得悄悄变成没有管理员（同 QCanvas）。
+  console.log(`管理员（微光账号编号）：${[...adminAccountIds()].join('、') || '没有设置 WORKBENCH_ADMIN_ACCOUNT_IDS'}`);
+  // 以前的任务没有主人：一次性归给陈美霞（lib/workbench-access.mjs LEGACY_OWNER），要在模块读记录之前做。
+  const migration = await createWorkbenchAccess({runtimeDir}).migrateLegacyOwners();
+  if (migration.migrated) console.log(`以前的任务归给了${LEGACY_OWNER.name}（账号 ${LEGACY_OWNER.accountId}）：${JSON.stringify(migration.assigned)}`);
   process.env.WORKBENCH_BOOTSTRAP = '1';
   const app = await import(pathToFileURL(path.join(root, 'server.mjs')).href);
   appHandler = app.handleRequest;

@@ -1,4 +1,4 @@
-import {loadFontAsset,projectFontFamily} from './project-fonts.js?v=20261014-company-font-library-ready';
+import {loadFontAsset,projectFontFamily} from './project-fonts.js';
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function renderMaterialFontControl(task,kind,fonts=[],{disabled=false}={}){
  if(!['title','subtitle'].includes(kind))return '';

@@ -2,10 +2,12 @@
 // 服务器不运行 Python，而是把这一步交给发起操作的使用者正开着的工作台页面。页面下载输入文件，
 // 在浏览器里用 Pyodide（Python）和 onnxruntime-web（本机 GPU）算完，把结果传回来，服务器接着往下做。
 import fs from 'node:fs/promises';
+import {createReadStream} from 'node:fs';
+import {pipeline} from 'node:stream/promises';
 import os from 'node:os';
 import path from 'node:path';
-import {randomUUID} from 'node:crypto';
-import {currentIdentity} from './request-context.mjs';
+import {randomUUID, createHash} from 'node:crypto';
+import {currentIdentity, currentPageId} from './request-context.mjs';
 
 const LABELS = {
   'sam2-character-cutout.py': '人物精细抠图（SAM2）',
@@ -27,13 +29,15 @@ const LABELS = {
 };
 const CLAIM_STALE_MS = 45_000;
 const UNCLAIMED_TIMEOUT_MS = 10 * 60_000;
+// 任务先等发起操作的那个标签页来接；它这么久没来（关了、没在跑），别的标签页才能接。
+const PAGE_GRACE_MS = 5000;
 const MIN_RUN_TIMEOUT_MS = 15 * 60_000;
 
 function computeError(message, status = 422, extra = {}) {
   return Object.assign(new Error(message), {status, ...extra});
 }
 
-export function createLocalCompute({root, runtimeDir}) {
+export function createLocalCompute({root, runtimeDir, pageGraceMs = PAGE_GRACE_MS}) {
   const roots = [
     {real: path.resolve(runtimeDir), virtual: '/wb-runtime'},
     {real: path.resolve(root), virtual: '/wb'},
@@ -72,14 +76,30 @@ export function createLocalCompute({root, runtimeDir}) {
 
   // 参数里的路径：已存在的文件是输入；已存在的文件夹里的文件是输入，文件夹本身也可以写结果；
   // 不存在的路径是结果的位置。JSON 参数文件里写的路径同样处理（例如字体文件）。
+  // 大的输入文件（≥1 MB，例如刚上传的 PSD）带上内容摘要：页面手里有同样的文件就直接用，不再下载（client.mjs localCopy）。
+  // 摘要按“路径 + 大小 + 修改时间”记住，同一个文件反复算时不再整份读一遍。
+  const digests = new Map();
+  function fileDigest(real, stat) {
+    const key = `${real}|${stat.size}|${stat.mtimeMs}`;
+    if (!digests.has(key)) {
+      digests.set(key, new Promise((resolve, reject) => {
+        const hash = createHash('sha256');
+        createReadStream(real).on('data', chunk => hash.update(chunk)).on('error', reject).on('end', () => resolve(hash.digest('hex')));
+      }).catch(error => { digests.delete(key); throw error; }));
+      if (digests.size > 200) digests.delete(digests.keys().next().value);
+    }
+    return digests.get(key);
+  }
+
   async function describe(script, args) {
     const inputs = [], outputRoots = [], outputDirs = [], seen = new Set();
     const addInput = async (real, content) => {
       const virtual = toVirtual(real);
       if (!virtual || seen.has(virtual)) return virtual;
       seen.add(virtual);
-      const size = content ? content.length : (await fs.stat(real)).size;
-      inputs.push({n: inputs.length, path: virtual, real, size, content});
+      const stat = content ? null : await fs.stat(real), size = content ? content.length : stat.size;
+      const sha256 = stat && size >= 1024 * 1024 ? await fileDigest(real, stat) : undefined;
+      inputs.push({n: inputs.length, path: virtual, real, size, content, sha256});
       return virtual;
     };
     const mapPath = async value => {
@@ -132,14 +152,15 @@ export function createLocalCompute({root, runtimeDir}) {
     const id = randomUUID();
     const job = {
       id, kind: 'python', accountId, label, name, ...described,
-      createdAt: Date.now(), claim: null, heartbeatAt: 0, progress: null,
+      createdAt: Date.now(), claim: null, heartbeatAt: 0, progress: null, pageId: currentPageId() || null,
       timeoutMs: Math.max(MIN_RUN_TIMEOUT_MS, Number(options.timeout) || 0),
     };
     const result = new Promise((resolve, reject) => { job.resolve = resolve; job.reject = reject; });
     jobs.set(id, job);
+    wakeAfterGrace(job);
     job.timer = setInterval(() => {
       const now = Date.now();
-      if (job.claim && now - job.heartbeatAt > CLAIM_STALE_MS) { job.claim = null; wake(accountId); }
+      if (job.claim && now - job.heartbeatAt > CLAIM_STALE_MS) { job.claim = null; job.pageId = null; wake(accountId); }
       if (!job.claim && now - job.createdAt > UNCLAIMED_TIMEOUT_MS) finish(job, computeError(`「${label}」要在你的浏览器里计算，但 10 分钟内没有打开的工作台页面接手；请打开工作台页面后重试`, 409, {code: 'LOCAL_COMPUTE_NO_PAGE'}));
       if (job.claim && now - job.createdAt > job.timeoutMs) finish(job, computeError(`「${label}」在浏览器里计算超时，请缩小处理规模后重试`, 422));
     }, 5000);
@@ -153,12 +174,13 @@ export function createLocalCompute({root, runtimeDir}) {
     const accountId = identity?.accountId || (process.env.DATABASE_URL ? '' : 'local');
     if (!accountId) throw computeError('这一步要你在工作台页面上确认，但没有登录身份；请重新打开工作台后再试', 409, {code: 'CONFIRM_NO_USER'});
     const id = randomUUID();
-    const job = {id, kind: 'prompt', accountId, label: prompt.title || '需要确认', prompt, createdAt: Date.now(), claim: null, heartbeatAt: 0};
+    const job = {id, kind: 'prompt', accountId, label: prompt.title || '需要确认', prompt, createdAt: Date.now(), claim: null, heartbeatAt: 0, pageId: currentPageId() || null};
     const result = new Promise((resolve, reject) => { job.resolve = resolve; job.reject = reject; });
     jobs.set(id, job);
+    wakeAfterGrace(job);
     job.timer = setInterval(() => {
       const now = Date.now();
-      if (job.claim && now - job.heartbeatAt > CLAIM_STALE_MS) { job.claim = null; wake(accountId); }
+      if (job.claim && now - job.heartbeatAt > CLAIM_STALE_MS) { job.claim = null; job.pageId = null; wake(accountId); }
       if (!job.claim && now - job.createdAt > 2 * 60_000) finish(job, computeError('需要在工作台页面上确认，但没有打开的页面；这次没有提交，也没有扣积分', 409, {code: 'CONFIRM_NO_PAGE'}));
       if (now - job.createdAt > timeoutMs) finish(job, computeError('等待确认超时；这次没有提交，也没有扣积分', 409, {code: 'CONFIRM_TIMEOUT'}));
     }, 5000);
@@ -178,18 +200,31 @@ export function createLocalCompute({root, runtimeDir}) {
     return {
       kind: job.kind,
       id: job.id, claim: job.claim, label: job.label, name: job.name, script: job.script, args: job.args,
-      inputs: job.inputs.map(({n, path: file, size}) => ({n, path: file, size})), outputRoots: job.outputRoots, outputDirs: job.outputDirs,
+      inputs: job.inputs.map(({n, path: file, size, sha256}) => ({n, path: file, size, ...(sha256 ? {sha256} : {})})), outputRoots: job.outputRoots, outputDirs: job.outputDirs,
     };
   }
 
-  function nextFor(accountId) {
+  // 发起操作的标签页的任务先给它；没记标签页的，或等了 pageGraceMs 还没被它接走的，谁来都给。
+  function nextFor(accountId, pageId = '') {
+    const now = Date.now();
+    let fallback = null;
     for (const job of jobs.values()) {
       if (job.accountId !== accountId || job.claim) continue;
-      job.claim = randomUUID();
-      job.heartbeatAt = Date.now();
-      return job;
+      if (!job.pageId || job.pageId === pageId) return claim(job);
+      if (!fallback && now - job.createdAt >= pageGraceMs) fallback = job;
     }
-    return null;
+    return fallback ? claim(fallback) : null;
+  }
+  function claim(job) {
+    job.claim = randomUUID();
+    job.heartbeatAt = Date.now();
+    return job;
+  }
+  // 记了标签页的任务：等到期限还没人接，叫醒别的标签页来接。
+  function wakeAfterGrace(job) {
+    if (!job.pageId) return;
+    const timer = setTimeout(() => { if (jobs.has(job.id) && !job.claim) wake(job.accountId); }, pageGraceMs + 20);
+    timer.unref?.();
   }
 
   async function readJsonBody(req, limit = 4 * 1024 * 1024) {
@@ -210,19 +245,21 @@ export function createLocalCompute({root, runtimeDir}) {
     const accountId = identity?.accountId || (process.env.DATABASE_URL ? '' : 'local');
     if (!accountId) return send(res, 401, {error: {code: 'LOGIN_REQUIRED', message: '登录已失效，请重新连接微光平台'}}), true;
     if (url.pathname === '/api/local-compute/next' && req.method === 'GET') {
-      let job = nextFor(accountId);
-      if (!job) {
-        const waitMs = Math.min(25_000, Math.max(0, Number(url.searchParams.get('wait')) || 0));
-        if (waitMs) {
-          await new Promise(resolve => {
-            const set = waiters.get(accountId) || new Set();
-            const timer = setTimeout(done, waitMs);
-            function done() { clearTimeout(timer); set.delete(done); resolve(); }
-            set.add(done); waiters.set(accountId, set);
-            res.on('close', done); // 页面关掉或连接断开时不再等待（req 的 close 在读完请求时就会触发）
-          });
-          job = nextFor(accountId);
-        }
+      const page = req.headers['x-workbench-page'], pageId = typeof page === 'string' ? page : '';
+      let job = nextFor(accountId, pageId);
+      const waitMs = Math.min(25_000, Math.max(0, Number(url.searchParams.get('wait')) || 0)), deadline = Date.now() + waitMs;
+      // 页面关掉或连接断开时不再等待（req 的 close 在读完请求时就会触发）
+      let closed = false, stop = null;
+      res.on('close', () => { closed = true; stop?.(); });
+      // 被叫醒但任务是别的标签页的（还在等它来接），就接着等，直到时间到。
+      while (!job && !closed && Date.now() < deadline) {
+        await new Promise(resolve => {
+          const set = waiters.get(accountId) || new Set();
+          const timer = setTimeout(done, deadline - Date.now());
+          function done() { clearTimeout(timer); set.delete(done); stop = null; resolve(); }
+          set.add(done); waiters.set(accountId, set); stop = done;
+        });
+        if (!closed) job = nextFor(accountId, pageId);
       }
       return send(res, 200, {job: job ? publicJob(job) : null}), true;
     }
@@ -236,9 +273,15 @@ export function createLocalCompute({root, runtimeDir}) {
     if (action.startsWith('input/') && req.method === 'GET') {
       const input = job.inputs[Number(match[3])];
       if (!input) return send(res, 404, {error: '输入文件不存在'}), true;
-      const body = input.content || await fs.readFile(input.real);
-      res.writeHead(200, {'Content-Type': 'application/octet-stream', 'Content-Length': body.length, 'Cache-Control': 'no-store'});
-      res.end(body);
+      // 文件边读边发，不整份读进内存（PSD 可能几百 MB）。
+      if (input.content) {
+        res.writeHead(200, {'Content-Type': 'application/octet-stream', 'Content-Length': input.content.length, 'Cache-Control': 'no-store'});
+        res.end(input.content);
+        return true;
+      }
+      const stat = await fs.stat(input.real);
+      res.writeHead(200, {'Content-Type': 'application/octet-stream', 'Content-Length': stat.size, 'Cache-Control': 'no-store'});
+      await pipeline(createReadStream(input.real), res).catch(() => {}); // 页面中途关掉就停，不当错误
       return true;
     }
     if (action === 'heartbeat' && req.method === 'POST') {

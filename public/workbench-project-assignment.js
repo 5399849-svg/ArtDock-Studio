@@ -1,4 +1,4 @@
-import {escapeHtml as esc} from './workbench-model.js?v=20261022-version-lifecycle';
+import {escapeHtml as esc} from './workbench-model.js';
 
 export function createProjectAssignment({projects,api,reload,toast}){
  async function open(tasks,onSaved=()=>{}){

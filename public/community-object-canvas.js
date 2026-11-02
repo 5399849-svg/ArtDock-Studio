@@ -1,4 +1,4 @@
-import {placedCommunityObjects,placeCommunityObject,changeCommunityObjectLayer,removeCommunityObjectLayer,communityObjectLayerRect,communityObjectLayerImageKey,loadCommunityObjectLayerImages,communityObjectAppearance,communityObjectMaxSize} from './community-object-layers.js?v=20261026-character-scale-stack';
+import {placedCommunityObjects,placeCommunityObject,changeCommunityObjectLayer,removeCommunityObjectLayer,communityObjectLayerRect,communityObjectLayerImageKey,loadCommunityObjectLayerImages,communityObjectAppearance,communityObjectMaxSize} from './community-object-layers.js';
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function renderCommunityObjectPlacementControls(task,kind,groupId,{disabled=false}={}){
  const layer=placedCommunityObjects(task).find(l=>l.appearance.kind===kind&&l.appearance.groupId===groupId),attributes=`data-object-kind="${kind}" data-object-group="${esc(groupId)}"`;

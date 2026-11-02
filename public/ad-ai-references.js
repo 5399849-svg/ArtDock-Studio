@@ -1,4 +1,4 @@
-import {isAdImageUrl} from './ad-image-url.js?v=20261022-draft-sync';
+import {isAdImageUrl} from './ad-image-url.js';
 
 export const AD_AI_REFERENCE_LIMIT=3;
 export function validateAdAiReference(file){

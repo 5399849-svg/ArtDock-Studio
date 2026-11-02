@@ -1,33 +1,58 @@
-# Dependencies and build output
-node_modules/
-dist/
-build/
-coverage/
-*.log
+# 仓库只放工作台的代码：和上传到微光平台的包同一范围（scripts/platform/pack.mjs），另加测试 test/。
+# 素材和规范文件夹、PSD 模版、本机启动脚本、Photoshop 队列（worker/）、界面核对脚本、本机 Python 环境和模型都不进仓库。
+/*
+!/.gitignore
+!/.gitattributes
+!/.env.example
+!/README.md
+!/weiguang.json
+!/package.json
+!/package-lock.json
+!/server.mjs
+!/platform/
+!/lib/
+!/public/
+!/config/
+!/test/
+!/scripts/
+!/data/
+!/local-ai/
+!/02 规范与模板/
 
-# Secrets and local configuration
+/scripts/*
+!/scripts/*.py
+!/scripts/import-company-fonts.mjs
+!/scripts/platform/
+
+# data/ 下只放随代码的种子和基线 JSON；运行数据（data/runtime）、商业授权字体、预览图都不放
+/data/*
+!/data/*.json
+
+/local-ai/*
+!/local-ai/pipeline.py
+
+# 投放尺寸表：config/ad-resources-v1.json 由它生成，打包时核对两者一致
+/02 规范与模板/*
+!/02 规范与模板/投放/
+/02 规范与模板/投放/*
+!/02 规范与模板/投放/资源位规范/
+/02 规范与模板/投放/资源位规范/*
+!/02 规范与模板/投放/资源位规范/投放资源位尺寸表.xlsx
+
+# 密钥和本机配置
 .env
 .env.*
 !.env.example
 config/ai-huabu.json
 config/remove-bg.json
-worker/config.json
 
-# Runtime data, downloaded browser libraries, and model weights
-# Prepare browser dependencies with npm run prepare:browser-runtime.
-data/runtime/
+# 依赖、打包产物，以及浏览器计算用的运行库和模型（约 400 MB，npm run prepare:browser-runtime 按 public/platform/runtime-manifest.json 重新准备）
+node_modules/
+dist/
 public/platform/vendor/
 public/platform/models/
-local-ai/models/
-local-ai/psd-deps/
-local-ai/generative/
-
-# Python caches and local environments
 __pycache__/
 *.py[cod]
-.venv/
-venv/
-
-# Operating system files
+*.log
 .DS_Store
 Thumbs.db

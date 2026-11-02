@@ -1,9 +1,9 @@
-import {adAiSameTypeSpecs,adAiScopeKey,adAiTypeLabel,adAiDefaultScope} from './ad-ai-scope.js?v=20261022-ai-share-v2';
-import {adAiPreservationOnly,AD_AI_PRESERVATION_MESSAGE} from './ad-ai-preservation.js?v=20261022-history-colour';
-import {isAdImageUrl} from './ad-image-url.js?v=20261022-draft-sync';
-import {createAdAiPreview} from './ad-ai-preview.js?v=20261022-ai-preview';
-import {mountAdAiReferences,adAiSameReferences} from './ad-ai-references.js?v=20261023-reference-slot';
-import {AD_AI_MODELS,AD_AI_DEFAULT_MODEL} from './ad-ai-models.js?v=20261023-compact-inspector';
+import {adAiSameTypeSpecs,adAiScopeKey,adAiTypeLabel,adAiDefaultScope} from './ad-ai-scope.js';
+import {adAiPreservationOnly,AD_AI_PRESERVATION_MESSAGE} from './ad-ai-preservation.js';
+import {isAdImageUrl} from './ad-image-url.js';
+import {createAdAiPreview} from './ad-ai-preview.js';
+import {mountAdAiReferences,adAiSameReferences} from './ad-ai-references.js';
+import {AD_AI_MODELS,AD_AI_DEFAULT_MODEL} from './ad-ai-models.js';
 const active=new Set(['queued','preparing','submitting','processing','downloading','saving']);
 export const isAdAiEditLocked=job=>active.has(job?.status)||job?.status==='result_uncertain'||job?.status==='awaiting_review';
 const labels={queued:'等待修改',preparing:'正在准备当前画面',submitting:'正在提交画布',processing:'AI 正在修改画面',downloading:'正在取回修改稿',saving:'正在保存新候选',completed:'修改稿已生成，请检查画面',needs_revision:'AI 未完成修改要求，原稿已保留',failed:'本次修改未完成，原稿已保留',conflict:'当前稿已变化，结果未覆盖',result_uncertain:'本次结果待确认，请继续查询',reverted:'已恢复修改前版本'};

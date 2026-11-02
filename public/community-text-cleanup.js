@@ -1,4 +1,4 @@
-import {TextEraseDocument,textEraseImagePoint,validateEraseStrokes} from './text-erase.js?v=20261021-text-cleanup';
+import {TextEraseDocument,textEraseImagePoint,validateEraseStrokes} from './text-erase.js';
 
 export function renderTextCleanupTool(kind,asset,{disabled=false}={}){
  if(!['title','subtitle'].includes(kind)||!asset?.mime?.startsWith('image/'))return '';

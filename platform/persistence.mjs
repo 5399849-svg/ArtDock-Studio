@@ -1,7 +1,8 @@
-// 工作台的数据（data/runtime 下的记录和文件）全组共用，存在应用自己的 PostgreSQL 库里（规范 3.4）。
-// 程序照旧读写容器里的 data/runtime，这里负责：启动时从库里恢复，之后把每次改动写回库。
-// 容器里的文件重新部署就清空，库才是唯一的保存处。同一时间只有一个程序实例能写（会话锁），
-// 部署新版本时新实例等旧实例交出锁、补上最后的改动后才开始服务，避免两份程序互相覆盖。
+// 工作台的数据全组共用。程序照旧读写数据目录（平台上是应用自己的文件夹 /data/runtime，重新部署不丢，规范 3.5）：
+// 图片、PSD 和任务文件夹 storage/ 只放在文件夹里；记录（数据目录里 storage/ 以外的 JSON：项目、任务、排版、资源位规则……）
+// 另存一份在应用自己的 PostgreSQL 库里（规范 3.4），这里负责启动时和库对齐、之后把每次改动写回库。
+// 同一时间只有一个程序实例能写（会话锁）：部署新版本时新实例等旧实例交出锁、补上最后的改动后才开始服务，
+// 新旧两份程序看到的是同一个文件夹，这样不会两边同时改同一份记录。
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
@@ -11,22 +12,26 @@ import pg from 'pg';
 const LEADER_LOCK = 734_201_918;
 const SCHEMA_LOCK = 734_201_917;
 const SYNC_DIR = '.wb-sync';
-const EXCLUDED = [/^\.wb-sync(\/|$)/, /\.tmp$/, /\.tmp-[^/]*$/, /\.[0-9a-f-]{36}\.tmp$/i, /^local-compute(\/|$)/, /^verification(\/|$)/, /\.log$/];
+const EXCLUDED = [/^\.wb-sync(\/|$)/, /^\.previews(\/|$)/, /\.tmp$/, /\.tmp-[^/]*$/, /\.[0-9a-f-]{36}\.tmp$/i, /^local-compute(\/|$)/, /^verification(\/|$)/, /\.log$/];
 const excluded = rel => EXCLUDED.some(pattern => pattern.test(rel));
+// 图片、PSD 和它们的说明文件在 storage/ 里，只放文件夹；其余目录里的 JSON 是记录，存进库。
+const inStorage = rel => rel === 'storage' || rel.startsWith('storage/');
+export const isRecord = rel => rel.endsWith('.json') && !inStorage(rel) && !excluded(rel);
 const toRel = (root, file) => path.relative(root, file).split(path.sep).join('/');
 const sha256 = buffer => createHash('sha256').update(buffer).digest('hex');
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 // 写回文件时间会有 1 毫秒的舍入误差，比较时放宽一点。
 const sameTime = (a, b) => Math.abs(Number(a) - Number(b)) < 2;
 
+// 只走记录：不进 storage/（几 GB 的图片），只访问 JSON。
 async function walk(root, visit, dir = root) {
   let entries;
   try { entries = await fsp.readdir(dir, {withFileTypes: true}); } catch (error) { if (error.code === 'ENOENT') return; throw error; }
   for (const entry of entries) {
     const full = path.join(dir, entry.name), rel = toRel(root, full);
-    if (excluded(rel)) continue;
+    if (excluded(rel) || inStorage(rel)) continue;
     if (entry.isDirectory()) await walk(root, visit, full);
-    else if (entry.isFile()) await visit(rel, full);
+    else if (entry.isFile() && isRecord(rel)) await visit(rel, full);
   }
 }
 
@@ -92,6 +97,7 @@ export function createPersistence({runtimeDir: configuredDir, databaseUrl, log =
   }
 
   async function upload(rel, full) {
+    if (!isRecord(rel)) return;
     let buffer, stat;
     try { stat = await fsp.stat(full); buffer = await fsp.readFile(full); } catch (error) { if (error.code === 'ENOENT') return remove(rel); throw error; }
     if (!stat.isFile()) return;
@@ -111,9 +117,23 @@ export function createPersistence({runtimeDir: configuredDir, databaseUrl, log =
     for (const key of [...index.keys()]) if (key === rel || key.startsWith(`${rel}/`)) index.delete(key);
   }
 
+  // 以前的版本把图片、PSD 也存进了库：放进文件夹（文件夹里还没有的才写），再从库里删掉。只在拿到写入权后做。
+  async function moveFilesOutOfDatabase() {
+    const rows = (await db.query('SELECT path, sha256, size, mtime_ms FROM wb_files')).rows.filter(row => !isRecord(row.path));
+    if (!rows.length) return;
+    log.info?.(`[数据同步] 把库里的 ${rows.length} 个图片和文件放进文件夹，库里只留记录`);
+    await pool(rows, 4, async row => {
+      const target = path.join(runtimeDir, ...row.path.split('/'));
+      if (!excluded(row.path) && !(await fsp.stat(target).catch(() => null))) await download(row);
+      index.delete(row.path);
+      await db.query('DELETE FROM wb_files WHERE path = $1', [row.path]);
+    });
+    await db.query('DELETE FROM wb_blobs b WHERE NOT EXISTS (SELECT 1 FROM wb_files f WHERE f.sha256 = b.sha256)');
+  }
+
   // 本地和库对一遍：库是准的；上次同步以后本地新增或改过、库里没变的，按本地的写回库。
   async function reconcile({initial}) {
-    const remote = new Map((await db.query('SELECT path, sha256, size, mtime_ms FROM wb_files')).rows.map(row => [row.path, row]));
+    const remote = new Map((await db.query('SELECT path, sha256, size, mtime_ms FROM wb_files')).rows.filter(row => isRecord(row.path)).map(row => [row.path, row]));
     const previous = await loadIndex();
     const local = new Map();
     await walk(runtimeDir, async (rel, full) => { const stat = await fsp.stat(full); local.set(rel, {size: stat.size, mtimeMs: Math.trunc(stat.mtimeMs)}); });
@@ -143,7 +163,7 @@ export function createPersistence({runtimeDir: configuredDir, databaseUrl, log =
   }
 
   function markDirty(rel) {
-    if (!rel || excluded(rel)) return;
+    if (!rel || excluded(rel) || inStorage(rel)) return;
     dirty.add(rel);
     state.pending = dirty.size;
     clearTimeout(flushTimer);
@@ -164,7 +184,7 @@ export function createPersistence({runtimeDir: configuredDir, databaseUrl, log =
             const known = index.get(child), s = await fsp.stat(file);
             if (!known || known.size !== s.size || !sameTime(known.mtimeMs, s.mtimeMs)) await upload(child, file);
           }, full);
-          else {
+          else if (isRecord(rel)) {
             const known = index.get(rel);
             if (!known || known.size !== stat.size || !sameTime(known.mtimeMs, stat.mtimeMs)) await upload(rel, full);
           }
@@ -215,11 +235,12 @@ export function createPersistence({runtimeDir: configuredDir, databaseUrl, log =
       process.exit(1);
     });
     await leader.connect();
-    // 等写入权之前先把库里的文件下载下来（只下载、不改库），拿到写入权后只需补上这期间的变化，切换时的停顿更短。
+    // 等写入权之前先把库里的记录下载下来（只下载、不改库），拿到写入权后只需补上这期间的变化，切换时的停顿更短。
+    // 文件夹是新旧两个程序共用的，上次同步的结果（.wb-sync/index.json）还在时不用再下载。
     state.phase = 'prefetching';
     const previous = await loadIndex();
     if (!previous.size) {
-      const rows = (await db.query('SELECT path, sha256, size, mtime_ms FROM wb_files')).rows;
+      const rows = (await db.query('SELECT path, sha256, size, mtime_ms FROM wb_files')).rows.filter(row => isRecord(row.path));
       await pool(rows, 4, async row => {
         const stat = await fsp.stat(path.join(runtimeDir, ...row.path.split('/'))).catch(() => null);
         if (stat && stat.size === Number(row.size) && sameTime(stat.mtimeMs, row.mtime_ms)) index.set(row.path, {size: stat.size, mtimeMs: Math.trunc(stat.mtimeMs), sha256: row.sha256});
@@ -235,10 +256,13 @@ export function createPersistence({runtimeDir: configuredDir, databaseUrl, log =
       await wait(1000);
     }
     state.phase = 'restoring';
+    await moveFilesOutOfDatabase();
     await reconcile({initial: true});
     state.files = index.size;
+    // 只监视数据目录这一层（记录几乎都在这一层）；子目录里的记录由每分钟一次的比对补上。
+    // 不递归监视：storage/ 里有成千上万个文件夹，Linux 上每个文件夹要占一个监视名额。
     try {
-      watcher = fs.watch(runtimeDir, {recursive: true}, (_event, name) => { if (name) markDirty(String(name).split(path.sep).join('/')); });
+      watcher = fs.watch(runtimeDir, {recursive: false}, (_event, name) => { if (name) markDirty(String(name).split(path.sep).join('/')); });
       watcher.on('error', error => log.error?.(`[数据同步] 文件监视出错，改用定时比对：${error.message}`));
     } catch (error) {
       log.error?.(`[数据同步] 不能监视文件变化，改用定时比对：${error.message}`);
