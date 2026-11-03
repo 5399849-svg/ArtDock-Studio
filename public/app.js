@@ -58,7 +58,7 @@ import { normalizeElementEffects, drawElementWithEffects } from "/element-effect
 import { remapCommunityLayer, remapCommunitySubtitleBacking } from "/community-auto-layout.js";
 import { normalizeSubtitleBacking, createSubtitleBackingLayout, drawSubtitleBacking } from '/subtitle-backing.js';
 import { measureNativeCopy, drawNativeCopy, defaultNativeCopyEffects } from '/native-copy-layer.js';
-import { isRenderableImageAsset, preferredSourceAsset, loadEditorImages, editorImageEntries, editorTemplateIds, loadEditorImageEntries, missingEditorImages } from '/editor-image-source.js';
+import { isRenderableImageAsset, preferredSourceAsset, loadEditorImages, editorImageEntries, editorTemplateIds, loadEditorImageEntries, missingEditorImages, sourceImageEntry, currentSourceAsset } from '/editor-image-source.js';
 const state = { data: null, view: "home", task: null, previewTemplateId: null, previewMode: "target", sourceImage: null, sourceAsset: null, assetImages: new Map(), filter: "全部", assetFilter: "全部素材", editorAssetFilter: "全部", editorAssetQuery: "", showGuides: true, editorHistory: null, reviewTaskId: null, reviewTab: "待审核", annotationType: "core-character", polygonPoints: [], cutoutPoints: [], cutoutSourceName: "", paramsSaveTimer: null, paramsSavePromise: Promise.resolve(true), inspectorTab: "elements", inspectorElement: "title", canvasDrag: null };
 state.communitySideTab = "ai";
 state.communityGenerationPoll = null;
@@ -1143,13 +1143,22 @@ async function openTask(id) {
     : (state.data.templates.some((item) => item.id === state.task.masterTemplateId) ? state.task.masterTemplateId : (state.data.templates.find((item) => state.task.targetTemplateIds?.includes(item.id))?.id || null));
   state.previewMode = "target";
   if(state.task.masterTemplate?.communityMaster){state.previewTemplateId=state.task.masterTemplateId;state.showGuides=false;state.inspectorElement='background';}
-  // 字体和当前尺寸的图同时下；其它尺寸的图（含扩图结果）在编辑器显示后接着下（loadTaskImages）。
-  const fontLoading = loadProjectFonts(state.task, state.data.projects || []).then(() => null, error => error);
-  await loadTaskImages(state.task);
-  const fontError = await fontLoading;
-  if (fontError) {
-    if(state.task.parameters?.titleFontId || state.task.parameters?.subtitleFontId)throw fontError;
-    toast('项目字体加载失败，请刷新后重试');
+  state.canvasError = null;
+  if (state.task.sourceAdaptation) {
+    // 源文件适配任务照旧把源稿的图和字体下齐再显示（它的编辑器另有一套画法）。
+    await loadTaskImages(state.task);
+    await loadProjectFonts(state.task, state.data.projects || []).catch(() => toast('项目字体加载失败，请刷新后重试'));
+    state.fontsPending = false;
+  } else {
+    // 编辑器先显示，图和字体在后面下：画布在当前尺寸的图和字体到齐前显示进度、不能拖动（redrawPreview）。
+    assertTaskFontsInLibrary(state.task);
+    state.fontsPending = true;
+    state.fontsLoading = loadProjectFonts(state.task, state.data.projects || []).catch(() => {
+      if (state.task?.id !== id) return;
+      if (state.task.parameters?.titleFontId || state.task.parameters?.subtitleFontId) state.canvasError = '主标或副标字体没有加载成功，请刷新页面后重试';
+      toast('项目字体加载失败，请刷新后重试');
+    }).finally(() => { if (state.task?.id === id) { state.fontsPending = false; redrawPreview(); } });
+    startTaskImages(state.task);
   }
   if (state.task.outpaint?.status === "running") scheduleOutpaintPoll();
   if (state.task.communityGeneration?.status === "running") scheduleCommunityGenerationPoll();
@@ -1169,19 +1178,69 @@ async function loadTaskImages(task) {
   const loaded = await loadEditorImages(task, loadImage, { templateId: state.previewTemplateId });
   Object.assign(state, loaded);
   loaded.editorImagesLoading.then(() => {
-    if (state.task?.id === task.id && state.assetImages === loaded.assetImages) refreshTargetThumbnails();
+    if (state.task?.id === task.id && state.assetImages === loaded.assetImages) { settleSourceImage(); refreshTargetThumbnails(); }
   }, error => { if (state.task?.id === task.id) toast(`部分图片加载失败：${error.message}`); });
 }
 
-// 当前任务各尺寸要画的图里还没下的补上（参数改过后新用到的图也算）。
-function loadMissingEditorImages(task = state.task) {
-  return loadEditorImageEntries(state.assetImages, editorImageEntries(task, editorTemplateIds(task)), loadImage);
+// 主标、副标选的版权字体不在字体库里时不打开任务（和以前一样），免得画出来是别的字体。
+function assertTaskFontsInLibrary(task) {
+  const library = new Set(companyFonts().map(font => font.id));
+  for (const kind of ['title', 'subtitle']) {
+    const fontId = task.parameters?.[`${kind}FontId`];
+    if (fontId && !library.has(fontId)) throw new Error(`${kind === 'title' ? '主标' : '副标'}所选版权字体不在当前字体库中：${fontId}`);
+  }
+}
+
+// 打开任务时编辑器已经先显示：先让看得见的小图（几十 KB）下完（最多等 1.5 秒），再下当前画面要用的图（redrawPreview 下完就画），
+// 最后低优先级下其它尺寸的图和首选背景，下完重画尺寸缩略图。
+function startTaskImages(task) {
+  const assetImages = new Map();
+  Object.assign(state, { assetImages, sourceAsset: currentSourceAsset(task, assetImages), sourceImage: null });
+  state.canvasLoadGate = new Promise(resolve => setTimeout(resolve, 0)).then(() => visibleThumbnailsLoaded(1500));
+  state.editorImagesLoading = (async () => {
+    await state.canvasLoadGate;
+    await loadEditorImageEntries(assetImages, editorImageEntries(task, [task.masterTemplateId, state.previewTemplateId]), loadImage);
+    await loadEditorImageEntries(assetImages, [...editorImageEntries(task, editorTemplateIds(task)), ...sourceImageEntry(task)], url => loadImage(url, 'low'));
+  })();
+  state.editorImagesLoading.catch(() => {}).finally(() => {
+    if (state.task?.id !== task.id || state.assetImages !== assetImages) return;
+    settleSourceImage();
+    refreshTargetThumbnails();
+  });
+}
+
+// 编辑器里看得见、还没下完的小图都下完（或超时）。
+function visibleThumbnailsLoaded(timeout) {
+  const pending = [...content.querySelectorAll('img')].filter(image => !image.complete && image.getClientRects().length);
+  if (!pending.length) return Promise.resolve();
+  const loaded = Promise.all(pending.map(image => new Promise(resolve => { image.addEventListener('load', resolve, { once: true }); image.addEventListener('error', resolve, { once: true }); })));
+  return Promise.race([loaded, new Promise(resolve => setTimeout(resolve, timeout))]);
+}
+
+// 首选背景下到了就换上（下不到时换成下一张已经下到的候选图）。
+function settleSourceImage() {
+  state.sourceAsset = currentSourceAsset(state.task, state.assetImages);
+  state.sourceImage = state.sourceAsset && state.assetImages.get(state.sourceAsset.name) || null;
+}
+
+// 当前任务各尺寸要画的图和首选背景里还没下的补上（参数改过后新用到的图也算）。
+async function loadMissingEditorImages(task = state.task) {
+  await loadEditorImageEntries(state.assetImages, [...editorImageEntries(task, editorTemplateIds(task)), ...sourceImageEntry(task)], loadImage);
+  if (state.task === task) settleSourceImage();
 }
 
 // 导出、下载前等各尺寸的图都下完（源文件适配任务打开时已经下齐了它要的图）。
 async function editorImagesReady() {
+  await state.fontsLoading;
   await state.editorImagesLoading;
   if (!state.task?.sourceAdaptation) await loadMissingEditorImages();
+}
+
+// 用到当前画面的操作（AI 生成、封面）先等当前尺寸和母版的图、字体到齐。
+async function canvasImagesReady() {
+  await state.fontsLoading;
+  if (state.task?.sourceAdaptation) return;
+  await loadEditorImageEntries(state.assetImages, editorImageEntries(state.task, [state.task.masterTemplateId, state.previewTemplateId]), loadImage);
 }
 
 // 后台的图下完后，尺寸栏里按画布合成的缩略图重画一遍（不重画整个编辑器，免得打断正在做的操作）。
@@ -1349,7 +1408,8 @@ function wireMasterWorkspaceEvents(){
     }catch(error){toast(error.message);}finally{if(button.isConnected)button.disabled=false;}
   });
   document.querySelectorAll('[data-master-version]').forEach(button=>button.addEventListener('click',()=>{const select=document.querySelector('#community-design-version');select.value=button.dataset.masterVersion;void restoreCommunityBanner();}));
-  const preview=(original=false)=>{
+  const preview=async(original=false)=>{
+    if(!original)await canvasImagesReady();
     const dialog=document.querySelector('#master-preview-dialog'),img=document.querySelector('#master-preview-image');
     const name=state.task.parameters.assetByTemplate?.[state.task.masterTemplateId]?.background,asset=state.task.assets.find(a=>a.name===name);
     img.src=original&&asset?asset.url:renderCanvas(state.task.masterTemplate,false).toDataURL('image/png');dialog.showModal();
@@ -1418,7 +1478,8 @@ function communityReferenceInputs(task) {
 
 function communityCandidateStrip(task) {
   if(task.communityDesign?.currentVersionId){
-    let preview='';try{preview=renderCanvas(task.masterTemplate,false).toDataURL('image/png');}catch{}
+    // 母版缩略图用小图；画面的图、字体还没到齐时先空着，画好后 redrawPreview 补上。
+    let preview='';if(!state.fontsPending&&!missingEditorImages(state.assetImages,editorImageEntries(task,[task.masterTemplateId])).length){try{preview=targetThumbnail(renderCanvas(task.masterTemplate,false),320);}catch{}}
     const whole=Boolean(task.parameters?.communityArtworkByTemplate?.[task.masterTemplateId]);
     return `<section class="community-candidate-strip"><div class="community-candidate-intro"><b>完整母版</b><small>历史版本可在右侧恢复</small></div><div class="community-candidate-list"><button class="community-candidate selected" data-preview-template="${esc(task.masterTemplateId)}">${preview?`<img src="${previewSrc(preview, 160)}" alt="当前完整母版">`:''}<span><b>${whole?'当前整稿母版':'当前分层母版'}</b><small>${whole?'AI 整稿 · 独立 Logo':'背景 · 人物 · 文案 · 底板 · Logo'}</small></span></button></div></section>`;
   }
@@ -1528,9 +1589,9 @@ function renderTaskDetail() {
   });
 }
 
-function targetThumbnail(canvas) {
+function targetThumbnail(canvas, maxWidth = 200) {
   const thumbnail=document.createElement('canvas');
-  thumbnail.width=Math.min(200,canvas.width);thumbnail.height=Math.max(1,Math.round(canvas.height*thumbnail.width/canvas.width));
+  thumbnail.width=Math.min(maxWidth,canvas.width);thumbnail.height=Math.max(1,Math.round(canvas.height*thumbnail.width/canvas.width));
   thumbnail.getContext('2d').drawImage(canvas,0,0,thumbnail.width,thumbnail.height);
   return thumbnail.toDataURL('image/png');
 }
@@ -2933,7 +2994,7 @@ async function applyCanvasAsset(name, role, point = null) {
   if (kind === "background") {
     // An empty editor has no global fallback image yet. Keep the selection scoped
     // to this template, but seed the renderer so the first drop is visible.
-    if (!state.sourceImage) {
+    if (!state.sourceAsset) {
       state.sourceAsset = asset;
       state.sourceImage = state.assetImages.get(asset.name);
     }
@@ -3243,6 +3304,9 @@ async function saveParameters(silent = false) {
 
 async function saveTaskCoverPreview() {
   if (state.task?.status === "已完成" && state.task?.deliveredPackage) return;
+  const coverTaskId = state.task?.id;
+  await canvasImagesReady();
+  if (state.task?.id !== coverTaskId) return;
   if (!state.task?.templates?.some((template) => template.communityPlacement) || (!state.sourceImage && !state.assetImages.size)) return;
   const taskId = state.task.id;
   const template = state.data.templates.find((item) => item.id === state.task.masterTemplateId) || state.task.masterTemplate;
@@ -3360,7 +3424,7 @@ async function selectCommunityCandidate(name) {
     state.task.parameters.assetByTemplate ||= {};
     state.task.parameters.assetByTemplate[state.task.masterTemplateId] ||= {};
     state.task.parameters.assetByTemplate[state.task.masterTemplateId].background=name;
-    if(!state.sourceImage){state.sourceImage=state.assetImages.get(name);state.sourceAsset=asset}
+    if(!state.sourceAsset){state.sourceImage=state.assetImages.get(name);state.sourceAsset=asset}
     state.previewTemplateId=state.task.masterTemplateId;
     state.previewMode='target';
     if(!await saveParameters(true))return;
@@ -3413,6 +3477,7 @@ async function submitCommunityArtwork(mode,prompt){
   const previousError=document.querySelector('#community-design-error');if(previousError){previousError.textContent='';previousError.hidden=true;}
   try{
     if(!await flushPendingParameterSave() || state.task?.id!==taskId)return;
+    await canvasImagesReady();if(state.task?.id!==taskId)return;
     const task=state.task,template=task.masterTemplate;let currentDataUrl;
     if(mode==='concept-edit'&&!task.parameters?.communityArtworkByTemplate?.[template.id]){
       // Original brand marks remain local and must not be repainted by the model.
@@ -3471,6 +3536,7 @@ async function submitCommunityBanner(){
   const previousError=document.querySelector('#community-design-error');if(previousError){previousError.textContent='';previousError.hidden=true;}
   try{
     if(!await flushPendingParameterSave())return;
+    await canvasImagesReady();
     if(state.task?.id!==taskId)return;
     const task=state.task,template=task.masterTemplate;
     const kinds=['character','character2','foreground','title','subtitle','logo','ip-copyright'];
@@ -3700,7 +3766,7 @@ async function downloadCurrentArtifact() {
   const button = document.querySelector("#editor-download-single");
   if (!template) return toast("请先选择要下载的资源位");
   if(communityArtworkTargetPending(state.task,template)&&!communityTargetHasComposition(state.task,template))return toast('当前只有母版参考，请先生成此尺寸试稿');
-  if (!state.sourceImage && !state.assetImages.size) return toast("当前任务没有可导出的主图，请先导入或上传素材");
+  if (!state.sourceAsset && !state.assetImages.size) return toast("当前任务没有可导出的主图，请先导入或上传素材");
   if (button) { button.disabled = true; button.textContent = "正在生成…"; }
   try {
     if(state.task.customCanvas&&!await flushPendingParameterSave())throw Error('排版尚未保存，请稍后再导出');
@@ -3896,7 +3962,7 @@ async function approveAndDownloadSuite() {
 async function renderArtifacts(submitAfter = false, triggerButton = null) {
   if(state.task.templates.some(t=>communityArtworkTargetPending(state.task,t)))return toast('请先完成其它尺寸的重排，母版参考不能作为交付稿');
   if (state.task.templates.some(template=>template.communityPlacement) && !state.task.communityMasterApproval?.at) return toast('请先完成并确认母稿，再生成各尺寸');
-  if (!state.sourceImage) return toast("请先上传可预览的 JPG 或 PNG 主图");
+  if (!state.sourceAsset) return toast("请先上传可预览的 JPG 或 PNG 主图");
   const button = triggerButton || document.querySelector("#render-local") || document.querySelector("#editor-submit-review");
   button.disabled = true;
   button.textContent = submitAfter ? "生成并质检中…" : "正在生成…";
@@ -3948,17 +4014,43 @@ async function renderArtifacts(submitAfter = false, triggerButton = null) {
   }
 }
 
+// 画布位置的加载进度：画布先隐藏、不能拖动（workspace-ui-feedback.css .is-loading-canvas）。
+function showCanvasLoading(stage, entries) {
+  if (!stage) return;
+  stage.classList.add('is-loading-canvas');
+  let note = stage.querySelector('.editor-canvas-loading');
+  if (!note) { note = document.createElement('div'); note.className = 'editor-canvas-loading'; note.setAttribute('role', 'status'); stage.append(note); }
+  const missing = missingEditorImages(state.assetImages, entries).length;
+  note.textContent = state.canvasError || (missing ? `正在加载画面（${entries.length - missing}/${entries.length}）` : '正在加载字体…');
+  note.classList.toggle('is-error', Boolean(state.canvasError));
+}
+
+function hideCanvasLoading(stage) {
+  stage?.classList.remove('is-loading-canvas');
+  stage?.querySelector('.editor-canvas-loading')?.remove();
+}
+
 function redrawPreview() {
   const canvas = document.querySelector("#preview-canvas");
   const empty = document.querySelector("#preview-empty");
   if (!canvas) return;
   const objectTask=state.task;
   const template = state.data.templates.find((item) => item.id === state.previewTemplateId) || state.task.masterTemplate;
-  // 这个尺寸（和它会引用的母版）要画的图还没下完（其它尺寸的图在后台下、刚放上画布的独立素材）：下完再画。
-  const waiting=objectTask.sourceAdaptation?[]:missingEditorImages(state.assetImages,editorImageEntries(objectTask,[objectTask.masterTemplateId,template?.id]));
-  if(waiting.length){
-    if(state.editorImageWaitTask!==objectTask){state.editorImageWaitTask=objectTask;void loadEditorImageEntries(state.assetImages,waiting,loadImage).then(()=>{if(state.task?.id===objectTask.id)redrawPreview();}).catch(error=>toast('独立素材加载失败：'+error.message)).finally(()=>{if(state.editorImageWaitTask===objectTask)state.editorImageWaitTask=null;});}return;
+  // 这个尺寸（和它会引用的母版）要画的图、字体还没到齐（刚打开任务、其它尺寸的图在后台下、刚放上画布的独立素材）：
+  // 画布位置显示进度、不能拖动，到齐再画。看原图模式要用首选背景。
+  const entries=objectTask.sourceAdaptation?[]:[...editorImageEntries(objectTask,[objectTask.masterTemplateId,template?.id]),...(state.previewMode==='target'?[]:sourceImageEntry(objectTask))];
+  const waiting=missingEditorImages(state.assetImages,entries),stage=document.querySelector('#editor-drop-stage');
+  if(waiting.length||state.fontsPending||state.canvasError){
+    showCanvasLoading(stage,entries);
+    if(waiting.length&&state.editorImageWaitTask!==objectTask){
+      state.editorImageWaitTask=objectTask;
+      void Promise.resolve(state.canvasLoadGate).then(()=>loadEditorImageEntries(state.assetImages,waiting,loadImage,()=>{if(state.task===objectTask)showCanvasLoading(document.querySelector('#editor-drop-stage'),entries);}))
+        .then(()=>{if(state.task?.id===objectTask.id){settleSourceImage();redrawPreview();}}).catch(error=>toast('独立素材加载失败：'+error.message))
+        .finally(()=>{if(state.editorImageWaitTask===objectTask)state.editorImageWaitTask=null;});
+    }
+    return;
   }
+  hideCanvasLoading(stage);
   const drawable = template ? templateSourceImage(state.task, template) : state.sourceImage;
   if(template&&state.task.masterTemplate?.communityMaster)syncCommunityPropertyControls(content,{layout:state.inspectorElement==='background'?null:getElementLayout(state.task,template,state.inspectorElement),background:getTemplateBackground(state.task,template),scale:selectedScalePercent()});
   const hasProjectText = template?.communityPlacement && (['title','subtitle','ip-copyright'].some(kind=>nativeCopyValue(state.task,template,kind)&&getElementLayout(state.task,template,kind).visible!==false) || hasCanvasAsset('subtitle-backing',template));
@@ -3992,8 +4084,11 @@ function redrawPreview() {
     }
     const thumbnail=document.querySelector(`.target-size-card[data-preview-template="${template.id}"] .target-thumb img`);
     if(thumbnail && template.communityPlacement)thumbnail.src=targetThumbnail(rendered);
+    const masterCard=template.id===state.task.masterTemplateId&&view==='composite'&&!state.showGuides&&document.querySelector(`.community-candidate[data-preview-template="${template.id}"]`);
+    if(masterCard){let image=masterCard.querySelector('img');if(!image){image=document.createElement('img');image.alt='当前完整母版';masterCard.prepend(image);}image.src=targetThumbnail(rendered,320);}
     return;
   }
+  if (!state.sourceImage) { canvas.style.display = "none"; empty.style.display = "block"; return; }
   canvas.width = state.sourceImage.naturalWidth;
   canvas.height = state.sourceImage.naturalHeight;
   const ctx = canvas.getContext("2d"); ctx.drawImage(state.sourceImage, 0, 0);
@@ -4568,7 +4663,8 @@ async function compressPngCanvas(sourceCanvas, maxBytes, templateId = "") {
 }
 function fileToDataUrl(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file); }); }
 function blobToDataUrl(blob) { return fileToDataUrl(blob); }
-function loadImage(url) { return new Promise((resolve, reject) => { const image = new Image(); image.onload = () => resolve(image); image.onerror = () => reject(new Error("无法读取主图")); image.src = url; }); }
+// priority 'low'：后台下的其它尺寸的图，排在编辑器里看得见的小图和当前画面后面。
+function loadImage(url, priority) { return new Promise((resolve, reject) => { const image = new Image(); if (priority) image.fetchPriority = priority; image.onload = () => resolve(image); image.onerror = () => reject(new Error("无法读取主图")); image.src = url; }); }
 function formatBytes(bytes) { return bytes > 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)}MB` : `${Math.ceil(bytes / 1024)}KB`; }
 function assetRoleName(role) { return ({ "clean-kv":"干净KV", master: "通用完整主视觉", "master-landscape": "完整主视觉（横版）", "master-portrait": "完整主视觉（竖版）", background: "通用无文字底图", "background-landscape": "无文字底图（横版）", "background-portrait": "无文字底图（竖版）", foreground: "前景装饰透明PNG", title: "主标美术字PNG", subtitle: "副标美术字PNG", logo: "Logo PNG", "ip-copyright":"IP版权标识", button: "按钮素材", character: "透明角色PNG", "core-character": "透明核心人物PNG", supplement: "补充素材", "source-psd": "主图PSD留档" })[role] || "补充素材"; }
 

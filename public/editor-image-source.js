@@ -73,15 +73,15 @@ export function editorTemplateIds(task) {
 
 /**
  * 画 templateIds 这几个尺寸要用的图：[{key, url}]，key 是 assetImages 里的键（素材名、`__outpaint_<尺寸>`、独立素材图层）。
- * 包括这几个尺寸按名字选用的素材、会被自动挑到的角色的素材、首选背景（state.sourceImage：画布和扩图找不到背景时用它）、本机计算结果。
+ * 包括这几个尺寸按名字选用的素材、会被自动挑到的角色的素材（背景要自动挑时连首选背景一起）、本机计算结果。
  */
 export function editorImageEntries(task, templateIds) {
   const parameters = task.parameters || {}, ids = templateIds.filter(Boolean), names = canvasAssetNames(parameters, ids), roles = automaticRoles(task, ids);
-  const source = sourceImageCandidates(task)[0], entries = new Map();
+  const source = roles.has('background') ? sourceImageCandidates(task)[0] : null, entries = new Map();
   for (const asset of task.assets || []) {
     if (!isRenderableImageAsset(asset)) continue;
-    // primaryAssetName 只在背景自动挑不到时才用；独立素材导出的 PNG 只在画布上用到时才下。
-    if (names.has(asset.name) || asset === source || roles.has('background') && asset.name === task.primaryAssetName || !asset.objectRunId && roles.has(asset.role)) entries.set(asset.name, asset.url);
+    // 独立素材导出的 PNG 只在画布上用到时才下。
+    if (names.has(asset.name) || source && (asset === source || asset.name === task.primaryAssetName) || !asset.objectRunId && roles.has(asset.role)) entries.set(asset.name, asset.url);
   }
   for (const asset of task.localAi?.outputs || []) if (isRenderableImageAsset(asset)) entries.set(asset.name, asset.url);
   for (const id of ids) {
@@ -105,16 +105,32 @@ export function missingEditorImages(images, entries) {
   return entries.filter(({key}) => !images.has(key) && !failed.has(key));
 }
 
-/** 把 entries 里还没有的图下到 images。坏图跳过；独立素材图层下不到要报错（下次再试）。 */
-export function loadEditorImageEntries(images, entries, loadImage) {
+/** 把 entries 里还没有的图下到 images，每下完（或下不到）一张调一次 onSettled。坏图跳过；独立素材图层下不到要报错（下次再试）。 */
+export function loadEditorImageEntries(images, entries, loadImage, onSettled) {
   const {running, failed} = loadsOf(images);
   return Promise.all(missingEditorImages(images, entries).map(({key, url}) => {
     if (!running.has(key)) running.set(key, Promise.resolve().then(() => loadImage(url)).then(
       image => { images.set(key, image); },
       error => { if (key.startsWith('object-layer:')) throw error; failed.add(key); },
     ).finally(() => running.delete(key)));
-    return running.get(key);
+    const job = running.get(key);
+    if (onSettled) job.then(onSettled, onSettled);
+    return job;
   }));
+}
+
+/**
+ * 首选背景（state.sourceImage：画布、扩图找不到背景时用它；生成成套要有它）。母版画面一般不画它，所以不跟画面的图一起先下，
+ * 放到后台下；在下载时 state.sourceAsset 已经是它（扩图只用它的地址），下载失败才换成下一张已经下到的候选图。
+ */
+export function sourceImageEntry(task) {
+  const source = sourceImageCandidates(task)[0];
+  return source ? [{key: source.name, url: source.url}] : [];
+}
+export function currentSourceAsset(task, images) {
+  const candidates = sourceImageCandidates(task);
+  if (candidates[0] && !loadsOf(images).failed.has(candidates[0].name)) return candidates[0];
+  return candidates.find(asset => images.has(asset.name)) || null;
 }
 
 /**
@@ -131,8 +147,8 @@ export async function loadEditorImages(task, loadImage, {templateId} = {}) {
     return {assetImages,sourceAsset,sourceImage:assetImages.get(sourceAsset.name),editorImagesLoading:Promise.resolve()};
   }
   await loadEditorImageEntries(assetImages, editorImageEntries(task, [task.masterTemplateId, templateId]), loadImage);
-  const sourceAsset = sourceImageCandidates(task).find(asset => assetImages.has(asset.name)) || null;
-  const editorImagesLoading = loadEditorImageEntries(assetImages, editorImageEntries(task, editorTemplateIds(task)), loadImage).then(() => {});
+  const sourceAsset = currentSourceAsset(task, assetImages);
+  const editorImagesLoading = loadEditorImageEntries(assetImages, [...editorImageEntries(task, editorTemplateIds(task)), ...sourceImageEntry(task)], url => loadImage(url, 'low')).then(() => {});
   editorImagesLoading.catch(() => {});
-  return { assetImages, sourceAsset, sourceImage: sourceAsset ? assetImages.get(sourceAsset.name) : null, editorImagesLoading };
+  return { assetImages, sourceAsset, sourceImage: sourceAsset && assetImages.get(sourceAsset.name) || null, editorImagesLoading };
 }

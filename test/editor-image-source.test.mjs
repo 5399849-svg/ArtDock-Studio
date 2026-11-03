@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { isRenderableImageAsset, preferredSourceAsset, loadEditorImages, editorImageEntries, loadEditorImageEntries, missingEditorImages } from '../public/editor-image-source.js';
+import { isRenderableImageAsset, preferredSourceAsset, loadEditorImages, editorImageEntries, loadEditorImageEntries, missingEditorImages, sourceImageEntry, currentSourceAsset } from '../public/editor-image-source.js';
 
 const asset = (name, role = 'supplement', mime = 'image/png') => ({ name, role, mime, url: `/assets/${name}` });
 
@@ -104,6 +104,22 @@ test('community sizes that chose every element skip the other auto-pick candidat
   delete task.parameters.assetByTemplate.wide.title;
   assert.ok(editorImageEntries(task,['wide']).some(entry=>entry.key===spare.name));
   assert.equal(editorImageEntries(task,['master']).some(entry=>entry.key===spare.name),false);
+});
+
+test('the preferred source image loads after the canvas images but is already the source asset', async () => {
+  const person=asset('person.png','character'),scene=asset('scene.png','mother-candidate');
+  const master={id:'master',communityPlacement:true,communityLayout:{character:[0,0,.5,1]}};
+  const task={assets:[person,scene],masterTemplateId:'master',targetTemplateIds:[],masterTemplate:master,templates:[],
+    parameters:{assetByTemplate:{master:{background:scene.name,character:null,character2:null}}}};
+  let release;const gate=new Promise(resolve=>release=resolve);
+  const result=await loadEditorImages(task,async url=>{if(url===person.url)await gate;return {url};},{templateId:'master'});
+  assert.equal(result.sourceAsset,person);
+  assert.equal(result.sourceImage,null);
+  assert.equal(result.assetImages.has(scene.name),true);
+  release();await result.editorImagesLoading;
+  assert.equal(result.assetImages.has(person.name),true);
+  assert.deepEqual(sourceImageEntry(task),[{key:person.name,url:person.url}]);
+  assert.equal(currentSourceAsset(task,result.assetImages),person);
 });
 
 test('platform PSD sizes still load every auto-pick candidate', () => {
