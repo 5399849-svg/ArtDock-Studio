@@ -1,9 +1,39 @@
 import {communityObjectLayerImageKey,communityObjectLayerImageUrl} from './community-object-layers.js';
 
-// 画布按角色自动挑素材时（app.js automaticAsset、referenceAssetsForTemplate、按钮按文案匹配）只看这些角色，挑之前要比较图片比例，
-// 所以这些角色的图打开就要有。其它角色（参考图、母版候选、组合预览、角色源图、补充素材……）参数里写到了才下，用到时再取。
-const AUTO_ROLES = new Set(['clean-kv', 'background', 'background-landscape', 'background-portrait', 'master', 'master-landscape', 'master-portrait',
-  'character', 'core-character', 'foreground', 'title', 'subtitle', 'logo', 'ip-copyright', 'copyright', 'button']);
+// 某个尺寸某一项没有明确选用素材时，画布按角色自动挑（app.js automaticAsset，挑之前要比较各候选图的比例），这些角色的图要先有。
+// 其它角色（参考图、母版候选、组合预览、角色源图、补充素材……）只在被选用时才下，用到时再取。
+const AUTO_KINDS = {
+  background: ['clean-kv', 'background', 'background-landscape', 'background-portrait', 'master', 'master-landscape', 'master-portrait'],
+  character: ['character', 'core-character'], foreground: ['foreground'], title: ['title'], subtitle: ['subtitle'], logo: ['logo'],
+  'ip-copyright': ['ip-copyright', 'copyright'], button: ['button'],
+};
+
+// 社区尺寸的这一项会不会自动挑（对照 app.js selectedAssetName、templateAllowsElement、defaultElementLayout、按钮按文案匹配）。
+function communityPicksAutomatically(task, template, chosen, kind) {
+  return (kind === 'character' ? ['character', 'character2'] : [kind]).some(key => {
+    if (chosen[key]) return false;
+    if (key === 'logo' && template.brandLogo !== true || key === 'ip-copyright' && template.ipCopyright !== true) return false;
+    const off = Object.hasOwn(chosen, key) && chosen[key] === null;
+    // 没选按钮时还会按文案匹配按钮；人物默认位置没有固定区域时按自动挑的人物算，写了“不用”也一样。
+    if (key === 'button') return true;
+    if (key === 'character') return !(off && template.communityLayout?.character);
+    if (off) return false;
+    const masterBackground = task.parameters?.assetByTemplate?.[task.masterTemplateId]?.background;
+    return !(key === 'background' && template.id !== task.masterTemplateId && task.assets?.some(asset => asset.name === masterBackground));
+  });
+}
+
+// 画这几个尺寸时会被自动挑到的角色。平台 PSD 尺寸还会按图挑版式（choosePsdVariant），照旧全要。
+function automaticRoles(task, ids) {
+  const templates = [task.masterTemplate, ...(task.templates || [])].filter(Boolean), kinds = new Set(), all = new Set(Object.values(AUTO_KINDS).flat());
+  if (!ids.length) return all;
+  for (const id of ids) {
+    const template = templates.find(item => item.id === id);
+    if (!template?.communityPlacement) return all;
+    for (const kind of Object.keys(AUTO_KINDS)) if (communityPicksAutomatically(task, template, task.parameters?.assetByTemplate?.[id] || {}, kind)) kinds.add(kind);
+  }
+  return new Set([...kinds].flatMap(kind => AUTO_KINDS[kind]));
+}
 // Photoshop source documents remain downloadable assets, but cannot be decoded by <img>.
 export function isRenderableImageAsset(asset) {
   if (!asset?.url) return false;
@@ -43,15 +73,15 @@ export function editorTemplateIds(task) {
 
 /**
  * 画 templateIds 这几个尺寸要用的图：[{key, url}]，key 是 assetImages 里的键（素材名、`__outpaint_<尺寸>`、独立素材图层）。
- * 包括画布会按角色自动挑的素材、本机计算结果、首选背景，以及这几个尺寸按名字选用的素材。
+ * 包括这几个尺寸按名字选用的素材、会被自动挑到的角色的素材、首选背景（state.sourceImage：画布和扩图找不到背景时用它）、本机计算结果。
  */
 export function editorImageEntries(task, templateIds) {
-  const parameters = task.parameters || {}, ids = templateIds.filter(Boolean), names = canvasAssetNames(parameters, ids);
+  const parameters = task.parameters || {}, ids = templateIds.filter(Boolean), names = canvasAssetNames(parameters, ids), roles = automaticRoles(task, ids);
   const source = sourceImageCandidates(task)[0], entries = new Map();
   for (const asset of task.assets || []) {
     if (!isRenderableImageAsset(asset)) continue;
-    // 独立素材导出的 PNG 只在画布上用到时才下。
-    if (names.has(asset.name) || asset === source || asset.name === task.primaryAssetName || !asset.objectRunId && AUTO_ROLES.has(asset.role)) entries.set(asset.name, asset.url);
+    // primaryAssetName 只在背景自动挑不到时才用；独立素材导出的 PNG 只在画布上用到时才下。
+    if (names.has(asset.name) || asset === source || roles.has('background') && asset.name === task.primaryAssetName || !asset.objectRunId && roles.has(asset.role)) entries.set(asset.name, asset.url);
   }
   for (const asset of task.localAi?.outputs || []) if (isRenderableImageAsset(asset)) entries.set(asset.name, asset.url);
   for (const id of ids) {

@@ -89,6 +89,29 @@ test('other sizes load after the editor opens, and exports can wait for them', a
   assert.ok(result.assetImages.has('__outpaint_wide'));
 });
 
+test('community sizes that chose every element skip the other auto-pick candidates', async () => {
+  const scene=asset('scene.png','mother-candidate'),chosen=asset('title-a.png','title'),spare=asset('title-b.png','title'),person=asset('person.png','character');
+  const master={id:'master',communityPlacement:true,communityMaster:true,communityLayout:{character:[0,0,.5,1]}};
+  const wide={id:'wide',communityPlacement:true,communityLayout:{character:[0,0,.5,1]}};
+  const task={assets:[person,scene,chosen,spare],primaryAssetName:person.name,masterTemplateId:'master',targetTemplateIds:['wide'],masterTemplate:master,templates:[wide],
+    parameters:{assetByTemplate:{master:{background:scene.name,title:chosen.name,character:null,character2:null},wide:{title:null,character:null,character2:null}}}};
+  const requested=[];
+  const result=await loadEditorImages(task,async url=>{requested.push(url);return {url};},{templateId:'master'});
+  await result.editorImagesLoading;
+  // person.png 是首选背景（扩图找不到背景时送它），照旧要下；没选用的主标 title-b 不下。
+  assert.deepEqual(requested.sort(),[person.url,scene.url,chosen.url].sort());
+  assert.equal(result.sourceAsset,person);
+  delete task.parameters.assetByTemplate.wide.title;
+  assert.ok(editorImageEntries(task,['wide']).some(entry=>entry.key===spare.name));
+  assert.equal(editorImageEntries(task,['master']).some(entry=>entry.key===spare.name),false);
+});
+
+test('platform PSD sizes still load every auto-pick candidate', () => {
+  const titles=[asset('a.png','title'),asset('b.png','title')];
+  const task={assets:titles,masterTemplateId:'hero',templates:[{id:'hero'}],parameters:{assetByTemplate:{hero:{title:titles[0].name}}}};
+  assert.deepEqual(editorImageEntries(task,['hero']).map(entry=>entry.key).sort(),['a.png','b.png']);
+});
+
 test('broken images are skipped once instead of being retried on every redraw', async () => {
   const broken=asset('broken.png','title'),images=new Map();let calls=0;
   const entries=editorImageEntries({assets:[broken]},[]);

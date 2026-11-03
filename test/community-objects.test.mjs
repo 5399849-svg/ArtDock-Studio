@@ -142,6 +142,11 @@ test('placed layer images revalidate instead of re-downloading: originals use th
  const req=Readable.from([]);req.method='GET';req.headers={'if-none-match':first.headers.ETag};let status,body;
  await f.controller.handle(req,{writeHead(s){status=s;},end(value){body=value;}},new URL(route,'http://localhost'));
  assert.equal(status,304);assert.equal(body,undefined);
+ const canvas=Readable.from([]);canvas.method='GET';canvas.headers={'sec-fetch-dest':'image'};let headers,image;
+ await f.controller.handle(canvas,{writeHead(s,h){status=s;headers=h;},end(value){image=value;}},new URL(route,'http://localhost'));
+ const png=await sharp(first.body).metadata(),webp=await sharp(image).metadata();
+ assert.equal(status,200);assert.equal(headers['Content-Type'],'image/webp');assert.notEqual(headers.ETag,first.headers.ETag);
+ assert.equal(webp.width,png.width);assert.equal(webp.height,png.height);assert.equal(webp.hasAlpha,true);assert.ok(image.length<first.body.length);
 });
 
 test('editing a placed reward updates its layer appearance without creating bitmap files or changing scene pixels',async t=>{
