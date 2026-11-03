@@ -10,26 +10,28 @@ import {moveSourceLayer,sourceStackLayers} from './source-layer-order.js';
 import {mountPopupButtonControls,readPopupButtonTextPosition,syncPopupButtonTextControls} from './popup-button-controls.js';
 import {hitLayerCorner,layerCorners,resizeLayerFromCorner,scaleLayerAtPoint} from './source-canvas-transform.js';
 const readFile=file=>new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(Error('无法读取图片'));r.readAsDataURL(file);});
-export function mountSourceWorkspace({root,task,template,images,selectedId,api,project,updated,select,home,download,suite,importFolder,addSizes,removeSize}){
- let draft=structuredClone(sourceComposition(task,template?.id)),selected=null,dirty=false,busy=false,drag=null,base=null,stopped=false,frame=0,buttonPoll=0;
+// ready：打开任务时编辑器先显示，源稿的图和字体还在下；到齐前画布不画（app.js 在画布位置显示进度），按钮的操作等到齐再做。
+export function mountSourceWorkspace({root,task,template,images,ready,selectedId,api,project,updated,select,home,download,suite,importFolder,addSizes,removeSize}){
+ let draft=structuredClone(sourceComposition(task,template?.id)),selected=null,dirty=false,busy=false,drag=null,base=null,stopped=false,frame=0,buttonPoll=0,loading=Boolean(ready);
+ const loaded=Promise.resolve(ready).then(()=>{if(stopped||!loading)return;loading=false;pick(selected?.id);thumbs();},()=>{});
  const canvas=root.querySelector('#preview-canvas'),error=root.querySelector('#source-error'),stage=root.querySelector('.source-stage'),inspector=root.querySelector('#source-inspector'),readonly=task.status==='已完成'&&task.deliveredPackage;
  const previewTask=()=>({...task,parameters:{...task.parameters,sourceCompositionByTemplate:{...task.parameters.sourceCompositionByTemplate,...(draft?{[template.id]:draft}:{})}}});
  const button=()=>sourceButtonElement(draft?.popup,images);
  const buttonText=()=>sourceButtonTextElement(canvas.getContext('2d'),draft?.popup,images);
  const copyright=()=>draft?sourceCopyrightElement(canvas.getContext('2d'),previewTask(),template,project):null;
  const draw=()=>{
-  if(stopped||!task.sourceAdaptation||!canvas.isConnected)return;
+  if(stopped||loading||!task.sourceAdaptation||!canvas.isConnected)return;
   const scale=Math.max(.05,Math.min((stage.clientWidth-48)/template.width,(stage.clientHeight-48)/template.height)),ratio=Math.min(3,scale*(window.devicePixelRatio||1));
   canvas.style.width=`${template.width*scale}px`;canvas.style.height=`${template.height*scale}px`;
   canvas.width=Math.max(1,Math.round(template.width*ratio));canvas.height=Math.max(1,Math.round(template.height*ratio));canvas.dataset.logicalWidth=template.width;canvas.dataset.logicalHeight=template.height;
   const ctx=canvas.getContext('2d');ctx.setTransform(canvas.width/template.width,0,0,canvas.height/template.height,0,0);
   drawSourceComposition(ctx,previewTask(),template,images,{project,selectedId:selected?.id,handleSize:8/scale});
  };
- const thumbs=()=>root.querySelectorAll('[data-source-thumb]').forEach(c=>{const t=task.templates.find(t=>t.id===c.dataset.sourceThumb),scale=Math.min(220/t.width,100/t.height,1);c.width=Math.ceil(t.width*scale);c.height=Math.ceil(t.height*scale);const full=document.createElement('canvas');full.width=t.width;full.height=t.height;drawSourceComposition(full.getContext('2d'),previewTask(),t,images,{project});c.getContext('2d').drawImage(full,0,0,c.width,c.height);full.width=full.height=1;});
+ const thumbs=()=>!loading&&root.querySelectorAll('[data-source-thumb]').forEach(c=>{const t=task.templates.find(t=>t.id===c.dataset.sourceThumb),scale=Math.min(220/t.width,100/t.height,1);c.width=Math.ceil(t.width*scale);c.height=Math.ceil(t.height*scale);const full=document.createElement('canvas');full.width=t.width;full.height=t.height;drawSourceComposition(full.getContext('2d'),previewTask(),t,images,{project});c.getContext('2d').drawImage(full,0,0,c.width,c.height);full.width=full.height=1;});
  const post=async(action,fields={})=>{task=await api(`/api/tasks/${task.id}/source-adaptation`,{method:'POST',body:JSON.stringify({action,...fields,expectedUpdatedAt:task.updatedAt})});return task;};
  const update=async fields=>updated(task,fields);
  const change=()=>{dirty=true;root.querySelector('#source-save-state').textContent='有未保存的调整';draw();};
- const work=async(fn,propagate=false)=>{if(busy)return;busy=true;error.textContent='';const controls=[...root.querySelectorAll('button,input,select')],disabled=controls.map(c=>c.disabled);controls.forEach(c=>c.disabled=true);try{await fn();}catch(e){error.textContent=e.message;if(propagate)throw e;}finally{busy=false;controls.forEach((c,i)=>{if(c.isConnected)c.disabled=disabled[i];});}};
+ const work=async(fn,propagate=false)=>{if(busy)return;busy=true;error.textContent='';const controls=[...root.querySelectorAll('button,input,select')],disabled=controls.map(c=>c.disabled);controls.forEach(c=>c.disabled=true);try{await loaded;await fn();}catch(e){error.textContent=e.message;if(propagate)throw e;}finally{busy=false;controls.forEach((c,i)=>{if(c.isConnected)c.disabled=disabled[i];});}};
  const save=async()=>{if(!dirty)return;const id=selected?.id;await post('save',{templateId:template.id,composition:draft});draft=structuredClone(sourceComposition(task,template.id));dirty=false;pick(id);root.querySelector('#source-save-state').textContent='已保存';thumbs();};
  function setCopyright(values){
   const old=copyright();if(!old)return;

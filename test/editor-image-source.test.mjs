@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { isRenderableImageAsset, preferredSourceAsset, loadEditorImages, editorImageEntries, loadEditorImageEntries, missingEditorImages, sourceImageEntry, currentSourceAsset } from '../public/editor-image-source.js';
+import { isRenderableImageAsset, preferredSourceAsset, loadEditorImages, editorImageEntries, loadEditorImageEntries, missingEditorImages, sourceImageEntry, currentSourceAsset, sourceAdaptationImageEntries, loadSourceAdaptationImages } from '../public/editor-image-source.js';
 
 const asset = (name, role = 'supplement', mime = 'image/png') => ({ name, role, mime, url: `/assets/${name}` });
 
@@ -126,6 +126,25 @@ test('platform PSD sizes still load every auto-pick candidate', () => {
   const titles=[asset('a.png','title'),asset('b.png','title')];
   const task={assets:titles,masterTemplateId:'hero',templates:[{id:'hero'}],parameters:{assetByTemplate:{hero:{title:titles[0].name}}}};
   assert.deepEqual(editorImageEntries(task,['hero']).map(entry=>entry.key).sort(),['a.png','b.png']);
+});
+
+test('source adaptation images load together, and a missing or broken one still fails', async () => {
+  const preview=asset('源稿.png','source-preview'),background=asset('bg.png','source-reflow-background'),person=asset('person.png','source-reflow-character'),backing=asset('button.png','supplement');
+  const task={assets:[preview,background,person,backing],masterTemplateId:'master',targetTemplateIds:['wide'],sourceAdaptation:{previewName:preview.name,reflow:{layers:[{assetName:background.name}]}},
+    parameters:{sourceCompositionByTemplate:{master:{layers:[{assetName:person.name}]},wide:{layers:[{assetName:person.name}],popup:{buttonBackingAsset:backing.name}}}}};
+  assert.deepEqual(sourceAdaptationImageEntries(task).map(entry=>entry.key),[preview.name,background.name,person.name,backing.name]);
+  const requested=[],settled=[];let release;const gate=new Promise(resolve=>release=resolve);
+  const images=new Map(),loading=loadSourceAdaptationImages(images,sourceAdaptationImageEntries(task),async url=>{requested.push(url);await gate;return {url};},()=>settled.push(images.size));
+  await Promise.resolve();await Promise.resolve();
+  assert.equal(requested.length,4);
+  release();await loading;
+  assert.equal(settled.length,4);
+  assert.equal(images.size,4);
+  const result=await loadEditorImages(task,async url=>({url}));
+  assert.equal(result.sourceAsset,preview);
+  assert.deepEqual(result.sourceImage,{url:preview.url});
+  await assert.rejects(loadEditorImages(task,async url=>{if(url===person.url)throw Error('decode failed');return {url};}),/源稿素材加载失败：person\.png/);
+  assert.throws(()=>sourceAdaptationImageEntries({...task,assets:[preview,background,person]}),/源稿素材缺失：button\.png/);
 });
 
 test('broken images are skipped once instead of being retried on every redraw', async () => {

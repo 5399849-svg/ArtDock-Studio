@@ -58,7 +58,7 @@ import { normalizeElementEffects, drawElementWithEffects } from "/element-effect
 import { remapCommunityLayer, remapCommunitySubtitleBacking } from "/community-auto-layout.js";
 import { normalizeSubtitleBacking, createSubtitleBackingLayout, drawSubtitleBacking } from '/subtitle-backing.js';
 import { measureNativeCopy, drawNativeCopy, defaultNativeCopyEffects } from '/native-copy-layer.js';
-import { isRenderableImageAsset, preferredSourceAsset, loadEditorImages, editorImageEntries, editorTemplateIds, loadEditorImageEntries, missingEditorImages, sourceImageEntry, currentSourceAsset } from '/editor-image-source.js';
+import { isRenderableImageAsset, preferredSourceAsset, loadEditorImages, editorImageEntries, editorTemplateIds, loadEditorImageEntries, missingEditorImages, sourceImageEntry, currentSourceAsset, sourceAdaptationImageEntries, loadSourceAdaptationImages } from '/editor-image-source.js';
 const state = { data: null, view: "home", task: null, previewTemplateId: null, previewMode: "target", sourceImage: null, sourceAsset: null, assetImages: new Map(), filter: "全部", assetFilter: "全部素材", editorAssetFilter: "全部", editorAssetQuery: "", showGuides: true, editorHistory: null, reviewTaskId: null, reviewTab: "待审核", annotationType: "core-character", polygonPoints: [], cutoutPoints: [], cutoutSourceName: "", paramsSaveTimer: null, paramsSavePromise: Promise.resolve(true), inspectorTab: "elements", inspectorElement: "title", canvasDrag: null };
 state.communitySideTab = "ai";
 state.communityGenerationPoll = null;
@@ -1145,10 +1145,10 @@ async function openTask(id) {
   if(state.task.masterTemplate?.communityMaster){state.previewTemplateId=state.task.masterTemplateId;state.showGuides=false;state.inspectorElement='background';}
   state.canvasError = null;
   if (state.task.sourceAdaptation) {
-    // 源文件适配任务照旧把源稿的图和字体下齐再显示（它的编辑器另有一套画法）。
-    await loadTaskImages(state.task);
-    await loadProjectFonts(state.task, state.data.projects || []).catch(() => toast('项目字体加载失败，请刷新后重试'));
+    // 源文件适配任务也先显示编辑器：源稿的图一起在后面下，画布在图和字体到齐前显示进度（renderSourceTaskDetail）。
     state.fontsPending = false;
+    state.fontsLoading = loadProjectFonts(state.task, state.data.projects || []).catch(() => { if (state.task?.id === id) toast('项目字体加载失败，请刷新后重试'); });
+    startSourceTaskImages(state.task);
   } else {
     // 编辑器先显示，图和字体在后面下：画布在当前尺寸的图和字体到齐前显示进度、不能拖动（redrawPreview）。
     assertTaskFontsInLibrary(state.task);
@@ -1178,7 +1178,8 @@ async function loadTaskImages(task) {
   const loaded = await loadEditorImages(task, loadImage, { templateId: state.previewTemplateId });
   Object.assign(state, loaded);
   loaded.editorImagesLoading.then(() => {
-    if (state.task?.id === task.id && state.assetImages === loaded.assetImages) { settleSourceImage(); refreshTargetThumbnails(); }
+    // 源文件适配任务的首选背景就是源稿预览（loadEditorImages 已经给了），不用换。
+    if (state.task?.id === task.id && state.assetImages === loaded.assetImages && !task.sourceAdaptation) { settleSourceImage(); refreshTargetThumbnails(); }
   }, error => { if (state.task?.id === task.id) toast(`部分图片加载失败：${error.message}`); });
 }
 
@@ -1209,6 +1210,26 @@ function startTaskImages(task) {
   });
 }
 
+// 源文件适配任务打开时：源稿要画的图一起下（素材缺失照旧打不开任务），图和字体到齐（ready）前画布位置显示进度，编辑器到齐再画。
+function startSourceTaskImages(task) {
+  const assetImages = new Map(), entries = sourceAdaptationImageEntries(task), sourceAsset = task.assets.find(asset => asset.name === task.sourceAdaptation.previewName);
+  Object.assign(state, { assetImages, sourceAsset, sourceImage: null });
+  state.editorImagesLoading = loadSourceAdaptationImages(assetImages, entries, loadImage, showSourceCanvasLoading);
+  const loading = state.sourceCanvasLoading = { assetImages, entries, settled: false, error: null, ready: Promise.all([state.editorImagesLoading, state.fontsLoading]) };
+  loading.ready.then(() => {
+    loading.settled = true;
+    if (state.assetImages === assetImages) state.sourceImage = assetImages.get(sourceAsset.name) || null;
+    showSourceCanvasLoading();
+  }, error => { loading.error = `画面加载失败：${error.message}，请刷新页面后重试`; showSourceCanvasLoading(); });
+}
+function showSourceCanvasLoading() {
+  const loading = state.sourceCanvasLoading, stage = content.querySelector('.source-stage');
+  if (!stage || loading?.assetImages !== state.assetImages) return;
+  if (loading.settled) { hideCanvasLoading(stage); return; }
+  showCanvasLoading(stage, loading.entries);
+  if (loading.error) { const note = stage.querySelector('.editor-canvas-loading'); note.textContent = loading.error; note.classList.add('is-error'); }
+}
+
 // 编辑器里看得见、还没下完的小图都下完（或超时）。
 function visibleThumbnailsLoaded(timeout) {
   const pending = [...content.querySelectorAll('img')].filter(image => !image.complete && image.getClientRects().length);
@@ -1229,7 +1250,7 @@ async function loadMissingEditorImages(task = state.task) {
   if (state.task === task) settleSourceImage();
 }
 
-// 导出、下载前等各尺寸的图都下完（源文件适配任务打开时已经下齐了它要的图）。
+// 导出、下载前等各尺寸的图都下完（源文件适配任务等它打开时开始下的那批图）。
 async function editorImagesReady() {
   await state.fontsLoading;
   await state.editorImagesLoading;
@@ -1239,7 +1260,7 @@ async function editorImagesReady() {
 // 用到当前画面的操作（AI 生成、封面）先等当前尺寸和母版的图、字体到齐。
 async function canvasImagesReady() {
   await state.fontsLoading;
-  if (state.task?.sourceAdaptation) return;
+  if (state.task?.sourceAdaptation) { await state.editorImagesLoading; return; }
   await loadEditorImageEntries(state.assetImages, editorImageEntries(state.task, [state.task.masterTemplateId, state.previewTemplateId]), loadImage);
 }
 
@@ -1533,10 +1554,12 @@ function renderSourceTaskDetail(){
  const template=state.data.templates.find(t=>t.id===state.previewTemplateId)||task.masterTemplate;
  title.textContent=task.project;content.innerHTML=renderSourceWorkspace(task,{template,stage,project:state.data.projects?.find(p=>p.id===task.projectId),selectedId:state.sourceSelectedId,dialogs:editorAddSizeDialog(task)});
  bindTargetSizeDialog(content.querySelector('#add-size-dialog'));
- state.sourceWorkspaceCleanup=mountSourceWorkspace({root:content,task,template,project:state.data.projects?.find(p=>p.id===task.projectId),images:state.assetImages,selectedId:state.sourceSelectedId,api,select:id=>state.sourceSelectedId=id,
+ const loading=state.sourceCanvasLoading?.assetImages===state.assetImages&&!state.sourceCanvasLoading.settled?state.sourceCanvasLoading:null;
+ state.sourceWorkspaceCleanup=mountSourceWorkspace({root:content,task,template,project:state.data.projects?.find(p=>p.id===task.projectId),images:state.assetImages,ready:loading?.ready,selectedId:state.sourceSelectedId,api,select:id=>state.sourceSelectedId=id,
   home:()=>{state.task=null;state.view='home';render();},download:downloadCurrentArtifact,suite:downloadMaterialPackage,upload:uploadAssets,importFolder:importKvPack,addSizes:addTargetSizes,removeSize:removeTargetSize,
   updated:async(saved,options={})=>{if(state.task?.id!==saved.id)return;state.task=saved;installCustomEditorTemplate(saved);if(options.stage)state.communityWorkspaceStage=options.stage;if(options.templateId)state.previewTemplateId=options.templateId;await loadTaskImages(saved);await loadProjectFonts(saved,state.data.projects||[]);if(options.render!==false)renderTaskDetail();}
  });
+ showSourceCanvasLoading();
 }
 function renderTaskDetail() {
   state.stopSizeMaterials?.();state.stopSizeMaterials=null;state.stopPopupComposer?.();state.stopPopupComposer=null;
@@ -3326,7 +3349,8 @@ async function saveParameters(silent = false) {
 async function saveTaskCoverPreview() {
   if (state.task?.status === "已完成" && state.task?.deliveredPackage) return;
   const coverTaskId = state.task?.id;
-  await canvasImagesReady();
+  // 图没下到（画布位置已经显示原因）就不做封面。
+  try { await canvasImagesReady(); } catch { return; }
   if (state.task?.id !== coverTaskId) return;
   if (!state.task?.templates?.some((template) => template.communityPlacement) || (!state.sourceImage && !state.assetImages.size)) return;
   const taskId = state.task.id;
@@ -3966,7 +3990,7 @@ async function runCharacterCutout() {
 function characterCutoutDialog(task) {
   const sources = cutoutSourceAssets();
   const selected = sources.find((asset) => asset.name === state.cutoutSourceName) || sources[0];
-  return `<dialog id="character-cutout-dialog" class="dialog character-cutout-dialog"><div class="dialog-head"><div><p class="eyebrow">CHARACTER CUTOUT</p><h2>独立人物抠图</h2><p>选择干净KV，然后依次点击每个需要保留人物的脸部。生成后人物会成为可单独移动、缩放的透明图层。</p></div><button type="button" class="icon-button" id="close-character-cutout">×</button></div><div class="cutout-options"><label class="cutout-source-select">抠图源图<select id="cutout-source">${sources.map((asset) => `<option value="${encodeURIComponent(asset.name)}" ${asset === selected ? "selected" : ""}>${esc(asset.name)}</option>`).join("")}</select></label><label class="cutout-source-select">抠图引擎<select id="cutout-engine"><option value="sam2">本机 SAM2（离线快速）</option><option value="removebg">remove.bg（整图一次精细抠图）</option></select></label></div><div class="cutout-stage" id="cutout-stage">${selected ? `<img id="cutout-source-image" src="${selected.url}" alt="${esc(selected.name)}" draggable="false"><div id="cutout-markers"></div>` : `<p>请先上传干净KV。</p>`}</div><div class="cutout-help"><b>点击每位主角的脸部添加选点</b><span id="cutout-point-count">已选 ${state.cutoutPoints.length} 人，建议每个人只点一次；点击标记可删除。</span></div><div class="dialog-actions"><button type="button" class="button ghost" id="clear-cutout-points">清空选点</button><button type="button" class="button secondary" id="undo-cutout-point">撤销一点</button><button type="button" class="button primary" id="run-character-cutout" ${selected ? "" : "disabled"}>生成透明人物层</button></div></dialog>`;
+  return `<dialog id="character-cutout-dialog" class="dialog character-cutout-dialog"><div class="dialog-head"><div><p class="eyebrow">CHARACTER CUTOUT</p><h2>独立人物抠图</h2><p>选择干净KV，然后依次点击每个需要保留人物的脸部。生成后人物会成为可单独移动、缩放的透明图层。</p></div><button type="button" class="icon-button" id="close-character-cutout">×</button></div><div class="cutout-options"><label class="cutout-source-select">抠图源图<select id="cutout-source">${sources.map((asset) => `<option value="${encodeURIComponent(asset.name)}" ${asset === selected ? "selected" : ""}>${esc(asset.name)}</option>`).join("")}</select></label><label class="cutout-source-select">抠图引擎<select id="cutout-engine"><option value="sam2">本机 SAM2（离线快速）</option><option value="removebg">remove.bg（整图一次精细抠图）</option></select></label></div><div class="cutout-stage" id="cutout-stage">${selected ? `<img id="cutout-source-image" alt="${esc(selected.name)}" draggable="false"><div id="cutout-markers"></div>` : `<p>请先上传干净KV。</p>`}</div><div class="cutout-help"><b>点击每位主角的脸部添加选点</b><span id="cutout-point-count">已选 ${state.cutoutPoints.length} 人，建议每个人只点一次；点击标记可删除。</span></div><div class="dialog-actions"><button type="button" class="button ghost" id="clear-cutout-points">清空选点</button><button type="button" class="button secondary" id="undo-cutout-point">撤销一点</button><button type="button" class="button primary" id="run-character-cutout" ${selected ? "" : "disabled"}>生成透明人物层</button></div></dialog>`;
 }
 async function approveAndDownloadSuite() {
   const button = document.querySelector("#editor-download-suite");

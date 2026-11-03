@@ -60,9 +60,9 @@
 }
 
 /* 打开任务时编辑器先显示、画面的图还在下载：画布位置显示进度，下完前画布隐藏、不能拖动（app.js showCanvasLoading） */
-.editor-stage.is-loading-canvas{position:relative}
-.editor-stage.is-loading-canvas #preview-canvas{visibility:hidden;pointer-events:none}
-.editor-stage.is-loading-canvas #preview-empty{display:none!important}
+.editor-stage.is-loading-canvas,.source-stage.is-loading-canvas{position:relative}
+.editor-stage.is-loading-canvas #preview-canvas,.source-stage.is-loading-canvas #preview-canvas{visibility:hidden;pointer-events:none}
+.editor-stage.is-loading-canvas #preview-empty,.source-stage.is-loading-canvas .source-empty{display:none!important}
 .editor-canvas-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;color:#5d6278;font-size:13px}
 .editor-canvas-loading::before{content:"";width:16px;height:16px;border-radius:50%;border:2px solid #d9dcef;border-top-color:#7057ef;animation:editor-canvas-spin .8s linear infinite}
 .editor-canvas-loading.is-error{color:#c64b56}

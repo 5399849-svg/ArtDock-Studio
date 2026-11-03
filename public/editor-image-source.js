@@ -133,6 +133,20 @@ export function currentSourceAsset(task, images) {
   return candidates.find(asset => images.has(asset.name)) || null;
 }
 
+/** 源文件适配任务要画的图（源稿预览、重排图层、各尺寸的图层和按钮底板）：[{key, url}]。素材缺失时报错。 */
+export function sourceAdaptationImageEntries(task) {
+  const ids=[task.masterTemplateId,...(task.targetTemplateIds||[])],names=new Set([task.sourceAdaptation.previewName,...(task.sourceAdaptation.reflow?.layers||[]).map(l=>l.assetName),...ids.flatMap(id=>(task.parameters?.sourceCompositionByTemplate?.[id]?.layers||[]).map(l=>l.assetName))]);
+  for(const id of ids){const name=task.parameters?.sourceCompositionByTemplate?.[id]?.popup?.buttonBackingAsset;if(name)names.add(name);}
+  return [...names].map(name=>{const asset=task.assets?.find(a=>a.name===name);if(!isRenderableImageAsset(asset))throw Error('源稿素材缺失：'+name);return {key:name,url:asset.url};});
+}
+/** 源文件适配任务的图一起下到 images（以前一张下完再下一张），有一张下不到就报错；每下完一张调一次 onSettled。 */
+export function loadSourceAdaptationImages(images, entries, loadImage, onSettled) {
+  return Promise.all(entries.map(({key, url}) => Promise.resolve().then(() => loadImage(url)).then(
+    image => { images.set(key, image); },
+    () => { throw Error('源稿素材加载失败：' + key); },
+  ).finally(() => onSettled?.())));
+}
+
 /**
  * 打开任务时先下 templateId（当前显示的尺寸）和母版要画的图，下完就返回，编辑器可以先显示；其它尺寸的图在后台接着下，
  * editorImagesLoading 是它的进度，导出、下载前要等它。
@@ -140,9 +154,7 @@ export function currentSourceAsset(task, images) {
 export async function loadEditorImages(task, loadImage, {templateId} = {}) {
   const assetImages = new Map();
   if(task.sourceAdaptation){
-    const ids=[task.masterTemplateId,...(task.targetTemplateIds||[])],names=new Set([task.sourceAdaptation.previewName,...(task.sourceAdaptation.reflow?.layers||[]).map(l=>l.assetName),...ids.flatMap(id=>(task.parameters?.sourceCompositionByTemplate?.[id]?.layers||[]).map(l=>l.assetName))]);
-    for(const id of ids){const name=task.parameters?.sourceCompositionByTemplate?.[id]?.popup?.buttonBackingAsset;if(name)names.add(name);}
-    for(const name of names){const asset=task.assets?.find(a=>a.name===name);if(!isRenderableImageAsset(asset))throw Error('源稿素材缺失：'+name);try{assetImages.set(name,await loadImage(asset.url));}catch{throw Error('源稿素材加载失败：'+name);}}
+    await loadSourceAdaptationImages(assetImages,sourceAdaptationImageEntries(task),loadImage);
     const sourceAsset=task.assets.find(a=>a.name===task.sourceAdaptation.previewName);
     return {assetImages,sourceAsset,sourceImage:assetImages.get(sourceAsset.name),editorImagesLoading:Promise.resolve()};
   }
