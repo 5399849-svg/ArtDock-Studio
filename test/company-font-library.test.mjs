@@ -133,6 +133,27 @@ test('font file routes reject manipulated paths and detect equal-length binary r
   await assert.rejects(readCompanyFontBytes(id, { root }), /校验失败/);
 });
 
+test('online-imported fonts show their file name without license notes, falling back to the internal name', async t => {
+  const root = await temporary(t), library = path.join(root, 'data', 'fonts', 'company-library');
+  await mkdir(library, { recursive: true });
+  const font = (seed, family, style, originalName, extra = {}) => {
+    const sha256 = digest(Buffer.from(seed));
+    return { id: `font-${sha256}-0`, name: family, family, style, format: 'ttf', faceIndex: 0, sha256, bytes: 1, file: `files/${sha256}.ttf`, status: 'ready',
+      sourceStatus: 'online-import', sources: [], importedBy: { accountId: '8', name: '谭耀斌' }, originalName, ...extra };
+  };
+  await writeFile(path.join(library, 'catalog.json'), JSON.stringify({ schemaVersion: 1, fonts: [
+    font('a', '字魂全家福(商用需授权)', '常规体', '字魂全家福.ttf'),
+    font('b', '字魂大黑', 'Medium', '字魂大黑-Medium.ttf'),
+    font('c', '字魂国潮手书(商用需授权)', 'Regular', '字魂国潮手书（混沌版）.ttf'),
+    font('d', '字魂雅致黑(商用需授权)', 'Regular', 'ZihunYazhihei.ttf'),
+    font('e', '字魂剧场体(商用需授权)', 'Bold', 'e.ttf'),
+    font('f', '字魂剧场体(商用需授权)', 'Light', 'f.ttf'),
+    font('g', '思源黑体', 'Regular', '', { sourceStatus: 'seed' }),
+  ] }));
+  assert.deepEqual((await readCompanyFontLibrary({ root })).fonts.map(item => item.name),
+    ['字魂全家福', '字魂大黑-Medium', '字魂国潮手书（混沌版）', '字魂雅致黑', '字魂剧场体-Bold', '字魂剧场体-Light', '思源黑体']);
+});
+
 test('an absent company library is a safe empty catalog', async t => {
   const root = await temporary(t);
   assert.deepEqual((await readCompanyFontLibrary({ root })).fonts, []);
