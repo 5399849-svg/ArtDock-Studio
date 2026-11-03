@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { isRenderableImageAsset, preferredSourceAsset, loadEditorImages } from '../public/editor-image-source.js';
+import { isRenderableImageAsset, preferredSourceAsset, loadEditorImages, editorImageEntries, loadEditorImageEntries, missingEditorImages } from '../public/editor-image-source.js';
 
 const asset = (name, role = 'supplement', mime = 'image/png') => ({ name, role, mime, url: `/assets/${name}` });
 
@@ -58,7 +58,42 @@ test('independent PNG exports load lazily unless explicitly used on a canvas', a
   const first=await loadEditorImages({assets:[background,cutout]},async url=>{requested.push(url);return {url};});
   assert.deepEqual(requested,[background.url]);
   assert.equal(first.assetImages.has(cutout.name),false);
-  const bound=await loadEditorImages({assets:[background,cutout],parameters:{assetByTemplate:{master:{character:cutout.name}}}},async url=>({url}));
+  const bound=await loadEditorImages({assets:[background,cutout],masterTemplateId:'master',parameters:{assetByTemplate:{master:{character:cutout.name}}}},async url=>({url}));
   assert.ok(bound.assetImages.has(cutout.name));
   assert.equal(bound.sourceAsset,background);
+});
+
+test('opening a task skips images the canvas never draws and keeps referenced ones', async () => {
+  const background=asset('scene.png','background'),title=asset('title.png','title');
+  const references=[asset('ref.png','reference-image'),asset('candidate.png','mother-candidate'),asset('preview.png','layered-preview'),asset('source.png','source-character'),asset('extra.png','supplement')];
+  const chosen=asset('chosen.png','mother-candidate'),backing=asset('backing.png','supplement');
+  const task={assets:[background,title,...references,chosen,backing],masterTemplateId:'master',targetTemplateIds:[],parameters:{
+    assetByTemplate:{master:{background:chosen.name}},layoutByTemplate:{master:{'subtitle-backing':{backing:{assetName:backing.name}}}}}};
+  const requested=[];
+  const result=await loadEditorImages(task,async url=>{requested.push(url);return {url};},{templateId:'master'});
+  await result.editorImagesLoading;
+  assert.deepEqual(requested.sort(),[background.url,title.url,chosen.url,backing.url].sort());
+});
+
+test('other sizes load after the editor opens, and exports can wait for them', async () => {
+  const background=asset('scene.png','background'),targetOnly=asset('target-bg.png','generated-background');
+  const task={assets:[background,targetOnly],masterTemplateId:'master',targetTemplateIds:['wide'],parameters:{
+    assetByTemplate:{master:{background:background.name},wide:{background:targetOnly.name}},backgroundByTemplate:{wide:{url:'/storage/outpaint-wide.png'}}}};
+  let release;const gate=new Promise(resolve=>release=resolve);
+  const result=await loadEditorImages(task,async url=>{if(url!==background.url)await gate;return {url};},{templateId:'master'});
+  assert.ok(result.assetImages.has(background.name));
+  assert.equal(result.assetImages.has(targetOnly.name),false);
+  assert.deepEqual(missingEditorImages(result.assetImages,editorImageEntries(task,['wide'])).map(entry=>entry.key).sort(),['__outpaint_wide',targetOnly.name].sort());
+  release();await result.editorImagesLoading;
+  assert.ok(result.assetImages.has(targetOnly.name));
+  assert.ok(result.assetImages.has('__outpaint_wide'));
+});
+
+test('broken images are skipped once instead of being retried on every redraw', async () => {
+  const broken=asset('broken.png','title'),images=new Map();let calls=0;
+  const entries=editorImageEntries({assets:[broken]},[]);
+  await loadEditorImageEntries(images,entries,async()=>{calls++;throw Error('decode failed');});
+  await loadEditorImageEntries(images,entries,async()=>{calls++;throw Error('decode failed');});
+  assert.equal(calls,1);
+  assert.deepEqual(missingEditorImages(images,entries),[]);
 });

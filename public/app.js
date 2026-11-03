@@ -15,7 +15,7 @@ import {renderSourceWorkspace,mountSourceWorkspace} from '/source-adaptation-ui.
 import {renderCommunityObjectTabs,renderCommunityObjectInspector,mountCommunityObjects} from '/community-objects.js';
 import {mountCommunityObjectCanvas} from '/community-object-canvas.js';
 import {renderSizeMaterials,sourceMaterialDialog,mountSizeMaterials} from '/community-size-materials.js';
-import {drawCommunityObjectLayers,placedCommunityObjects,communityObjectLayerImageKey,loadCommunityObjectLayerImages} from '/community-object-layers.js';
+import {drawCommunityObjectLayers,placedCommunityObjects,loadCommunityObjectLayerImages} from '/community-object-layers.js';
 import {illustrationOptions,illustrationCharacterSources} from '/community-illustration-state.js';
 import {mountCharacterReuseMenus,setCharacterReuse,assertReusableCharacterImage} from '/community-character-reuse.js';
 import {drawCommunityCopyright,copyrightColorMode} from '/community-copyright.js';
@@ -58,7 +58,7 @@ import { normalizeElementEffects, drawElementWithEffects } from "/element-effect
 import { remapCommunityLayer, remapCommunitySubtitleBacking } from "/community-auto-layout.js";
 import { normalizeSubtitleBacking, createSubtitleBackingLayout, drawSubtitleBacking } from '/subtitle-backing.js';
 import { measureNativeCopy, drawNativeCopy, defaultNativeCopyEffects } from '/native-copy-layer.js';
-import { isRenderableImageAsset, preferredSourceAsset, loadEditorImages } from '/editor-image-source.js';
+import { isRenderableImageAsset, preferredSourceAsset, loadEditorImages, editorImageEntries, editorTemplateIds, loadEditorImageEntries, missingEditorImages } from '/editor-image-source.js';
 const state = { data: null, view: "home", task: null, previewTemplateId: null, previewMode: "target", sourceImage: null, sourceAsset: null, assetImages: new Map(), filter: "全部", assetFilter: "全部素材", editorAssetFilter: "全部", editorAssetQuery: "", showGuides: true, editorHistory: null, reviewTaskId: null, reviewTab: "待审核", annotationType: "core-character", polygonPoints: [], cutoutPoints: [], cutoutSourceName: "", paramsSaveTimer: null, paramsSavePromise: Promise.resolve(true), inspectorTab: "elements", inspectorElement: "title", canvasDrag: null };
 state.communitySideTab = "ai";
 state.communityGenerationPoll = null;
@@ -1143,16 +1143,18 @@ async function openTask(id) {
     : (state.data.templates.some((item) => item.id === state.task.masterTemplateId) ? state.task.masterTemplateId : (state.data.templates.find((item) => state.task.targetTemplateIds?.includes(item.id))?.id || null));
   state.previewMode = "target";
   if(state.task.masterTemplate?.communityMaster){state.previewTemplateId=state.task.masterTemplateId;state.showGuides=false;state.inspectorElement='background';}
-  Object.assign(state, await loadEditorImages(state.task, loadImage));
-  try { await loadProjectFonts(state.task, state.data.projects || []); } catch (error) {
-    if(state.task.parameters?.titleFontId || state.task.parameters?.subtitleFontId)throw error;
+  // 字体和当前尺寸的图同时下；其它尺寸的图（含扩图结果）在编辑器显示后接着下（loadTaskImages）。
+  const fontLoading = loadProjectFonts(state.task, state.data.projects || []).then(() => null, error => error);
+  await loadTaskImages(state.task);
+  const fontError = await fontLoading;
+  if (fontError) {
+    if(state.task.parameters?.titleFontId || state.task.parameters?.subtitleFontId)throw fontError;
     toast('项目字体加载失败，请刷新后重试');
   }
-  if(!state.task.sourceAdaptation)await hydrateOutpaintImages(state.task);
-  if (!state.task.artifacts?.length && !state.task.coverPreview?.url) await saveTaskCoverPreview();
   if (state.task.outpaint?.status === "running") scheduleOutpaintPoll();
   if (state.task.communityGeneration?.status === "running") scheduleCommunityGenerationPoll();
   render();
+  if (!state.task.artifacts?.length && !state.task.coverPreview?.url) void saveTaskCoverPreview();
   return true;
   } catch (error) {
     state.task = previousTask;
@@ -1161,10 +1163,44 @@ async function openTask(id) {
   }
 }
 
+// 服务器出口只有 1.5 MB/s：先下当前尺寸和母版要画的图就显示编辑器，其它尺寸的图在后台接着下（state.editorImagesLoading），
+// 下完刷新尺寸缩略图。画布不会自动用到的图（参考图、候选……）不下，用到时再取（editor-image-source.js）。
+async function loadTaskImages(task) {
+  const loaded = await loadEditorImages(task, loadImage, { templateId: state.previewTemplateId });
+  Object.assign(state, loaded);
+  loaded.editorImagesLoading.then(() => {
+    if (state.task?.id === task.id && state.assetImages === loaded.assetImages) refreshTargetThumbnails();
+  }, error => { if (state.task?.id === task.id) toast(`部分图片加载失败：${error.message}`); });
+}
+
+// 当前任务各尺寸要画的图里还没下的补上（参数改过后新用到的图也算）。
+function loadMissingEditorImages(task = state.task) {
+  return loadEditorImageEntries(state.assetImages, editorImageEntries(task, editorTemplateIds(task)), loadImage);
+}
+
+// 导出、下载前等各尺寸的图都下完（源文件适配任务打开时已经下齐了它要的图）。
+async function editorImagesReady() {
+  await state.editorImagesLoading;
+  if (!state.task?.sourceAdaptation) await loadMissingEditorImages();
+}
+
+// 后台的图下完后，尺寸栏里按画布合成的缩略图重画一遍（不重画整个编辑器，免得打断正在做的操作）。
+function refreshTargetThumbnails() {
+  for (const card of content.querySelectorAll('.target-size-list [data-preview-template]')) {
+    const template = state.task.templates?.find(item => item.id === card.dataset.previewTemplate), thumb = card.querySelector('.target-thumb');
+    if (!template?.communityPlacement || !thumb) continue;
+    let preview;
+    try { preview = targetThumbnail(renderCanvas(template, false)); } catch { continue; }
+    let image = thumb.querySelector('img');
+    if (!image) { image = document.createElement('img'); image.alt = ''; thumb.prepend(image); }
+    image.src = preview;
+  }
+}
+
 function wireMasterWorkspaceEvents(){
   document.querySelector('#custom-canvas-resize')?.addEventListener('click',async()=>{
     try{if(!await flushPendingParameterSave())return;const task=state.task,template=task.masterTemplate,layouts=Object.fromEntries(['character','character2','foreground','title','subtitle','subtitle-backing','logo','ip-copyright','button'].filter(k=>hasCanvasAsset(k,template)||nativeCopyValue(task,template,k)).map(k=>[k,getElementLayout(task,template,k)]));
-      openCustomCanvasResize({task,layouts,api,resized:async saved=>{if(state.task?.id!==saved.id)return;state.task=saved;installCustomEditorTemplate(saved);state.previewTemplateId=saved.masterTemplateId;state.editorHistory=null;state.inspectorElement='background';Object.assign(state,await loadEditorImages(saved,loadImage));renderTaskDetail();await saveTaskCoverPreview();management.invalidate();toast('画布尺寸已更新，素材保持原有比例');}});
+      openCustomCanvasResize({task,layouts,api,resized:async saved=>{if(state.task?.id!==saved.id)return;state.task=saved;installCustomEditorTemplate(saved);state.previewTemplateId=saved.masterTemplateId;state.editorHistory=null;state.inspectorElement='background';await loadTaskImages(saved);renderTaskDetail();await saveTaskCoverPreview();management.invalidate();toast('画布尺寸已更新，素材保持原有比例');}});
     }catch(e){toast(e.message);}
   });
   document.querySelector('#master-project-materials')?.addEventListener('click',async()=>{
@@ -1173,7 +1209,7 @@ function wireMasterWorkspaceEvents(){
       if(state.task?.id!==task.id)throw Error('当前任务已变化，请重新打开项目素材');
       if(!await flushPendingParameterSave())throw Error('当前排版尚未保存，请稍后再加入素材');
       const saved=await api(`/api/projects/${task.projectId}/design-library/assets/${asset.id}/use`,{method:'POST',body:JSON.stringify({taskId:task.id,expectedUpdatedAt:state.task.updatedAt,requestId:crypto.randomUUID(),mode,textKind,scope:['title','subtitle'].includes(state.task.parameters?.communityMaterialKind)?'text':'illustration'})});
-      state.task=saved;Object.assign(state,await loadEditorImages(saved,loadImage));await loadCommunityObjectLayerImages(saved,loadImage,state.assetImages);await loadProjectFonts(saved,state.data.projects);renderTaskDetail();toast(mode==='reference'?'项目素材已加入 AI 参考图':'项目素材已加入当前画布');
+      state.task=saved;await loadTaskImages(saved);await loadCommunityObjectLayerImages(saved,loadImage,state.assetImages);await loadProjectFonts(saved,state.data.projects);renderTaskDetail();toast(mode==='reference'?'项目素材已加入 AI 参考图':'项目素材已加入当前画布');
     }});}catch(e){toast(e.message);}
   });
   state.stopCommunityObjects?.();
@@ -1207,7 +1243,7 @@ function wireMasterWorkspaceEvents(){
   };
   state.stopCharacterReuseMenus=mountCharacterReuseMenus(objectRoot,setReuseCharacter);
   objectRoot.querySelector('[data-character-reuse-clear]')?.addEventListener('click',()=>void setReuseCharacter(''));
-  state.stopCommunityObjects=mountCommunityObjects({root:objectRoot,task:state.task,ui:state,api,flush:flushPendingParameterSave,refresh:async fresh=>{if(state.task?.id!==fresh.id)return;state.task=fresh;await Promise.all(fresh.assets.filter(a=>isRenderableImageAsset(a)&&!a.objectRunId&&!state.assetImages.has(a.name)).map(async a=>{try{state.assetImages.set(a.name,await loadImage(a.url));}catch{}}));await loadCommunityObjectLayerImages(fresh,loadImage,state.assetImages);renderTaskDetail();},render:renderTaskDetail,toast,isActive:()=>state.task?.id===objectTaskId});
+  state.stopCommunityObjects=mountCommunityObjects({root:objectRoot,task:state.task,ui:state,api,flush:flushPendingParameterSave,refresh:async fresh=>{if(state.task?.id!==fresh.id)return;state.task=fresh;await loadMissingEditorImages(fresh);await loadCommunityObjectLayerImages(fresh,loadImage,state.assetImages);renderTaskDetail();},render:renderTaskDetail,toast,isActive:()=>state.task?.id===objectTaskId});
   state.stopCommunityObjectCanvas=mountCommunityObjectCanvas({root:objectRoot,getTask:()=>state.task,getTemplate:()=>state.data.templates.find(t=>t.id===state.previewTemplateId)||state.task.masterTemplate,ui:state,images:state.assetImages,loadImage,flush:flushPendingParameterSave,save:()=>saveParameters(true),schedule:scheduleParamsSave,render:renderTaskDetail,redraw:redrawPreview,toast,pixelHit:characterPixelAt,aboveCharacterHit:(template,point)=>['title','subtitle','subtitle-backing','logo','ip-copyright','button'].includes(hitCanvasElement(template,point)),isActive:()=>state.previewMode==='target'});
   document.querySelector('#master-upload-toggle')?.addEventListener('click',event=>{
     const button=event.currentTarget,choices=document.querySelector('#master-upload-choices');if(!choices)return;choices.hidden=!choices.hidden;button.setAttribute('aria-expanded',String(!choices.hidden));
@@ -1231,7 +1267,7 @@ function wireMasterWorkspaceEvents(){
   const refreshMaterial=async fresh=>{
     if(state.task?.id!==fresh.id)return;
     state.task=fresh;
-    await Promise.all(fresh.assets.filter(a=>isRenderableImageAsset(a)&&!state.assetImages.has(a.name)).map(async a=>{try{state.assetImages.set(a.name,await loadImage(a.url))}catch{}}));
+    await loadMissingEditorImages(fresh);
     await loadCommunityObjectLayerImages(fresh,loadImage,state.assetImages);
     renderTaskDetail();
   };
@@ -1417,7 +1453,7 @@ function renderSourceTaskDetail(){
  bindTargetSizeDialog(content.querySelector('#add-size-dialog'));
  state.sourceWorkspaceCleanup=mountSourceWorkspace({root:content,task,template,project:state.data.projects?.find(p=>p.id===task.projectId),images:state.assetImages,selectedId:state.sourceSelectedId,api,select:id=>state.sourceSelectedId=id,
   home:()=>{state.task=null;state.view='home';render();},download:downloadCurrentArtifact,suite:downloadMaterialPackage,upload:uploadAssets,importFolder:importKvPack,addSizes:addTargetSizes,removeSize:removeTargetSize,
-  updated:async(saved,options={})=>{if(state.task?.id!==saved.id)return;state.task=saved;installCustomEditorTemplate(saved);if(options.stage)state.communityWorkspaceStage=options.stage;if(options.templateId)state.previewTemplateId=options.templateId;Object.assign(state,await loadEditorImages(saved,loadImage));await loadProjectFonts(saved,state.data.projects||[]);if(options.render!==false)renderTaskDetail();}
+  updated:async(saved,options={})=>{if(state.task?.id!==saved.id)return;state.task=saved;installCustomEditorTemplate(saved);if(options.stage)state.communityWorkspaceStage=options.stage;if(options.templateId)state.previewTemplateId=options.templateId;await loadTaskImages(saved);await loadProjectFonts(saved,state.data.projects||[]);if(options.render!==false)renderTaskDetail();}
  });
 }
 function renderTaskDetail() {
@@ -1472,11 +1508,11 @@ function renderTaskDetail() {
   if (scaleLabel) scaleLabel.textContent = selectedScaleDescription(task);
   wireDetailEvents();
   if(modern)wireMasterWorkspaceEvents();
-  if(modern&&sizeStage){state.stopSizeMaterials?.();state.stopSizeMaterials=mountSizeMaterials({root:content,task,template:activeTemplate,api,isBusy:()=>['communityGeneration','communityObjectJob','outpaint'].some(k=>state.task?.[k]?.status==='running'),flush:async()=>await flushPendingParameterSave()?state.task:null,select:id=>{state.communityObjectCanvasSelectedId=id;document.querySelector('#preview-canvas')?.focus({preventScroll:true});redrawPreview();},updated:async saved=>{if(state.task?.id!==saved.id)return;state.task=saved;state.editorHistory=null;Object.assign(state,await loadEditorImages(saved,loadImage));await loadCommunityObjectLayerImages(saved,loadImage,state.assetImages);renderTaskDetail();toast('素材已加入当前尺寸');}});}
+  if(modern&&sizeStage){state.stopSizeMaterials?.();state.stopSizeMaterials=mountSizeMaterials({root:content,task,template:activeTemplate,api,isBusy:()=>['communityGeneration','communityObjectJob','outpaint'].some(k=>state.task?.[k]?.status==='running'),flush:async()=>await flushPendingParameterSave()?state.task:null,select:id=>{state.communityObjectCanvasSelectedId=id;document.querySelector('#preview-canvas')?.focus({preventScroll:true});redrawPreview();},updated:async saved=>{if(state.task?.id!==saved.id)return;state.task=saved;state.editorHistory=null;await loadTaskImages(saved);await loadCommunityObjectLayerImages(saved,loadImage,state.assetImages);renderTaskDetail();toast('素材已加入当前尺寸');}});}
   if(isCommunityPopup(activeTemplate)){
     if(!modern){const panel=content.querySelector('.editor-inspector-panel');panel.insertAdjacentHTML('afterbegin',renderPopupPanel(task,activeTemplate,{disabled:Boolean(task.status==='已完成'&&task.deliveredPackage),draft:state.popupDrafts?.[task.id],preview:state.popupPreview||'checker'}));}
     const preview=mode=>{state.popupPreview=mode;const stage=content.querySelector('#editor-drop-stage');stage?.classList.toggle('popup-transparent',Boolean(popupConfig(state.task,activeTemplate)));if(stage)stage.dataset.popupPreview=mode;};preview(state.popupPreview||'checker');
-    state.stopPopupComposer?.();state.stopPopupComposer=mountPopupPanel({root:content,task,api,getButtonImage:c=>state.assetImages.get(c.buttonBackingAsset),textSelected:()=>state.popupTextSelectedKey===`${task.id}:${activeTemplate.id}`,onTextSelect:selected=>{state.popupTextSelectedKey=selected?`${task.id}:${activeTemplate.id}`:null;if(selected){state.inspectorElement='background';state.communityObjectCanvasSelectedId=null;}redrawPreview();},onGeneration:scheduleCommunityGenerationPoll,flush:async()=>await flushPendingParameterSave()?state.task:null,resolveAsset:(current,source,kind)=>selectedAssetName(current,current.templates?.find(t=>t.id===source)||current.masterTemplate,kind),onPreview:preview,onDraft:draft=>{(state.popupDrafts||={})[task.id]=draft;redrawPreview();},updated:async saved=>{if(state.task?.id!==saved.id)return;state.task=saved;state.editorHistory=null;Object.assign(state,await loadEditorImages(saved,loadImage));await loadProjectFonts(saved,state.data.projects||[]);renderTaskDetail();},});
+    state.stopPopupComposer?.();state.stopPopupComposer=mountPopupPanel({root:content,task,api,getButtonImage:c=>state.assetImages.get(c.buttonBackingAsset),textSelected:()=>state.popupTextSelectedKey===`${task.id}:${activeTemplate.id}`,onTextSelect:selected=>{state.popupTextSelectedKey=selected?`${task.id}:${activeTemplate.id}`:null;if(selected){state.inspectorElement='background';state.communityObjectCanvasSelectedId=null;}redrawPreview();},onGeneration:scheduleCommunityGenerationPoll,flush:async()=>await flushPendingParameterSave()?state.task:null,resolveAsset:(current,source,kind)=>selectedAssetName(current,current.templates?.find(t=>t.id===source)||current.masterTemplate,kind),onPreview:preview,onDraft:draft=>{(state.popupDrafts||={})[task.id]=draft;redrawPreview();},updated:async saved=>{if(state.task?.id!==saved.id)return;state.task=saved;state.editorHistory=null;await loadTaskImages(saved);await loadProjectFonts(saved,state.data.projects||[]);renderTaskDetail();},});
   }
   if(communityBatch && (task.communityGeneration?.status==='running' || task.outpaint?.status==='running')) {
     for(const control of document.querySelectorAll('#approve-community-master,#editor-auto-layout')){control.disabled=true;control.title='生成尚未结束，请等待所有图层完成';}
@@ -2210,7 +2246,7 @@ function wireDetailEvents() {
       const fresh=await api(`/api/tasks/${taskId}/community-artwork-apply`,{method:'POST',body:JSON.stringify({runId,expectedUpdatedAt:state.task.updatedAt})});
       if(state.task?.id!==taskId)return;
       state.task=fresh;state.communityComposerMode='concept-edit';
-      await Promise.all(fresh.assets.filter(a=>isRenderableImageAsset(a)&&!state.assetImages.has(a.name)).map(async a=>state.assetImages.set(a.name,await loadImage(a.url))));
+      await loadMissingEditorImages(fresh);
       renderTaskDetail();toast('已应用整稿方案，请检查后确认母版');
     }catch(error){bannerComposerError(error.message);}
   });
@@ -2298,7 +2334,7 @@ function wireDetailEvents() {
     try {
       const task = await api(`/api/tasks/${state.task.id}/assets/extract-psd`, {method:'POST', body:JSON.stringify({name:decodeURIComponent(button.dataset.extractPsd),role:'character'})});
       state.task = task;
-      Object.assign(state, await loadEditorImages(task, loadImage));
+      await loadTaskImages(task);
       state.previewMode = 'target';
       renderTaskDetail();
       const source = task.assets.find(asset => asset.name === decodeURIComponent(button.dataset.extractPsd));
@@ -2624,6 +2660,7 @@ async function autoSelectPsdVariants(task) {
 async function autoApplyAllTemplates(askConfirmation = true) {
   if (state.task.templates.some((template) => template.communityPlacement)) return autoApplyCommunityTemplates(askConfirmation);
   if (askConfirmation && !confirm("将按新版PSD规则重新分析横/竖完整KV，自动选择版式并匹配纯图背景、主标、副标、Logo、IP和按钮。是否继续？")) return;
+  try { await editorImagesReady(); } catch (error) { return toast(error.message); }
   const preservedButtons = Object.fromEntries(Object.entries(state.task.parameters?.assetByTemplate || {}).filter(([, value]) => value?.button).map(([id, value]) => [id, value.button]));
   if (state.task.templates.some((template) => template.renderMode === "masked-popup") && !state.task.localAi?.outputs?.some((item) => item.kind === "foreground")) {
     toast("正在为弹窗准备人物破框层…");
@@ -2713,6 +2750,8 @@ async function autoApplyCommunityTemplates(askConfirmation = true) {
   if(state.task.communityGeneration?.status==='running' || state.task.outpaint?.status==='running'){toast('生成尚未结束，请稍候再重排');return false;}
   clearTimeout(state.paramsSaveTimer);
   if(!await saveParameters(true))return false;
+  // 重排按各尺寸素材的图片比例算位置，要等各尺寸的图下完。
+  try{await editorImagesReady();}catch(error){toast(error.message);return false;}
   const task = state.task;
   const master = task.masterTemplate;
   if (!master?.communityPlacement) { toast("请先选择社区外媒母稿尺寸"); return false; }
@@ -2748,7 +2787,7 @@ async function autoApplyCommunityTemplates(askConfirmation = true) {
   }
   try {
     state.task=await api(`/api/tasks/${task.id}/reflow-community-targets`,{method:'POST',body:JSON.stringify({masterFingerprint:task.communityMasterApproval.fingerprint,masterAssets,layoutByTemplate})});
-    await Promise.all(state.task.assets.filter(asset=>isRenderableImageAsset(asset)&&!state.assetImages.has(asset.name)).map(async asset=>state.assetImages.set(asset.name,await loadImage(asset.url))));
+    await loadMissingEditorImages(state.task);
     state.previewTemplateId = task.templates.find((template) => template.id !== master.id)?.id || master.id;
     state.previewMode = "target";state.inspectorElement = "background";
     renderTaskDetail();
@@ -3288,9 +3327,7 @@ async function uploadCommunityFiles(files, role,referenceScope=activeCommunityRe
     const saved = await api(`/api/tasks/${taskId}/${scoped?'community-material-references':'assets'}`,{method:'POST',body:JSON.stringify({files:payload,role,...(scoped?{scope:referenceScope,expectedUpdatedAt:state.task.updatedAt}:{})})});
     if (state.task?.id !== taskId) return true;
     state.task = scoped?{...saved,copy:state.task.copy,parameters:{...saved.parameters,subtitleText:state.task.parameters.subtitleText,communityMaterialDrafts:state.task.parameters.communityMaterialDrafts,communityMaterialKind:state.task.parameters.communityMaterialKind}}:{ ...saved, parameters:state.task.parameters, copy:state.task.copy };
-    await Promise.all(state.task.assets.filter(asset=>files.some(file=>file.name===asset.name)&&asset.mime?.startsWith('image/')).map(async asset=>{
-      try{state.assetImages.set(asset.name,await loadImage(asset.url))}catch{}
-    }));
+    await loadMissingEditorImages(state.task);
     if(role==='mother-candidate') await selectCommunityCandidate(state.task.assets.findLast(asset=>asset.role==='mother-candidate')?.name);
     else { renderTaskDetail();toast(`已保存 ${files.length} 张参考图`); }
     return true;
@@ -3407,7 +3444,7 @@ async function submitCommunityMaterial(){
     if(state.task?.id!==task.id)return;state.task=fresh;state.masterMaterialView='composite';renderTaskDetail();scheduleCommunityGenerationPoll();toast('已提交独立素材生成');
   }catch(error){
     try{const fresh=await api(`/api/tasks/${task.id}`),saved=JSON.parse(sessionStorage.getItem(key)||'null');
-      if(state.task?.id===task.id&&saved?.requestId===fresh.communityGeneration?.requestId){state.task=fresh;Object.assign(state,await loadEditorImages(fresh,loadImage));renderTaskDetail();scheduleCommunityGenerationPoll();}
+      if(state.task?.id===task.id&&saved?.requestId===fresh.communityGeneration?.requestId){state.task=fresh;await loadTaskImages(fresh);renderTaskDetail();scheduleCommunityGenerationPoll();}
       else bannerComposerError(error.message);
     }catch{bannerComposerError('暂时无法确认提交结果，请刷新查询本次任务，原请求已保留');}
   }
@@ -3526,7 +3563,7 @@ async function restoreCommunityBanner(){
     const fresh=await api(`/api/tasks/${taskId}/community-design-restore`,{method:'POST',body:JSON.stringify({versionId})});
     if(state.task?.id!==taskId)return;
     state.task=fresh;await loadProjectFonts(fresh,state.data.projects);
-    await Promise.all(fresh.assets.filter(a=>isRenderableImageAsset(a)&&!state.assetImages.has(a.name)).map(async a=>state.assetImages.set(a.name,await loadImage(a.url))));
+    await loadMissingEditorImages(fresh);
     state.previewTemplateId=fresh.masterTemplateId;state.previewMode='target';renderTaskDetail();toast('已恢复此版，请检查后重新确认母版');
   }catch(error){bannerComposerError(error.message);}
 }
@@ -3580,11 +3617,10 @@ function scheduleCommunityGenerationPoll() {
       const freshText=JSON.stringify(fresh);
       if(freshText===state.communityGenerationPolled&&fresh.communityGeneration?.status==='running')return scheduleCommunityGenerationPoll();
       state.communityGenerationPolled=freshText;
-      const oldNames=new Set(state.task.assets.map(asset=>asset.name));
       state.task=fresh;
       const cached=state.data.tasks.findIndex(task=>task.id===taskId);
       if(cached>=0)state.data.tasks[cached]=fresh;
-      await Promise.all(fresh.assets.filter(asset=>!oldNames.has(asset.name)&&asset.mime?.startsWith('image/')).map(async asset=>{try{state.assetImages.set(asset.name,await loadImage(asset.url))}catch{}}));
+      await loadMissingEditorImages(fresh);
        await loadCommunityObjectLayerImages(fresh,loadImage,state.assetImages);
       renderTaskDetail();
       if(fresh.communityGeneration?.status==='running')scheduleCommunityGenerationPoll();
@@ -3612,7 +3648,7 @@ async function uploadAssets(event) {
     for (const file of files) payload.push({ name: file.name, dataUrl: await fileToDataUrl(file) });
     const role = document.querySelector("#asset-role").value;
     state.task = await api(`/api/tasks/${state.task.id}/assets`, { method: "POST", body: JSON.stringify({ files: payload, role }) });
-    Object.assign(state, await loadEditorImages(state.task, loadImage));
+    await loadTaskImages(state.task);
     state.previewMode = 'target';
     renderTaskDetail();
     const failures = state.task.assets.filter(asset => files.some(file => file.name === asset.name) && asset.psdExtraction?.status === 'failed');
@@ -3634,7 +3670,7 @@ async function importKvPack() {
     button.textContent = "正在导入…";
     state.task = await api(`/api/tasks/${state.task.id}/assets/import-kv-pack`, { method: "POST", body: JSON.stringify({ folderPath }) });
     state.previewMode = "target";
-    Object.assign(state, await loadEditorImages(state.task, loadImage));
+    await loadTaskImages(state.task);
     renderTaskDetail();
     toast(state.task.importedCount ? `本地KV素材包已导入 ${state.task.importedCount} 个新素材` : "素材包已导入过，文件没有变化，现有成品保持不变");
   } catch (error) {
@@ -3668,6 +3704,7 @@ async function downloadCurrentArtifact() {
   if (button) { button.disabled = true; button.textContent = "正在生成…"; }
   try {
     if(state.task.customCanvas&&!await flushPendingParameterSave())throw Error('排版尚未保存，请稍后再导出');
+    await editorImagesReady();
     const canvas = renderCanvas(template, false);
     if(state.task.sourceAdaptation)assertSourceExport(state.task,template,canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data);
     if(popupConfig(state.task,template))assertPopupPixels(canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data);
@@ -3868,6 +3905,7 @@ async function renderArtifacts(submitAfter = false, triggerButton = null) {
     if (state.task.status === "生成失败") {
       state.task = await api(`/api/tasks/${state.task.id}`, { method: "PATCH", body: JSON.stringify({ status: "批量生成", by: "设计师", action: "启动本地尺寸适配" }) });
     }
+    await editorImagesReady();
     const files = [];
     for (const template of state.task.templates) {
       const canvas = renderCanvas(template, false);
@@ -3915,10 +3953,12 @@ function redrawPreview() {
   const empty = document.querySelector("#preview-empty");
   if (!canvas) return;
   const objectTask=state.task;
-  if(Object.values(objectTask?.parameters?.communityObjectLayersByTemplate||{}).flat().some(layer=>!state.assetImages.has(communityObjectLayerImageKey(objectTask,layer)))){
-    if(state.communityObjectImageLoadingTask!==objectTask){state.communityObjectImageLoadingTask=objectTask;void loadCommunityObjectLayerImages(objectTask,loadImage,state.assetImages).then(()=>{if(state.task?.id===objectTask.id)redrawPreview();}).catch(error=>toast('独立素材加载失败：'+error.message)).finally(()=>{if(state.communityObjectImageLoadingTask===objectTask)state.communityObjectImageLoadingTask=null;});}return;
-  }
   const template = state.data.templates.find((item) => item.id === state.previewTemplateId) || state.task.masterTemplate;
+  // 这个尺寸（和它会引用的母版）要画的图还没下完（其它尺寸的图在后台下、刚放上画布的独立素材）：下完再画。
+  const waiting=objectTask.sourceAdaptation?[]:missingEditorImages(state.assetImages,editorImageEntries(objectTask,[objectTask.masterTemplateId,template?.id]));
+  if(waiting.length){
+    if(state.editorImageWaitTask!==objectTask){state.editorImageWaitTask=objectTask;void loadEditorImageEntries(state.assetImages,waiting,loadImage).then(()=>{if(state.task?.id===objectTask.id)redrawPreview();}).catch(error=>toast('独立素材加载失败：'+error.message)).finally(()=>{if(state.editorImageWaitTask===objectTask)state.editorImageWaitTask=null;});}return;
+  }
   const drawable = template ? templateSourceImage(state.task, template) : state.sourceImage;
   if(template&&state.task.masterTemplate?.communityMaster)syncCommunityPropertyControls(content,{layout:state.inspectorElement==='background'?null:getElementLayout(state.task,template,state.inspectorElement),background:getTemplateBackground(state.task,template),scale:selectedScalePercent()});
   const hasProjectText = template?.communityPlacement && (['title','subtitle','ip-copyright'].some(kind=>nativeCopyValue(state.task,template,kind)&&getElementLayout(state.task,template,kind).visible!==false) || hasCanvasAsset('subtitle-backing',template));

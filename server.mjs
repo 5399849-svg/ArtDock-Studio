@@ -373,6 +373,7 @@ const resizeCustomCanvas=createCustomCanvasResizer({tasksFile,templateMap,jobs:c
 const addTaskTargetSizes=createTaskTargetSizes({tasksFile,templateMap,jobs:communityGenerationJobs,invalidate:invalidateTaskArtifacts,reconcile:reconcileCommunityTargetExtension,readFonts:()=>readCompanyFontLibrary({root})});
 await communityMaterials.restore();
 const communityObjects=createCommunityObjectController({tasksFile,storageDir,templateMap,jobs:communityGenerationJobs,publicTask,readBody,loadConfig:loadAiHuabuConfig,createCanvas,submitGeneration,pollJob,downloadRaw,invalidate:invalidateTaskArtifacts,
+  serveImage:(req,res,file,url)=>imagePreviews.serve(req,res,file,url),
   segmentAvailable:async()=>await fileExists(browserSam2Model),
   segment:async({sourceBuffer,selection,workDir})=>{
     const metadata=await sharp(sourceBuffer).metadata(),width=metadata.width,height=metadata.height;

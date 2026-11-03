@@ -30,7 +30,7 @@ async function fixture(t,options={}){
  const task={id,project:'每日抽奖测试',status:'主图制作',updatedAt:'initial',masterTemplateId:template.id,targetTemplateIds:['target'],copy:'每日抽奖',assets,parameters:{assetByTemplate:{[template.id]:{background:'scene.png'}},backgroundByTemplate:{[template.id]:{scale:100}},layoutByTemplate:{target:{title:{x:1,y:2}}}},communityDesign:{versions:[]}};
  const tasksFile=path.join(root,'tasks.json');await fs.writeFile(tasksFile,JSON.stringify([task]));const jobs=new Map(),calls=[],segments=[];
  const style=await sharp(Buffer.from('<svg width="256" height="256"><rect width="256" height="256" fill="#ff00ff"/><rect x="20" y="20" width="216" height="216" rx="25" fill="#e3d9f3" stroke="#9d69cf" stroke-width="4"/></svg>')).png().toBuffer();
- const config={tasksFile,storageDir,templateMap:new Map([[template.id,template]]),jobs,readBody:async req=>{const chunks=[];for await(const chunk of req)chunks.push(chunk);return JSON.parse(Buffer.concat(chunks).toString()||'{}');},segmentAvailable:async()=>true,
+ const config={serveImage:options.serveImage,tasksFile,storageDir,templateMap:new Map([[template.id,template]]),jobs,readBody:async req=>{const chunks=[];for await(const chunk of req)chunks.push(chunk);return JSON.parse(Buffer.concat(chunks).toString()||'{}');},segmentAvailable:async()=>true,
   segment:async input=>{segments.push(input);if(options.segment)return options.segment(input);const meta=await sharp(input.sourceBuffer).metadata();return sharp(Buffer.from(`<svg width="${meta.width}" height="${meta.height}"><circle cx="${meta.width*.35}" cy="${meta.height*.45}" r="${meta.height*.22}" fill="#ff0000"/></svg>`)).png().toBuffer();},
   loadConfig:async()=>({enabled:true}),createCanvas:async()=>19,submitGeneration:async(bodyConfig,body,receipt)=>{calls.push({body,receipt});if(options.submit)return options.submit(body,receipt);return 'provider-style-123';},pollJob:async()=>{},downloadRaw:async()=>({buffer:calls.at(-1)?.body.prompt.includes('#00FF00')?await sharp(Buffer.from('<svg width="256" height="256"><rect width="256" height="256" fill="#00ff00"/><rect x="20" y="20" width="216" height="216" rx="25" fill="#e3d9f3" stroke="#9d69cf" stroke-width="4"/></svg>')).png().toBuffer():style})};
  const make=()=>createCommunityObjectController(config),controller=make(),get=async()=>JSON.parse(await fs.readFile(tasksFile,'utf8'))[0],route=`/api/tasks/${id}/community-objects`,post=async(action,input={})=>request(controller,'POST',route+'/'+action,{expectedRevision:(await get()).communityObjects?.revision||0,...input});
@@ -130,6 +130,18 @@ test('placed PNGs render from owned immutable appearance snapshots and remain do
  const foreign=structuredClone(layer);foreign.appearance.assetName='other-task.png';assert.equal((await request(f.controller,'GET',communityObjectLayerImageUrl(task,foreign))).status,422);
  await fs.writeFile(f.tasksFile,JSON.stringify([task]));assert.equal((await f.post('remove',{kind:'reward',id:reward.id})).status,200);
  assert.equal((await request(f.controller,'GET',communityObjectLayerImageUrl(task,layer))).status,200);
+});
+
+test('placed layer images revalidate instead of re-downloading: originals use the shared image server, rendered rewards answer 304',async t=>{
+ const served=[],f=await fixture(t,{serveImage:async(req,res,file)=>{served.push(path.basename(file));res.writeHead(200,{'Content-Type':'image/webp'});res.end(Buffer.from('compressed'));return true;}});
+ const task=await f.get(),material={id:'material:original',x:.5,y:.5,size:.3,appearance:{kind:'material',groupId:'original',name:'素材',assetName:'original-character.png',aspect:1}};
+ const original=await request(f.controller,'GET',communityObjectLayerImageUrl(task,material));
+ assert.equal(original.status,200);assert.equal(original.headers['Content-Type'],'image/webp');assert.deepEqual(served,['original-character.png']);
+ const layer=placeCommunityObject(task,template,'reward',communityRewardGroups(task)[0].id),route=communityObjectLayerImageUrl(task,layer);
+ const first=await request(f.controller,'GET',route);assert.equal(first.status,200);assert.match(first.headers.ETag,/^W\/"/);
+ const req=Readable.from([]);req.method='GET';req.headers={'if-none-match':first.headers.ETag};let status,body;
+ await f.controller.handle(req,{writeHead(s){status=s;},end(value){body=value;}},new URL(route,'http://localhost'));
+ assert.equal(status,304);assert.equal(body,undefined);
 });
 
 test('editing a placed reward updates its layer appearance without creating bitmap files or changing scene pixels',async t=>{
