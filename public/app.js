@@ -1,5 +1,5 @@
 import {drawLayerHandles} from '/source-canvas-transform.js';
-import {previewSrc} from '/image-preview.js';
+import {previewSrc,originalImage} from '/image-preview.js';
 import {keepOpenTaskFull} from '/open-task-refresh.js';
 import {folderPickerHtml,bindFolderPickers,pickMaterialFolder} from '/platform/folder-upload.js';
 import {clipboardSourceFiles,quickSourceFile} from '/quick-source-files.js';
@@ -1241,6 +1241,27 @@ async function canvasImagesReady() {
   await state.fontsLoading;
   if (state.task?.sourceAdaptation) return;
   await loadEditorImageEntries(state.assetImages, editorImageEntries(state.task, [state.task.masterTemplateId, state.previewTemplateId]), loadImage);
+}
+
+// 发给 AI 的画面、导出的交付稿用原图画：编辑器里的图是 <img> 取的，服务器给的是尺寸不变的压缩版（lib/image-previews.mjs）。
+// 把 templateIds 这几个尺寸要画的、编辑器已经下到的图换成原图，得到一份画画用的 assetImages 和首选背景（交给 withCanvasImages）。
+// assetNames：另外要换的素材（例如整稿设计按名字选用的素材）。
+async function originalCanvasImages(templateIds, assetNames = []) {
+  const assetImages = new Map(state.assetImages);
+  const named = (state.task.assets || []).filter(asset => assetNames.includes(asset.name)).map(asset => ({ key: asset.name, url: asset.url }));
+  const entries = [...new Map([...editorImageEntries(state.task, templateIds), ...sourceImageEntry(state.task), ...named].map(entry => [entry.key, entry])).values()].filter(({ key }) => state.assetImages.has(key));
+  await Promise.all(entries.map(async ({ key, url }) => assetImages.set(key, await originalImage(url))));
+  return { assetImages, sourceImage: state.sourceAsset && assetImages.get(state.sourceAsset.name) || state.sourceImage };
+}
+// 用 images 画（draw 是同步的，中间不会有别的代码看到换过的图），画完换回编辑器显示用的图。
+function withCanvasImages(images, draw) {
+  const display = { assetImages: state.assetImages, sourceImage: state.sourceImage };
+  Object.assign(state, images);
+  try { return draw(); } finally { Object.assign(state, display); }
+}
+// 导出交付稿要的原图：源文件适配任务打开时按自己的清单下图（editor-image-source.js loadEditorImages），下到的都换。
+function exportCanvasImages(templateIds) {
+  return originalCanvasImages(templateIds, state.task.sourceAdaptation ? [...state.assetImages.keys()] : []);
 }
 
 // 后台的图下完后，尺寸栏里按画布合成的缩略图重画一遍（不重画整个编辑器，免得打断正在做的操作）。
@@ -3478,12 +3499,14 @@ async function submitCommunityArtwork(mode,prompt){
   try{
     if(!await flushPendingParameterSave() || state.task?.id!==taskId)return;
     await canvasImagesReady();if(state.task?.id!==taskId)return;
+    const snapshot=mode==='concept-edit'&&!state.task.parameters?.communityArtworkByTemplate?.[state.task.masterTemplate.id];
+    const originals=snapshot?await originalCanvasImages([state.task.masterTemplate.id]):null;if(state.task?.id!==taskId)return;
     const task=state.task,template=task.masterTemplate;let currentDataUrl;
-    if(mode==='concept-edit'&&!task.parameters?.communityArtworkByTemplate?.[template.id]){
+    if(originals){
       // Original brand marks remain local and must not be repainted by the model.
       const staged=structuredClone(task);staged.parameters.layoutByTemplate ||= {};staged.parameters.layoutByTemplate[template.id] ||= {};
       for(const kind of ['logo','ip-copyright'])staged.parameters.layoutByTemplate[template.id][kind]={...getElementLayout(task,template,kind),visible:false};
-      try{state.task=staged;currentDataUrl=renderCanvas(template,false).toDataURL('image/png');}finally{state.task=task;}
+      try{state.task=staged;currentDataUrl=withCanvasImages(originals,()=>renderCanvas(template,false).toDataURL('image/png'));}finally{state.task=task;}
     }
     const fresh=await api(`/api/tasks/${taskId}/community-compose`,{method:'POST',body:JSON.stringify({mode,prompt,model:task.parameters.communityImageModel || 'banana_pro',expectedUpdatedAt:task.updatedAt,currentDataUrl})});
     if(state.task?.id!==taskId)return;
@@ -3578,37 +3601,40 @@ async function submitCommunityBanner(){
     const targetLayouts=mode==='edit'?applyBannerLayoutOperations(layouts,template,plan.operations).layouts:layouts;
     let currentDataUrl,guideDataUrl,titleMaskDataUrl;
     if(hasAi){
-      currentDataUrl=renderCanvas(template,false).toDataURL('image/png');
-      let maskCanvas;
-      if(titleFont){
-        const selectedTitle=task.assets.find(a=>a.name===masterAssets.title);
-        const sourceMask=mode==='edit'&&selectedTitle?.fontProvenance?.fontId===titleFont.id&&task.assets.find(a=>a.name===selectedTitle.glyphSourceName);
-        if(sourceMask){
-          const image=state.assetImages.get(sourceMask.name) || await loadImage(sourceMask.url);
-          maskCanvas=document.createElement('canvas');maskCanvas.width=image.naturalWidth;maskCanvas.height=image.naturalHeight;maskCanvas.getContext('2d').drawImage(image,0,0);
-        }else maskCanvas=renderBannerTitleMask({text:task.copy,fontFamily:projectFontFamily(titleFont),rect:targetLayouts.title,emphasizeFirstLine:titleFont.designTheme==='playful'}).canvas;
-        titleMaskDataUrl=maskCanvas.toDataURL('image/png');
-      }
-      const originalTask=state.task;
-      const staged=structuredClone(task);
-      staged.parameters.layoutByTemplate ||= {};staged.parameters.assetByTemplate ||= {};
-      staged.parameters.layoutByTemplate[template.id]=targetLayouts;
-      staged.parameters.assetByTemplate[template.id]={...masterAssets,...(mode==='design'?{title:null,subtitle:null}:{})};
-      if(titleFont)staged.parameters.titleFontId=titleFont.id;
-      if(subtitleFont)staged.parameters.subtitleFontId=subtitleFont.id;
-      try{
-        state.task=staged;
-        let guide;
-        if(mode==='edit')guide=renderCanvas(template,false);
-        else{
-          guide=document.createElement('canvas');guide.width=template.width;guide.height=template.height;
-          const ctx=guide.getContext('2d');ctx.fillStyle='#eeeae0';ctx.fillRect(0,0,guide.width,guide.height);
-          for(const kind of ['character','character2','foreground','logo','ip-copyright'])drawUploadedElement(ctx,template,kind);
-          if(maskCanvas){const box=targetLayouts.title;ctx.drawImage(maskCanvas,box.x,box.y,box.width,box.height);}
-          if(String(task.parameters.subtitleText || '').trim())drawNativeCopy(ctx,{...nativeCopyOptions(staged,template,'subtitle'),effects:targetLayouts.subtitle.effects});
+      const selectedTitle=titleFont&&task.assets.find(a=>a.name===masterAssets.title);
+      const sourceMask=titleFont&&mode==='edit'&&selectedTitle?.fontProvenance?.fontId===titleFont.id&&task.assets.find(a=>a.name===selectedTitle.glyphSourceName);
+      const [originals,maskImage]=await Promise.all([originalCanvasImages([template.id],Object.values(masterAssets)),sourceMask?originalImage(sourceMask.url):null]);
+      if(state.task?.id!==taskId)return;
+      withCanvasImages(originals,()=>{
+        currentDataUrl=renderCanvas(template,false).toDataURL('image/png');
+        let maskCanvas;
+        if(titleFont){
+          if(maskImage){
+            maskCanvas=document.createElement('canvas');maskCanvas.width=maskImage.naturalWidth;maskCanvas.height=maskImage.naturalHeight;maskCanvas.getContext('2d').drawImage(maskImage,0,0);
+          }else maskCanvas=renderBannerTitleMask({text:task.copy,fontFamily:projectFontFamily(titleFont),rect:targetLayouts.title,emphasizeFirstLine:titleFont.designTheme==='playful'}).canvas;
+          titleMaskDataUrl=maskCanvas.toDataURL('image/png');
         }
-        guideDataUrl=guide.toDataURL('image/png');
-      }finally{state.task=originalTask;}
+        const originalTask=state.task;
+        const staged=structuredClone(task);
+        staged.parameters.layoutByTemplate ||= {};staged.parameters.assetByTemplate ||= {};
+        staged.parameters.layoutByTemplate[template.id]=targetLayouts;
+        staged.parameters.assetByTemplate[template.id]={...masterAssets,...(mode==='design'?{title:null,subtitle:null}:{})};
+        if(titleFont)staged.parameters.titleFontId=titleFont.id;
+        if(subtitleFont)staged.parameters.subtitleFontId=subtitleFont.id;
+        try{
+          state.task=staged;
+          let guide;
+          if(mode==='edit')guide=renderCanvas(template,false);
+          else{
+            guide=document.createElement('canvas');guide.width=template.width;guide.height=template.height;
+            const ctx=guide.getContext('2d');ctx.fillStyle='#eeeae0';ctx.fillRect(0,0,guide.width,guide.height);
+            for(const kind of ['character','character2','foreground','logo','ip-copyright'])drawUploadedElement(ctx,template,kind);
+            if(maskCanvas){const box=targetLayouts.title;ctx.drawImage(maskCanvas,box.x,box.y,box.width,box.height);}
+            if(String(task.parameters.subtitleText || '').trim())drawNativeCopy(ctx,{...nativeCopyOptions(staged,template,'subtitle'),effects:targetLayouts.subtitle.effects});
+          }
+          guideDataUrl=guide.toDataURL('image/png');
+        }finally{state.task=originalTask;}
+      });
     }
     const fresh=await api(`/api/tasks/${taskId}/community-compose`,{method:'POST',body:JSON.stringify({mode,prompt,expectedUpdatedAt:task.updatedAt,model:task.parameters.communityImageModel || 'banana_pro',masterAssets,layouts,titleFontId:titleFont?.id,subtitleFontId:subtitleFont?.id,titleFontSource:titleFont?.selectionSource,titleDesignTheme:titleFont?.designTheme || bannerTypographyTheme(task,state.data.projects.find(p=>p.id===task.projectId),prompt),currentDataUrl,guideDataUrl,titleMaskDataUrl})});
     if(state.task?.id!==taskId)return;
@@ -3771,7 +3797,8 @@ async function downloadCurrentArtifact() {
   try {
     if(state.task.customCanvas&&!await flushPendingParameterSave())throw Error('排版尚未保存，请稍后再导出');
     await editorImagesReady();
-    const canvas = renderCanvas(template, false);
+    const originals = await exportCanvasImages([template.id]);
+    const canvas = withCanvasImages(originals, () => renderCanvas(template, false));
     if(state.task.sourceAdaptation)assertSourceExport(state.task,template,canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data);
     if(popupConfig(state.task,template))assertPopupPixels(canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data);
     if (canvas.outpaintCoverageValid === false) throw new Error("AI扩展范围不足，请增大缩放或重新扩图后再下载");
@@ -3972,9 +3999,10 @@ async function renderArtifacts(submitAfter = false, triggerButton = null) {
       state.task = await api(`/api/tasks/${state.task.id}`, { method: "PATCH", body: JSON.stringify({ status: "批量生成", by: "设计师", action: "启动本地尺寸适配" }) });
     }
     await editorImagesReady();
+    const originals = await exportCanvasImages(state.task.templates.map((template) => template.id));
     const files = [];
     for (const template of state.task.templates) {
-      const canvas = renderCanvas(template, false);
+      const canvas = withCanvasImages(originals, () => renderCanvas(template, false));
       if(state.task.sourceAdaptation)assertSourceExport(state.task,template,canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data);
     if(popupConfig(state.task,template))assertPopupPixels(canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data);
       if (canvas.outpaintCoverageValid === false) throw new Error(template.name + "：AI扩展范围不足，请增大缩放或重新扩图，不能导出留白成品");

@@ -1,4 +1,4 @@
-import {previewSrc} from './image-preview.js';
+import {previewSrc,originalImage} from './image-preview.js';
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 // 列表、候选、版本这些小缩略图用服务器缩小过的预览（public/image-preview.js），不下整张图。
 const thumb=(value,edge)=>{const url=imageUrl(value);return url?previewSrc(url,edge):'';};
@@ -6,6 +6,7 @@ const imageUrl=value=>/^\/(?:storage|channel-sample)\/[\w%./-]+$/.test(value||''
 const uid=()=>`layer-${Math.random().toString(36).slice(2,10)}`;
 const readFile=file=>new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(Error('读取文件失败'));reader.readAsDataURL(file)});
 const imageFrom=url=>new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(Error(`图片加载失败：${url}`));img.src=url});
+// 裁出来发给 AI 当字效参考的图、导出的交付候选用原图（imageFrom 取到的是服务器给 <img> 的压缩版，只用来量尺寸）。
 const endpoint=id=>`/api/channel-resources/items/${encodeURIComponent(id)}`;
 
 export async function openChannelEditor({api,toast,itemId,onClose,startPanel='copy',autoReferenceRegion=null}){
@@ -19,16 +20,27 @@ export async function openChannelEditor({api,toast,itemId,onClose,startPanel='co
   const channelLabel={huawei:'华为',oppo:'OPPO',vivo:'vivo',xiaomi:'小米',honor:'荣耀'}[batch.channel]||batch.channel;
   function initialState(){editor=item.editor||{};draft={backgroundUrl:editor.backgroundUrl||'',layers:structuredClone(editor.layers||[])};selectedLayerId=draft.layers[0]?.id||'';targetText=editor.targetText||String(item.sourceCopy||'').split(/\r?\n/).map(line=>line.trim()).filter(line=>line&&!/^-+$/.test(line)).slice(0,2).join('\n');occupancy=editor.occupancy||80;outpaintPrompt=editor.outpaintPrompt||'';jobMessage=''}
   initialState();
-  if(autoReferenceRegion&&!editor.referenceUrl&&item.versions.at(-1)?.url){
+  // 自动截取原稿字效参考要先下原图，等编辑器显示出来再做（文件末尾），不挡打开；截好前“发送参考图”按钮是灰的。
+  async function autoReference(){
+    const target=item,url=target.versions.at(-1)?.url,progress='正在从原稿截取字效参考…';
+    // 这张稿的编辑记录：截取期间换到别的稿，结果记在它自己的记录上（服务器那边已经记好）。
+    const record=()=>item===target?(target.editor=editor):(target.editor||={});
+    if(!autoReferenceRegion||editor.referenceUrl||!url)return;
+    if(!busy){jobMessage=progress;render();}
     try{
-      const region=autoReferenceRegion,img=await imageFrom(item.versions.at(-1).url);
+      const region=autoReferenceRegion,img=await originalImage(url);
       const sx=Math.round(img.naturalWidth*region.x),sy=Math.round(img.naturalHeight*region.y);
       const sw=Math.round(img.naturalWidth*region.width),sh=Math.round(img.naturalHeight*region.height);
       const canvas=document.createElement('canvas');canvas.width=sw;canvas.height=sh;
       canvas.getContext('2d').drawImage(img,sx,sy,sw,sh,0,0,sw,sh);
-      const result=await api(`${endpoint(item.id)}/editor-asset`,{method:'POST',body:JSON.stringify({kind:'reference',name:'原稿文案字效参考.png',dataUrl:canvas.toDataURL('image/png')})});
-      editor.referenceUrl=result.asset.url;editor.assets=[...(editor.assets||[]),result.asset];
-    }catch(error){jobMessage=`自动截取参考字效失败：${error.message}。可手动上传参考图。`}
+      // 截取期间手动传了参考图、或者已经关掉编辑器，就不再提交，免得盖掉手动传的。
+      if(!closed&&!record().referenceUrl){
+        const result=await api(`${endpoint(target.id)}/editor-asset`,{method:'POST',body:JSON.stringify({kind:'reference',name:'原稿文案字效参考.png',dataUrl:canvas.toDataURL('image/png')})});
+        const saved=record();if(!saved.referenceUrl){saved.referenceUrl=result.asset.url;saved.assets=[...(saved.assets||[]),result.asset];}
+      }
+    }catch(error){if(item===target)jobMessage=`自动截取参考字效失败：${error.message}。可手动上传参考图。`}
+    const cleared=jobMessage===progress;if(cleared)jobMessage='';
+    if(item===target||cleared)render();
   }
   const activeLayer=()=>draft.layers.find(layer=>layer.id===selectedLayerId);
   const background=()=>imageUrl(draft.backgroundUrl||item.versions.at(-1)?.url||item.sourceImages[0]?.url||'');
@@ -91,8 +103,8 @@ export async function openChannelEditor({api,toast,itemId,onClose,startPanel='co
   function resumePending(){const running=item.editorJobs?.[0];if(running&&!busy)pollJob(running.id,running.kind==='copy'?'copy':'background',item.id).catch(error=>{busy=false;jobMessage=error.message;render()})}
   async function generate(kind){if(busy)return;await saveNow();busy=true;render();try{const originId=item.id;const body=kind==='copy'?{targetText,referenceUrl:editor.referenceUrl}:{sourceUrl:background(),occupancy,prompt:outpaintPrompt};const path=kind==='copy'?'generate-copy':'outpaint';const result=await api(`${endpoint(originId)}/${path}`,{method:'POST',body:JSON.stringify(body)});pollJob(result.jobId,kind,originId).catch(error=>{busy=false;jobMessage=error.message;render()})}catch(error){busy=false;jobMessage=error.message;render();toast(error.message)}}
   async function exportVersion(){await saveNow();if(!background())throw Error('请先选择背景源图');const canvas=document.createElement('canvas');canvas.width=item.width;canvas.height=item.height;const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,item.width,item.height);
-    const bg=await imageFrom(background()),scale=Math.min(item.width/bg.naturalWidth,item.height/bg.naturalHeight);const w=bg.naturalWidth*scale,h=bg.naturalHeight*scale;ctx.drawImage(bg,(item.width-w)/2,(item.height-h)/2,w,h);
-    for(const layer of draft.layers){if(!layer.visible)continue;if(layer.type==='image'){const img=await imageFrom(layer.url);ctx.drawImage(img,layer.x,layer.y,layer.width,layer.width*img.naturalHeight/img.naturalWidth);continue}
+    const bg=await originalImage(background()),scale=Math.min(item.width/bg.naturalWidth,item.height/bg.naturalHeight);const w=bg.naturalWidth*scale,h=bg.naturalHeight*scale;ctx.drawImage(bg,(item.width-w)/2,(item.height-h)/2,w,h);
+    for(const layer of draft.layers){if(!layer.visible)continue;if(layer.type==='image'){const img=await originalImage(layer.url);ctx.drawImage(img,layer.x,layer.y,layer.width,layer.width*img.naturalHeight/img.naturalWidth);continue}
       ctx.save();ctx.font=`700 ${layer.fontSize}px "${layer.fontFamily||'Microsoft YaHei'}"`;ctx.textBaseline='top';ctx.fillStyle=layer.color||'#fff';ctx.strokeStyle=layer.stroke||'#503025';ctx.lineWidth=layer.strokeWidth||0;if(layer.stylePreset==='gold-title'){const gradient=ctx.createLinearGradient(0,layer.y,0,layer.y+layer.fontSize*1.2);gradient.addColorStop(0,'#fffdf5');gradient.addColorStop(.45,'#fff3c8');gradient.addColorStop(.75,'#d99a51');gradient.addColorStop(1,'#fff2d2');ctx.fillStyle=gradient;ctx.strokeStyle='#653a2e';ctx.lineWidth=Math.max(2,layer.fontSize*.018)}if(layer.shadow){ctx.shadowColor='#1f183d99';ctx.shadowBlur=8;ctx.shadowOffsetX=2;ctx.shadowOffsetY=4}
       let y=layer.y;for(const paragraph of String(layer.text||'').split('\n')){let line='';for(const char of paragraph){if(line&&ctx.measureText(line+char).width>layer.width){if(ctx.lineWidth)ctx.strokeText(line,layer.x,y);ctx.fillText(line,layer.x,y);y+=layer.fontSize*1.15;line=char}else line+=char}if(ctx.lineWidth)ctx.strokeText(line,layer.x,y);ctx.fillText(line,layer.x,y);y+=layer.fontSize*1.15}ctx.restore()}
     const jpg=/jpe?g/i.test(item.format);let dataUrl='';const max=item.maxBytes||Infinity;
@@ -112,7 +124,7 @@ export async function openChannelEditor({api,toast,itemId,onClose,startPanel='co
   }
   function showAdoptDialog(candidate){const float=document.createElement('div');float.className='ce-float';float.innerHTML=`<h3>采用这版 AI 文案？</h3><img class="ce-preview" src="${imageUrl(candidate.layerUrl)}" alt="独立文字层"><p>目标文字：${escapeHtml(candidate.targetText)}。请对照需求逐字核对生成图，确认没有错字、漏字和多余字。</p><label class="ce-field"><input id="ce-confirm-text" type="checkbox" style="width:auto;display:inline"> 我已逐字核对文案并检查透明边缘</label><div class="ce-float-actions"><button class="ce-btn" id="ce-adopt-cancel">取消</button><button class="ce-btn primary" id="ce-adopt-confirm" disabled>采用为独立图层</button></div>`;shell.append(float);float.querySelector('#ce-confirm-text').onchange=e=>float.querySelector('#ce-adopt-confirm').disabled=!e.target.checked;float.querySelector('#ce-adopt-cancel').onclick=()=>float.remove();float.querySelector('#ce-adopt-confirm').onclick=async()=>{try{const img=await imageFrom(candidate.layerUrl);prepareTitleReplacement();const banner=Boolean(item.template&&/banner/i.test(item.resource));const width=Math.min(item.width*(banner ? .33 : .7),img.naturalWidth);const layer={id:uid(),type:'image',name:`参考重设计标题 · ${candidate.targetText}`,url:candidate.layerUrl,x:Math.round(item.width*(banner ? .035 : .15)),y:Math.round(item.height*(banner ? .2 : .55)),width,visible:true};draft.layers.push(layer);selectedLayerId=layer.id;panel='properties';float.remove();await saveNow();render()}catch(error){toast(error.message)}}}
   function recreateCopy(candidate){const text=candidate.targetText;prepareTitleReplacement();const banner=Boolean(item.template&&/banner/i.test(item.resource));const width=Math.round(item.width*(banner ? .3 : .82));const fontSize=banner?Math.round(item.height*.088):Math.min(Math.round(item.width*.115),Math.round(width/Math.max(1,text.length)*1.3));const layer={id:uid(),type:'text',name:`准确文案 · ${text}`,text,x:Math.round(item.width*(banner ? .05 : .09)),y:Math.round(item.height*(banner ? .22 : .58)),width,fontSize,color:'#fff6e7',stroke:'#303b57',strokeWidth:1,shadow:true,stylePreset:'plain',fontFamily:'KaiTi',visible:true};draft.layers.push(layer);selectedLayerId=layer.id;panel='properties';queueSave();render()}
-  function cropReference(){const source=editor.referenceUrl||background();if(!source){toast('请先上传参考图或选择背景');return}const float=document.createElement('div');float.className='ce-float';float.innerHTML=`<h3>裁取原稿字效区域</h3><img class="ce-preview" src="${imageUrl(source)}" alt="参考图片"><p>输入要保留的区域百分比。建议只包含原版标题和必要装饰，尽量排除人物和背景。</p><div class="ce-grid2"><label class="ce-field">左 X %<input id="ce-crop-x" type="number" min="0" max="90" value="5"></label><label class="ce-field">上 Y %<input id="ce-crop-y" type="number" min="0" max="90" value="30"></label><label class="ce-field">宽 %<input id="ce-crop-w" type="number" min="5" max="100" value="90"></label><label class="ce-field">高 %<input id="ce-crop-h" type="number" min="5" max="100" value="35"></label></div><div class="ce-float-actions"><button class="ce-btn" id="ce-crop-cancel">取消</button><button class="ce-btn primary" id="ce-crop-save">保存裁取区域</button></div>`;shell.append(float);float.querySelector('#ce-crop-cancel').onclick=()=>float.remove();float.querySelector('#ce-crop-save').onclick=async()=>{try{const img=await imageFrom(source),n=id=>Number(float.querySelector(id).value)/100,x=n('#ce-crop-x'),y=n('#ce-crop-y'),w=n('#ce-crop-w'),h=n('#ce-crop-h');if(x<0||y<0||w<=0||h<=0||x+w>1||y+h>1)throw Error('裁取区域超出图片');const canvas=document.createElement('canvas');canvas.width=Math.round(img.naturalWidth*w);canvas.height=Math.round(img.naturalHeight*h);canvas.getContext('2d').drawImage(img,img.naturalWidth*x,img.naturalHeight*y,canvas.width,canvas.height,0,0,canvas.width,canvas.height);const result=await api(`${endpoint(item.id)}/editor-asset`,{method:'POST',body:JSON.stringify({kind:'reference',name:'原稿字效裁取.png',dataUrl:canvas.toDataURL('image/png')})});editor.referenceUrl=result.asset.url;editor.assets=[...(editor.assets||[]),result.asset];float.remove();render();toast('字效参考区域已保存')}catch(error){toast(error.message)}}}
+  function cropReference(){const source=editor.referenceUrl||background();if(!source){toast('请先上传参考图或选择背景');return}const float=document.createElement('div');float.className='ce-float';float.innerHTML=`<h3>裁取原稿字效区域</h3><img class="ce-preview" src="${imageUrl(source)}" alt="参考图片"><p>输入要保留的区域百分比。建议只包含原版标题和必要装饰，尽量排除人物和背景。</p><div class="ce-grid2"><label class="ce-field">左 X %<input id="ce-crop-x" type="number" min="0" max="90" value="5"></label><label class="ce-field">上 Y %<input id="ce-crop-y" type="number" min="0" max="90" value="30"></label><label class="ce-field">宽 %<input id="ce-crop-w" type="number" min="5" max="100" value="90"></label><label class="ce-field">高 %<input id="ce-crop-h" type="number" min="5" max="100" value="35"></label></div><div class="ce-float-actions"><button class="ce-btn" id="ce-crop-cancel">取消</button><button class="ce-btn primary" id="ce-crop-save">保存裁取区域</button></div>`;shell.append(float);float.querySelector('#ce-crop-cancel').onclick=()=>float.remove();float.querySelector('#ce-crop-save').onclick=async()=>{try{const img=await originalImage(source),n=id=>Number(float.querySelector(id).value)/100,x=n('#ce-crop-x'),y=n('#ce-crop-y'),w=n('#ce-crop-w'),h=n('#ce-crop-h');if(x<0||y<0||w<=0||h<=0||x+w>1||y+h>1)throw Error('裁取区域超出图片');const canvas=document.createElement('canvas');canvas.width=Math.round(img.naturalWidth*w);canvas.height=Math.round(img.naturalHeight*h);canvas.getContext('2d').drawImage(img,img.naturalWidth*x,img.naturalHeight*y,canvas.width,canvas.height,0,0,canvas.width,canvas.height);const result=await api(`${endpoint(item.id)}/editor-asset`,{method:'POST',body:JSON.stringify({kind:'reference',name:'原稿字效裁取.png',dataUrl:canvas.toDataURL('image/png')})});editor.referenceUrl=result.asset.url;editor.assets=[...(editor.assets||[]),result.asset];float.remove();render();toast('字效参考区域已保存')}catch(error){toast(error.message)}}}
   shell.addEventListener('click',async e=>{const button=e.target.closest('button');if(!button)return;try{
     if(button.id==='ce-close'||button.id==='ce-close-nav'){await saveNow();closed=true;shell.remove();document.body.style.overflow=previousOverflow;window.removeEventListener('keydown',onKey);window.removeEventListener('resize',fitCanvas);onClose?.();return}
     if(button.dataset.ceItem){await switchItem(button.dataset.ceItem);return}
@@ -139,5 +151,5 @@ export async function openChannelEditor({api,toast,itemId,onClose,startPanel='co
   shell.addEventListener('pointerup',()=>{if(!drag)return;drag=null;queueSave();render()});
   const onKey=e=>{if(closed)return;if((e.key==='Delete'||e.key==='Backspace')&&selectedLayerId&&!['INPUT','TEXTAREA'].includes(document.activeElement?.tagName)){e.preventDefault();draft.layers=draft.layers.filter(l=>l.id!==selectedLayerId);selectedLayerId=draft.layers[0]?.id||'';queueSave();render()}};
   window.addEventListener('keydown',onKey);window.addEventListener('resize',fitCanvas);
-  render();resumePending();
+  render();resumePending();autoReference().catch(error=>toast(error.message));
 }

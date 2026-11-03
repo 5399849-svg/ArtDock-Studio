@@ -1,5 +1,6 @@
 // 列表、卡片、缩略条里显示的图片用服务器缩小过的预览（地址后面加 ?w=，lib/image-previews.mjs；做法同 QCanvas）。
 // 编辑器画布不用这个：它按图片的真实宽高算位置，服务器给它的是尺寸不变的压缩版（见 lib/image-previews.mjs）；下载照旧是原图。
+// 浏览器画出来发给 AI 当参考的图（当前画面、底稿、裁取的字效）和导出的交付稿要用原图画：用 originalImage 取。
 // 档位要和服务器的 PREVIEW_WIDTHS 一样；w 限制的是最长边。
 const WIDTHS = [128, 256, 384, 512, 768, 1024, 1536, 2048];
 const PREVIEWABLE = /^\/(?:storage|ad-reference|channel-sample)\/[^?#]+\.(?:png|jpe?g|webp)(?:[?#]|$)/i;
@@ -18,4 +19,19 @@ export function previewSrc(url, cssEdge) {
   const width = WIDTHS.find(value => value >= wanted) ?? WIDTHS.at(-1);
   const [base, hash = ''] = url.split('#');
   return `${base}${base.includes('?') ? '&' : '?'}w=${width}${hash ? `#${hash}` : ''}`;
+}
+
+/** 原图（fetch 取的不是 <img> 显示用的压缩版）解码成可以画到画布上的 <img>。浏览器缓存过的只核对一下（304），不重下。 */
+export async function originalImage(url) {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`原图读取失败（HTTP ${response.status}），请重试`);
+  const objectUrl = URL.createObjectURL(await response.blob());
+  try {
+    const image = new Image();
+    image.src = objectUrl;
+    await image.decode().catch(() => { throw new Error('原图无法解码，请重试'); });
+    return image;
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
 }
